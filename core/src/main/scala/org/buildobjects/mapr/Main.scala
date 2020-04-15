@@ -12,7 +12,8 @@ import scala.xml.{Attribute, Elem, Node, Null}
 
 object Main {
 
-  val tiledMap = TilingScheme.here("VgTVFr1a0ft1qGcLCVJ6", "LJXqQ8ErW71UsRUK3R33Ow")
+  //val tiledMap = TilingScheme.here("VgTVFr1a0ft1qGcLCVJ6", "LJXqQ8ErW71UsRUK3R33Ow")
+  val tiledMap = TilingScheme.rrze()
 
   def main(args: Array[String]): Unit = {
 
