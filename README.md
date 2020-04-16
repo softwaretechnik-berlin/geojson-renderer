@@ -23,3 +23,24 @@ TODO
   the geojson graphics and do the overlay at the bitmap level
     * [ ] Provide caching for bitmap data
 
+* [ ] Add an option(s) to write svg embedded into html
+
+* [ ] Add option to add scripting to svg/ html which adds
+      inspection of properties etc.
+
+* [ ] Add meaningful classes and IDs to SVG
+
+* [ ] Support "geojson" files with multiple feature collections.
+
+* [ ] Add different dimension strategies.
+
+      Currently we determine a bounding box that contains the whole geojson
+      and maintains the aspect ration of the given dimensions.
+
+      Other strategies could be:
+
+      * Use the given dimensions as the maximum and cut the box to the boundary
+        of the geojson content.
+
+      * Specify a width or a height in pixels.
+
