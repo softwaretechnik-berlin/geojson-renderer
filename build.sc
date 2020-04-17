@@ -18,8 +18,7 @@ object core extends SbtModule {
 
   object test extends Tests {
     def ivyDeps = Agg(ivy"org.scalatest::scalatest::3.0.8")
-    def testFrameworks = Seq("utest.runner.Framework")
-
+    def testFrameworks = Seq("org.scalatest.tools.Framework")
   }
 
   override def mainClass = Some("org.buildobjects.mapr.Main")
