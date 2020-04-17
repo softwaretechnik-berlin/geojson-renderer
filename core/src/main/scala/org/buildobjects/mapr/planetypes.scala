@@ -18,7 +18,14 @@ object Dimensions {
 
 class Position2D(x: Double, y: Double) extends Vector2D(x, y)
 
+/**
+ * A 2-dimensional box.
+ *
+ * The positive x direction is to the right, and the positive y direction is downward.
+ */
 case class Box2D(upperLeft: Vector2D, lowerRight: Vector2D) {
+  require(upperLeft.x < lowerRight.x && upperLeft.y < lowerRight.y)
+  
   def dimensions: Dimensions =
     Dimensions(lowerRight.x - upperLeft.x, lowerRight.y - upperLeft.y)
 
