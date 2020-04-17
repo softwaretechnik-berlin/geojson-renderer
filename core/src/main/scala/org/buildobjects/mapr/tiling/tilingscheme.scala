@@ -114,5 +114,4 @@ class ZoomLevel(val zoomLevel: Int,
 
 case class TilesWithOffset(tileId: TileId, offset: DoubleVector2D)
 
-case class TileId(x: Int, y: Int, z: Int) {
-}
+case class TileId(x: Int, y: Int, z: Int)
