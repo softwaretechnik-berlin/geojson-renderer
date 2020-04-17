@@ -27,7 +27,7 @@ object Feature {
   private[geojson] implicit val rw: ReadWriter[Feature] = macroRW
 }
 
-sealed trait Geometry
+sealed trait Geometry extends GeoJson
 
 object Geometry {
   private[geojson] implicit val rw: ReadWriter[Geometry] = macroRW
