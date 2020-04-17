@@ -1,9 +1,16 @@
 package berlin.softwaretechnik.geojsonrenderer.geojson
 
 import berlin.softwaretechnik.geojsonrenderer.GeoCoord
+import org.scalacheck.Gen.choose
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatestplus.scalacheck.Checkers
+import ujson._
 
-class GeoJsonSerializationTest extends AnyFunSuite {
+import scala.collection.immutable.Seq
+import scala.collection.mutable
+
+class GeoJsonSerializationTest extends AnyFunSuite with Checkers {
 
   // https://tools.ietf.org/html/rfc7946#section-1.5
   val featureCollectionJsonFromRfc: String =
@@ -88,6 +95,39 @@ class GeoJsonSerializationTest extends AnyFunSuite {
         .replaceAll("[ \n]+", "")
         .replaceAll("\\.0\\b", "")
     )
+  }
+
+  import org.scalacheck.magnolia._
+
+  val nonRecursiveJsonValueGenerators: Seq[Gen[Value]] = Seq(
+    Arbitrary.arbitrary[Str],
+    Arbitrary.arbitrary[Bool],
+    Arbitrary.arbitrary[Num],
+    Gen.const(Null),
+  )
+
+  def oneOf[T](gs: Seq[Gen[T]]): Gen[T] = {
+    val a +: b +: tail = gs
+    Gen.oneOf(a, b, tail: _*)
+  }
+
+  def jsonValueWithMaxDepth(maxDepth: Int): Gen[Value] =
+    oneOf(
+      if (maxDepth > 1) {
+        val nestedValue = jsonValueWithMaxDepth(maxDepth - 1)
+        nonRecursiveJsonValueGenerators :+
+          Gen.listOf(nestedValue).map(Arr(_: _*)) :+
+          Gen.buildableOf[mutable.LinkedHashMap[String, Value], (String, Value)](Gen.zip(Arbitrary.arbitrary[String], nestedValue)).map(Obj.apply)
+      } else nonRecursiveJsonValueGenerators
+    )
+
+  implicit val arbitraryProperties: Arbitrary[Value] =
+    Arbitrary(jsonValueWithMaxDepth(2))
+
+  test("Should roundtrip any FeatureCollection value through JSON") {
+    check { geoJson: FeatureCollection =>
+      GeoJson.read(GeoJson.write(geoJson)) === geoJson
+    }
   }
 
 }
