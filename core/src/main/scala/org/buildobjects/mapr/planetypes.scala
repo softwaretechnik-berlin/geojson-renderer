@@ -39,23 +39,9 @@ case class Box2D(upperLeft: DoubleVector2D, lowerRight: DoubleVector2D) {
 }
 
 case class DoubleVector2D(x: Double, y: Double) {
-  def toLong: LongVector2D = LongVector2D(x.toLong, y.toLong)
-
   def +(other: DoubleVector2D) = DoubleVector2D(x + other.x, y + other.y)
 
   def -(other: DoubleVector2D) = DoubleVector2D(x - other.x, y - other.y)
 
   def *(factor: Double) = DoubleVector2D(x * factor, y * factor)
-}
-
-case class LongVector2D(x: Long, y: Long) {
-  def +(other: LongVector2D) = LongVector2D(x + other.x, y + other.y)
-
-  def -(other: LongVector2D) = LongVector2D(x - other.x, y - other.y)
-
-  def *(factor: Long) = LongVector2D(x * factor, y * factor)
-
-  def /(divisor: Long) = LongVector2D(x / divisor, y / divisor)
-
-  def %(divisor: Long) = LongVector2D(x % divisor, y % divisor)
 }
