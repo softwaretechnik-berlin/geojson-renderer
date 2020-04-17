@@ -1,31 +1,21 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
-import java.awt.geom.Point2D
-
 import berlin.softwaretechnik.geojsonrenderer._
 
 class ZoomLevel(val zoomLevel: Int,
                 mapWidth: Int,
                 val tileSize: Int) {
 
-  def mapCenter: Position2D = {
-    new Position2D(mapWidth / 2, mapWidth / 2)
-  }
+  def mapCenter: Position2D =
+    Position2D(mapWidth / 2, mapWidth / 2)
 
-  private def getBitmapCoordinate(latitude: Double,
-                                  longitude: Double): Point2D = {
-
-    val x = mapCenter.x + longitude * mapWidth / 360.0
-    var e = Math.sin(latitude * (Math.PI / 180.0))
+  def bitmapPosition(geoCoord: GeoCoord): Position2D = {
+    val x = mapCenter.x + geoCoord.lon * mapWidth / 360.0
+    var e = Math.sin(geoCoord.lat * (Math.PI / 180.0))
     if (e > 0.9999) e = 0.9999
     if (e < -0.9999) e = -0.9999
     val y = mapCenter.y + 0.5 * Math.log((1 + e) / (1 - e)) * -1 * mapWidth / (Math.PI * 2)
-    new Point2D.Double(x, y)
-  }
-
-  def bitmapPosition(geoCoord: GeoCoord): Position2D = {
-    val p2d = getBitmapCoordinate(geoCoord.lat, geoCoord.lon)
-    new Position2D(p2d.getX, p2d.getY)
+    Position2D(x, y)
   }
 
   def tileAndOffset(position2D: Position2D): (TileId, Position2D) =
