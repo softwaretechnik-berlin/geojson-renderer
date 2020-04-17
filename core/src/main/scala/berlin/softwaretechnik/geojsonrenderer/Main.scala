@@ -109,23 +109,21 @@ object Main {
 
   private def renderFeature(zoomLevel: ZoomLevel,
                             projectedBox: Box2D,
-                            feature: Feature) = {
+                            feature: Feature): Elem = {
     val element = feature.geometry match {
-      case Point(coordinates) => {
-        val point = zoomLevel.bitmapPosition(GeoCoord(coordinates)) - projectedBox.upperLeft
+      case p: Point =>
+        val point = zoomLevel.bitmapPosition(GeoCoord(p)) - projectedBox.upperLeft
         <circle cx={point.x.toString} cy={point.y.toString} r="3"
                   style="fill:none"/>
-      }
 
-      case MultiPoint(points) => {
+      case MultiPoint(points) =>
         <g>
         {points.map { coordinates =>
-          val point = zoomLevel.bitmapPosition(GeoCoord(coordinates)) - projectedBox.upperLeft
+          val point = zoomLevel.bitmapPosition(GeoCoord(Point(coordinates))) - projectedBox.upperLeft
             <circle cx={point.x.toString} cy={point.y.toString} r="3"
             />
         }}
         </g>
-      }
 
       case geojson.LineString(coordinates) =>
         <g>
@@ -213,7 +211,7 @@ object Main {
     collection.features
       .map(_.geometry match {
         case Point(coordinates) =>
-          val geo = GeoCoord(coordinates);
+          val geo = GeoCoord(Point(coordinates))
           BoundingBox(geo.lon, geo.lat, geo.lon, geo.lat)
         case MultiPoint(coordinates) =>
           boundingBox(coordinates)
