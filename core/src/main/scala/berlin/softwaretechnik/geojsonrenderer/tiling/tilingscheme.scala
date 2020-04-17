@@ -33,7 +33,7 @@ class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId =>
 
 class ZoomLevel(val zoomLevel: Int,
                 mapWidth: Int,
-                tileSizeStatic: Int) {
+                val tileSize: Int) {
 
   def mapCenter: Position2D = {
     new Position2D(mapWidth / 2, mapWidth / 2)
@@ -89,8 +89,6 @@ class ZoomLevel(val zoomLevel: Int,
         }
     tiles
   }
-
-  def tileSize: Int = tileSizeStatic
 
   def bitmapBox(boundingBox: BoundingBox): Box2D = {
     new Box2D(
