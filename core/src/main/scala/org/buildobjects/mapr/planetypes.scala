@@ -1,7 +1,7 @@
 package org.buildobjects.mapr
 
 case class Dimensions(width: Double, height: Double) {
-  def toVector = DoubleVector2D(width, height)
+  def toVector = Vector2D(width, height)
   def toBox2D = Box2D(new Position2D(0, 0), new Position2D(width, height))
 }
 
@@ -14,18 +14,18 @@ object Dimensions {
 
 }
 
-class Position2D(x: Double, y: Double) extends DoubleVector2D(x, y)
+class Position2D(x: Double, y: Double) extends Vector2D(x, y)
 
-case class Box2D(upperLeft: DoubleVector2D, lowerRight: DoubleVector2D) {
+case class Box2D(upperLeft: Vector2D, lowerRight: Vector2D) {
   def dimensions =
     Dimensions(lowerRight.x - upperLeft.x, lowerRight.y - upperLeft.y)
   def width = lowerRight.x - upperLeft.x
   def height = -upperLeft.y + lowerRight.y
 
-  def -(v: DoubleVector2D): Box2D =
+  def -(v: Vector2D): Box2D =
     Box2D(upperLeft - v, lowerRight - v)
 
-  def +(v: DoubleVector2D): Box2D =
+  def +(v: Vector2D): Box2D =
     Box2D(upperLeft + v, lowerRight + v)
 
   def rect = <rect
@@ -38,10 +38,10 @@ case class Box2D(upperLeft: DoubleVector2D, lowerRight: DoubleVector2D) {
     />
 }
 
-case class DoubleVector2D(x: Double, y: Double) {
-  def +(other: DoubleVector2D) = DoubleVector2D(x + other.x, y + other.y)
+case class Vector2D(x: Double, y: Double) {
+  def +(other: Vector2D) = Vector2D(x + other.x, y + other.y)
 
-  def -(other: DoubleVector2D) = DoubleVector2D(x - other.x, y - other.y)
+  def -(other: Vector2D) = Vector2D(x - other.x, y - other.y)
 
-  def *(factor: Double) = DoubleVector2D(x * factor, y * factor)
+  def *(factor: Double) = Vector2D(x * factor, y * factor)
 }

@@ -1,6 +1,6 @@
 package org.buildobjects.mapr.tiling
 
-import org.buildobjects.mapr.{DoubleVector2D, GeoCoord}
+import org.buildobjects.mapr.{Vector2D, GeoCoord}
 import org.scalactic._
 import org.scalatest.FunSuite
 
@@ -12,9 +12,9 @@ class TilingSchemeTest extends FunSuite with Tolerance {
 
   val vectorElementTolerance = 0.005
 
-  implicit def vectorEq[A <: DoubleVector2D]: Equality[A] =
+  implicit def vectorEq[A <: Vector2D]: Equality[A] =
     (a: A, b: Any) => b match {
-      case b: DoubleVector2D =>
+      case b: Vector2D =>
         a.x === b.x +- vectorElementTolerance &&
           a.y === b.y +- vectorElementTolerance
       case _ => false
@@ -22,11 +22,11 @@ class TilingSchemeTest extends FunSuite with Tolerance {
 
   test("It should project geopositions onto the map") {
     val tiling = TilingScheme.osm()
-    assert(tiling.zoomLevels(0).bitmapPosition(charlottenburgPalace) === DoubleVector2D(137.45, 83.96))
-    assert(tiling.zoomLevels(4).bitmapPosition(charlottenburgPalace) === DoubleVector2D(2199.28, 1343.29))
+    assert(tiling.zoomLevels(0).bitmapPosition(charlottenburgPalace) === Vector2D(137.45, 83.96))
+    assert(tiling.zoomLevels(4).bitmapPosition(charlottenburgPalace) === Vector2D(2199.28, 1343.29))
 
-    assert(tiling.zoomLevels(0).bitmapPosition(gettyCentre) === DoubleVector2D(43.75, 102.20))
-    assert(tiling.zoomLevels(0).bitmapPosition(ayersRock) === DoubleVector2D(221.18, 146.64))
+    assert(tiling.zoomLevels(0).bitmapPosition(gettyCentre) === Vector2D(43.75, 102.20))
+    assert(tiling.zoomLevels(0).bitmapPosition(ayersRock) === Vector2D(221.18, 146.64))
   }
 
   test("It should get tile and offset") {

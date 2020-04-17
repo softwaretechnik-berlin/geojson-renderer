@@ -58,14 +58,14 @@ class ZoomLevel(val zoomLevel: Int,
     new Position2D(p2d.getX, p2d.getY)
   }
 
-  def tileAndOffset(position2D: DoubleVector2D): (TileId, DoubleVector2D) =
+  def tileAndOffset(position2D: Vector2D): (TileId, Vector2D) =
     (
       TileId(
         (position2D.x.toLong / tileSize).toInt,
         (position2D.y.toLong / tileSize).toInt,
         zoomLevel
       ),
-      DoubleVector2D(
+      Vector2D(
         position2D.x.toLong % tileSize,
         position2D.y.toLong % tileSize,
       )
@@ -86,7 +86,7 @@ class ZoomLevel(val zoomLevel: Int,
                 case (tileY, indexY) =>
                   TilesWithOffset(
                     TileId(tileX, tileY, upperLeftTile.z),
-                    (DoubleVector2D(1, 0) * indexX + DoubleVector2D(0, 1) * indexY) * tileSize - tileOffset
+                    (Vector2D(1, 0) * indexX + Vector2D(0, 1) * indexY) * tileSize - tileOffset
                   )
               }
         }
@@ -112,6 +112,6 @@ class ZoomLevel(val zoomLevel: Int,
 
 }
 
-case class TilesWithOffset(tileId: TileId, offset: DoubleVector2D)
+case class TilesWithOffset(tileId: TileId, offset: Vector2D)
 
 case class TileId(x: Int, y: Int, z: Int)
