@@ -4,10 +4,10 @@ import ujson.Value.Value
 
 case class GeoJsonStyle(
   stroke: String,
-  strokeOpacity: String,
+  strokeOpacity: Double,
   fill: String,
-  fillOpacity: String,
-  strokeWidth: String,
+  fillOpacity: Double,
+  strokeWidth: Double,
   title: String,
   description: String
 )
@@ -19,10 +19,10 @@ object GeoJsonStyle {
 
     GeoJsonStyle(
       lookup("stroke", _.strOpt, "#555555"),
-      lookup("stroke-opacity", _.numOpt, 1).toString,
+      lookup("stroke-opacity", _.numOpt, 1),
       lookup("fill", _.strOpt, "#555555"),
-      lookup("fill-opacity", _.numOpt, 0.6).toString,
-      lookup("stroke-width", _.numOpt, 3).toString,
+      lookup("fill-opacity", _.numOpt, 0.6),
+      lookup("stroke-width", _.numOpt, 3),
       lookup("title", _.strOpt, ""),
       lookup("description", _.strOpt, ""),
     )

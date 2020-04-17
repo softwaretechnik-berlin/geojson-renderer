@@ -173,10 +173,10 @@ object Main {
       :+ <desc>{style.title}</desc>
     ) %
       Attribute(null, "stroke", style.stroke, Null) %
-      Attribute(null, "stroke-opacity", style.strokeOpacity, Null) %
-      Attribute(null, "stroke-width", style.strokeWidth, Null) %
+      Attribute(null, "stroke-opacity", style.strokeOpacity.toString, Null) %
+      Attribute(null, "stroke-width", style.strokeWidth.toString, Null) %
       Attribute(null, "fill", style.fill, Null) %
-      Attribute(null, "fill-opacity", style.fillOpacity, Null)
+      Attribute(null, "fill-opacity", style.fillOpacity.toString, Null)
   }
 
   private def saveAsPng(svgContent: String, filename: String) = {
