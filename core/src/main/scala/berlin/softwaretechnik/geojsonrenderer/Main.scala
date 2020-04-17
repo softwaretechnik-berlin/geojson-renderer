@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
 import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, Geometry, MultiPoint, Point}
-import berlin.softwaretechnik.geojsonrenderer.tiling.{TilesWithOffset, TilingScheme, ZoomLevel}
+import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme, ZoomLevel}
 import org.rogach.scallop.ScallopConf
 
 import scala.xml.{Attribute, Elem, Node, NodeSeq, Null}
@@ -75,7 +75,7 @@ object Main {
       bitMapBox.upperLeft - offset + screenDimensions.toVector
     )
 
-    val tiles: Seq[TilesWithOffset] = zoomLevel.tileCover(projectedBox)
+    val tiles: Seq[PositionedTile] = zoomLevel.tileCover(projectedBox)
 
     val projectedBoundingBox = zoomLevel.bitmapBox(boundingBox) - projectedBox.upperLeft
 
@@ -191,11 +191,11 @@ object Main {
   }
 
   private def imagesForTiles(zoomLevel: ZoomLevel,
-                             tiles: Seq[TilesWithOffset]) = {
+                             tiles: Seq[PositionedTile]) = {
     tiles.map { tile =>
       <image xlink:href={tiledMap.url(tile.tileId)}
-               x={tile.offset.x.toString}
-               y={tile.offset.y.toString}
+               x={tile.position.x.toString}
+               y={tile.position.y.toString}
                width={s"${zoomLevel.tileSize}px"}
                height={s"${zoomLevel.tileSize}px"}/>
     }
