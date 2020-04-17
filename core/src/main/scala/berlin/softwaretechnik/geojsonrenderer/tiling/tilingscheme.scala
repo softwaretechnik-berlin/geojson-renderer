@@ -3,8 +3,6 @@ package tiling
 
 import java.awt.geom.Point2D
 
-case class SchemeInfo()
-
 object TilingScheme {
 
   def osm() = new TilingScheme(0, 19, 256, tileId =>
