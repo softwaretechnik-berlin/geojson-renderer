@@ -2,9 +2,9 @@ package berlin.softwaretechnik.geojsonrenderer.tiling
 
 import berlin.softwaretechnik.geojsonrenderer.{GeoCoord, Vector2D}
 import org.scalactic._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class TilingSchemeTest extends FunSuite with Tolerance {
+class TilingSchemeTest extends AnyFunSuite with Tolerance {
   val charlottenburgPalace = GeoCoord(52.520789, 13.295727)
   val shibuyaCrossing = GeoCoord(35.659486, 139.700470)
   val gettyCentre = GeoCoord(34.076848, -118.473919)

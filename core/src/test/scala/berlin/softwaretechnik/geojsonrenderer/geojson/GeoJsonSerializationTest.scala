@@ -1,9 +1,9 @@
 package berlin.softwaretechnik.geojsonrenderer.geojson
 
 import berlin.softwaretechnik.geojsonrenderer.GeoCoord
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class GeoJsonSerializationTest extends FunSuite {
+class GeoJsonSerializationTest extends AnyFunSuite {
 
   // https://tools.ietf.org/html/rfc7946#section-1.5
   val featureCollectionJsonFromRfc: String =

@@ -17,7 +17,7 @@ object core extends SbtModule {
     )
 
   object test extends Tests {
-    def ivyDeps = Agg(ivy"org.scalatest::scalatest::3.0.8")
+    def ivyDeps = Agg(ivy"org.scalatest::scalatest::3.1.1")
     def testFrameworks = Seq("org.scalatest.tools.Framework")
   }
 
