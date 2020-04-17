@@ -1,7 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer
 package geojson
 
-import java.io.File
+import java.io.{File, Writer}
 
 import ujson.Value.Value
 
@@ -11,15 +11,17 @@ private object json extends upickle.AttributeTagged {
 
 import berlin.softwaretechnik.geojsonrenderer.geojson.json.{ReadWriter, macroRW}
 
-case class FeatureCollection(features: Seq[Feature])
+sealed trait GeoJson
 
 @upickle.implicits.key("FeatureCollection")
+case class FeatureCollection(features: Seq[Feature]) extends GeoJson
+
 object FeatureCollection {
   private[geojson] implicit val rw: ReadWriter[FeatureCollection] = macroRW
 }
 
 @upickle.implicits.key("Feature")
-case class Feature(geometry: Geometry, properties: Map[String, Value])
+case class Feature(geometry: Geometry, properties: Map[String, Value]) extends GeoJson
 
 object Feature {
   private[geojson] implicit val rw: ReadWriter[Feature] = macroRW
@@ -73,8 +75,9 @@ object MultiPolygon {
   private[geojson] implicit val rw: ReadWriter[MultiPolygon] = macroRW
 }
 
-
 object GeoJson {
+  private implicit val rw: ReadWriter[GeoJson] = macroRW
+
   def load(file: File): FeatureCollection = {
 
     if (!file.exists()) {
@@ -87,4 +90,7 @@ object GeoJson {
 
   def read(readable: ujson.Readable): FeatureCollection =
     json.read[FeatureCollection](readable)
+
+  def write(featureCollection: FeatureCollection): String =
+    json.write[GeoJson](featureCollection)
 }

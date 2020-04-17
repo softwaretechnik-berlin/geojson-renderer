@@ -3,10 +3,10 @@ package berlin.softwaretechnik.geojsonrenderer.geojson
 import berlin.softwaretechnik.geojsonrenderer.GeoCoord
 import org.scalatest.FunSuite
 
-class GeoJsonParsingTest extends FunSuite {
+class GeoJsonSerializationTest extends FunSuite {
 
   // https://tools.ietf.org/html/rfc7946#section-1.5
-  val exampleFeatureCollectionFromRfc =
+  val featureCollectionJsonFromRfc: String =
     """{
     "type": "FeatureCollection",
     "features": [{
@@ -56,28 +56,38 @@ class GeoJsonParsingTest extends FunSuite {
     }]
 }"""
 
+  val featureCollectionFromRfc: FeatureCollection =
+    FeatureCollection(Seq(
+      Feature(Point(GeoCoord(lon = 102.0, lat = 0.5)), Map("prop0" -> "value0")),
+      Feature(LineString(Seq(
+        GeoCoord(lon = 102.0, lat = 0.0),
+        GeoCoord(lon = 103.0, lat = 1.0),
+        GeoCoord(lon = 104.0, lat = 0.0),
+        GeoCoord(lon = 105.0, lat = 1.0),
+      )), Map("prop0" -> "value0", "prop1" -> 0.0)),
+      Feature(Polygon(Seq(Seq(
+        GeoCoord(lon = 100.0, lat = 0.0),
+        GeoCoord(lon = 101.0, lat = 0.0),
+        GeoCoord(lon = 101.0, lat = 1.0),
+        GeoCoord(lon = 100.0, lat = 1.0),
+        GeoCoord(lon = 100.0, lat = 0.0),
+      ))), Map("prop0" -> "value0", "prop1" -> Map("this" -> "that"))),
+    ))
+
   test("Should parse a FeatureCollection") {
-    val value = GeoJson.read(ujson.Readable.fromString(exampleFeatureCollectionFromRfc))
+    val value = GeoJson.read(ujson.Readable.fromString(featureCollectionJsonFromRfc))
 
-    val expectedFeatureCollection =
-      FeatureCollection(Seq(
-        Feature(Point(GeoCoord(lon = 102.0, lat = 0.5)), Map("prop0" -> "value0")),
-        Feature(LineString(Seq(
-          GeoCoord(lon = 102.0, lat = 0.0),
-          GeoCoord(lon = 103.0, lat = 1.0),
-          GeoCoord(lon = 104.0, lat = 0.0),
-          GeoCoord(lon = 105.0, lat = 1.0),
-        )), Map("prop0" -> "value0", "prop1" -> 0.0)),
-        Feature(Polygon(Seq(Seq(
-          GeoCoord(lon = 100.0, lat = 0.0),
-          GeoCoord(lon = 101.0, lat = 0.0),
-          GeoCoord(lon = 101.0, lat = 1.0),
-          GeoCoord(lon = 100.0, lat = 1.0),
-          GeoCoord(lon = 100.0, lat = 0.0),
-        ))), Map("prop0" -> "value0", "prop1" -> Map("this" -> "that"))),
-      ))
+    assert(value == featureCollectionFromRfc)
+  }
 
-    assert(value == expectedFeatureCollection)
+  test("Should write a FeatureCollection") {
+    val json = GeoJson.write(featureCollectionFromRfc)
+
+    assert(json ==
+      featureCollectionJsonFromRfc
+        .replaceAll("[ \n]+", "")
+        .replaceAll("\\.0\\b", "")
+    )
   }
 
 }
