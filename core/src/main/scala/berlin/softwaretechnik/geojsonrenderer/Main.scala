@@ -111,6 +111,7 @@ object Main {
                             projectedBox: Box2D,
                             geoJson: GeoJson): NodeSeq = {
     val features = geoJson match {
+      case geometry: Geometry => Seq(Feature(geometry, Map.empty))
       case feature: Feature => Seq(feature)
       case FeatureCollection(features) => features
     }
@@ -230,6 +231,7 @@ object Main {
     }
 
     boundingBox(geoJson match {
+      case geometry: Geometry => coordinates(geometry)
       case Feature(geometry, _) => coordinates(geometry)
       case FeatureCollection(features) => features.flatMap(f => coordinates(f.geometry))
     })
