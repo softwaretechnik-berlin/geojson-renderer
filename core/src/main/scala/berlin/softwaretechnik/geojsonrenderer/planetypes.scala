@@ -3,7 +3,7 @@ package berlin.softwaretechnik.geojsonrenderer
 import scala.xml.Elem
 
 case class Dimensions(width: Double, height: Double) {
-  def toVector = Vector2D(width, height)
+  def toVector = Position2D(width, height)
   def toBox2D = Box2D(new Position2D(0, 0), new Position2D(width, height))
 }
 
@@ -16,14 +16,21 @@ object Dimensions {
 
 }
 
-class Position2D(x: Double, y: Double) extends Vector2D(x, y)
-
 /**
- * A 2-dimensional box.
+ * A position in screen coordinates.
  *
  * The positive x direction is to the right, and the positive y direction is downward.
  */
-case class Box2D(upperLeft: Vector2D, lowerRight: Vector2D) {
+final case class Position2D(x: Double, y: Double) extends Vector2DOps[Position2D] {
+  override protected def v(x: Double, y: Double): Position2D = Position2D(x, y)
+}
+
+/**
+ * A 2-dimensional box in screen coordinates.
+ *
+ * The positive x direction is to the right, and the positive y direction is downward.
+ */
+case class Box2D(upperLeft: Position2D, lowerRight: Position2D) {
   require(upperLeft.x < lowerRight.x && upperLeft.y < lowerRight.y)
 
   def dimensions: Dimensions =
@@ -32,10 +39,10 @@ case class Box2D(upperLeft: Vector2D, lowerRight: Vector2D) {
   def width: Double = lowerRight.x - upperLeft.x
   def height: Double = -upperLeft.y + lowerRight.y
 
-  def -(v: Vector2D): Box2D =
+  def -(v: Position2D): Box2D =
     Box2D(upperLeft - v, lowerRight - v)
 
-  def +(v: Vector2D): Box2D =
+  def +(v: Position2D): Box2D =
     Box2D(upperLeft + v, lowerRight + v)
 
   def rect: Elem = <rect
@@ -48,10 +55,16 @@ case class Box2D(upperLeft: Vector2D, lowerRight: Vector2D) {
     />
 }
 
-case class Vector2D(x: Double, y: Double) {
-  def +(other: Vector2D): Vector2D = Vector2D(x + other.x, y + other.y)
+final case class Vector2D(x: Double, y: Double) extends Vector2DOps[Vector2D] {
+  override protected def v(x: Double, y: Double): Vector2D = Vector2D(x, y)
+}
 
-  def -(other: Vector2D): Vector2D = Vector2D(x - other.x, y - other.y)
+trait Vector2DOps[V <: Vector2DOps[V]] {
+  def x: Double
+  def y: Double
+  protected def v(x: Double, y: Double): V
 
-  def *(scalar: Double): Vector2D = Vector2D(x * scalar, y * scalar)
+  final def +(other: V): V = v(x + other.x, y + other.y)
+  final def -(other: V): V = v(x - other.x, y - other.y)
+  final def *(scalar: Double): V = v(x * scalar, y * scalar)
 }

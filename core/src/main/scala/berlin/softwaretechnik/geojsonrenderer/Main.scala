@@ -68,8 +68,7 @@ object Main {
 
     println(s"Best zoom level ${zoomLevel.zoomLevel}")
 
-    val offset
-      : Vector2D = (screenDimensions.toVector - bitMapBox.dimensions.toVector) * 0.5
+    val offset: Position2D = (screenDimensions.toVector - bitMapBox.dimensions.toVector) * 0.5
 
     val projectedBox = Box2D(
       bitMapBox.upperLeft - offset,

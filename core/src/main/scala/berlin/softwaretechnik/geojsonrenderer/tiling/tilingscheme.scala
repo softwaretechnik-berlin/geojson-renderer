@@ -55,7 +55,7 @@ class ZoomLevel(val zoomLevel: Int,
     new Position2D(p2d.getX, p2d.getY)
   }
 
-  def tileAndOffset(position2D: Vector2D): (TileId, Vector2D) =
+  def tileAndOffset(position2D: Position2D): (TileId, Vector2D) =
     (
       TileId(
         (position2D.x.toLong / tileSize).toInt,

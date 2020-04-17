@@ -1,6 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
-import berlin.softwaretechnik.geojsonrenderer.{GeoCoord, Vector2D}
+import berlin.softwaretechnik.geojsonrenderer.{GeoCoord, Vector2D, Vector2DOps}
 import org.scalactic._
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -12,7 +12,7 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
 
   val vectorElementTolerance = 0.005
 
-  implicit def vectorEq[A <: Vector2D]: Equality[A] =
+  implicit def vectorEq[A <: Vector2DOps[A]]: Equality[A] =
     (a: A, b: Any) => b match {
       case b: Vector2D =>
         a.x === b.x +- vectorElementTolerance &&
