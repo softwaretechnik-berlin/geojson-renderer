@@ -1,7 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer.geojson
 
 import berlin.softwaretechnik.geojsonrenderer.GeoCoord
-import org.scalacheck.Gen.choose
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatestplus.scalacheck.Checkers
@@ -124,8 +123,8 @@ class GeoJsonSerializationTest extends AnyFunSuite with Checkers {
   implicit val arbitraryProperties: Arbitrary[Value] =
     Arbitrary(jsonValueWithMaxDepth(2))
 
-  test("Should roundtrip any FeatureCollection value through JSON") {
-    check { geoJson: FeatureCollection =>
+  test("Should roundtrip any GeoJSON value through JSON") {
+    check { geoJson: GeoJson =>
       GeoJson.read(GeoJson.write(geoJson)) === geoJson
     }
   }

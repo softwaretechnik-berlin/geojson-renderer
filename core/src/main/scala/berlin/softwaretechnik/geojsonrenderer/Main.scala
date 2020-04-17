@@ -4,11 +4,11 @@ import java.io.{File, FileOutputStream, StringReader}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
-import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, MultiPoint, Point}
+import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, Geometry, MultiPoint, Point}
 import berlin.softwaretechnik.geojsonrenderer.tiling.{TilesWithOffset, TilingScheme, ZoomLevel}
 import org.rogach.scallop.ScallopConf
 
-import scala.xml.{Attribute, Elem, Node, Null}
+import scala.xml.{Attribute, Elem, Node, NodeSeq, Null}
 
 object Main {
 
@@ -32,13 +32,13 @@ object Main {
 
     System.setProperty("http.agent", "curl/7.66.0");
 
-    val featureCollection = GeoJson.load(new File(Conf.inputFile.getOrElse(???)))
+    val geoJson = GeoJson.load(new File(Conf.inputFile.getOrElse(???)))
 
     val svgContent = render(
-      determineBoundingBox(featureCollection),
+      determineBoundingBox(geoJson),
       //  BoundingBox(13.335, 52.5033, 13.4265, 52.5276),
       screenDimensions = Conf.dimensions.getOrElse(???),
-      featureCollection
+      geoJson
     )
     Files.write(
       Paths.get(s"${basename}svg"),
@@ -50,7 +50,7 @@ object Main {
 
   def render(boundingBox: BoundingBox,
              screenDimensions: Dimensions,
-             features: FeatureCollection): String = {
+             geoJson: GeoJson): String = {
 
 
 
@@ -101,11 +101,21 @@ object Main {
       {imagesForTiles(zoomLevel, tiles)}
       <!--{screenDimensions.toBox2D.rect}-->
       <!--{projectedBoundingBox.rect}-->
-      {features.features.map(feature => renderFeature(zoomLevel, projectedBox, feature))}
+      {renderGeoJson(zoomLevel, projectedBox, geoJson)}
     </svg>.toString()
   }
 
   //marker-end="url(#arrow)"
+
+  private def renderGeoJson(zoomLevel: ZoomLevel,
+                            projectedBox: Box2D,
+                            geoJson: GeoJson): NodeSeq = {
+    val features = geoJson match {
+      case feature: Feature => Seq(feature)
+      case FeatureCollection(features) => features
+    }
+    features.map(renderFeature(zoomLevel, projectedBox, _))
+  }
 
   private def renderFeature(zoomLevel: ZoomLevel,
                             projectedBox: Box2D,
@@ -197,7 +207,18 @@ object Main {
     }
   }
 
-  def determineBoundingBox(collection: FeatureCollection): BoundingBox = {
+  def determineBoundingBox(geoJson: GeoJson): BoundingBox = {
+
+    def coordinates(geometry: Geometry): Seq[GeoCoord] =
+      geometry match {
+        case Point(geo) => Seq(geo)
+        case MultiPoint(coordinates) => coordinates
+        case geojson.LineString(coordinates) => coordinates
+        case geojson.MultiLineString(lines) => lines.flatten
+        case geojson.Polygon(rings) => rings.flatten
+        case geojson.MultiPolygon(polygons) => polygons.flatten.flatten
+      }
+
     def boundingBox(coordinates: Seq[GeoCoord]): BoundingBox = {
       val geos = LineString(coordinates).points
       BoundingBox(
@@ -208,30 +229,10 @@ object Main {
       )
     }
 
-    collection.features
-      .map(_.geometry match {
-        case Point(geo) =>
-          BoundingBox(geo.lon, geo.lat, geo.lon, geo.lat)
-        case MultiPoint(coordinates) =>
-          boundingBox(coordinates)
-        case geojson.LineString(coordinates) =>
-          boundingBox(coordinates)
-        case geojson.MultiLineString(lines) =>
-          boundingBox(lines.flatten)
-        case geojson.Polygon(coordinates) =>
-          boundingBox(coordinates.flatten)
-        case geojson.MultiPolygon(lines) =>
-          boundingBox(lines.flatten.flatten)
-      })
-      .reduce(
-        (b1, b2) =>
-          BoundingBox(
-            math.min(b1.west, b2.west),
-            math.min(b1.south, b2.south),
-            math.max(b1.east, b2.east),
-            math.max(b1.north, b2.north)
-        )
-      )
+    boundingBox(geoJson match {
+      case Feature(geometry, _) => coordinates(geometry)
+      case FeatureCollection(features) => features.flatMap(f => coordinates(f.geometry))
+    })
 
   }
 }

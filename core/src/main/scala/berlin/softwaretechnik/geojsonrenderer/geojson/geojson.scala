@@ -78,7 +78,7 @@ object MultiPolygon {
 object GeoJson {
   private implicit val rw: ReadWriter[GeoJson] = macroRW
 
-  def load(file: File): FeatureCollection = {
+  def load(file: File): GeoJson = {
 
     if (!file.exists()) {
       System.err.println("File not found")
@@ -88,9 +88,9 @@ object GeoJson {
     read(ujson.Readable.fromFile(file))
   }
 
-  def read(readable: ujson.Readable): FeatureCollection =
-    json.read[FeatureCollection](readable)
+  def read(readable: ujson.Readable): GeoJson =
+    json.read[GeoJson](readable)
 
-  def write(featureCollection: FeatureCollection): String =
-    json.write[GeoJson](featureCollection)
+  def write(featureCollection: GeoJson): String =
+    json.write(featureCollection)
 }
