@@ -5,11 +5,11 @@ import java.io.File
 
 import ujson.Value.Value
 
-object TypeTag extends upickle.AttributeTagged {
+object json extends upickle.AttributeTagged {
   override def tagName: String = "type"
 }
 
-import berlin.softwaretechnik.geojsonrenderer.geojson.TypeTag.{ReadWriter, macroRW}
+import berlin.softwaretechnik.geojsonrenderer.geojson.json.{ReadWriter, macroRW}
 
 case class FeatureCollection(features: Seq[Feature])
 
@@ -33,7 +33,7 @@ object Geometry {
 }
 
 @upickle.implicits.key("Point")
-sealed case class Point(coordinates: Seq[Double]) extends Geometry
+sealed case class Point(coordinates: GeoCoord) extends Geometry
 
 object Point {
   implicit val rw: ReadWriter[Point] = macroRW
@@ -41,7 +41,7 @@ object Point {
 }
 
 @upickle.implicits.key("MultiPoint")
-sealed case class MultiPoint(coordinates: Seq[Seq[Double]]) extends Geometry
+sealed case class MultiPoint(coordinates: Seq[GeoCoord]) extends Geometry
 
 object MultiPoint {
   implicit val rw: ReadWriter[MultiPoint] = macroRW
@@ -49,28 +49,28 @@ object MultiPoint {
 }
 
 @upickle.implicits.key("LineString")
-sealed case class LineString(coordinates: Seq[Seq[Double]]) extends Geometry
+sealed case class LineString(coordinates: Seq[GeoCoord]) extends Geometry
 
 object LineString {
   implicit val rw: ReadWriter[LineString] = macroRW
 }
 
 @upickle.implicits.key("MultiLineString")
-sealed case class MultiLineString(coordinates: Seq[Seq[Seq[Double]]]) extends Geometry
+sealed case class MultiLineString(coordinates: Seq[Seq[GeoCoord]]) extends Geometry
 
 object MultiLineString {
   implicit val rw: ReadWriter[MultiLineString] = macroRW
 }
 
 @upickle.implicits.key("Polygon")
-sealed case class Polygon(coordinates: Seq[Seq[Seq[Double]]]) extends Geometry
+sealed case class Polygon(coordinates: Seq[Seq[GeoCoord]]) extends Geometry
 
 object Polygon {
   implicit val rw: ReadWriter[Polygon] = macroRW
 }
 
 @upickle.implicits.key("MultiPolygon")
-sealed case class MultiPolygon(coordinates: Seq[Seq[Seq[Seq[Double]]]]) extends Geometry
+sealed case class MultiPolygon(coordinates: Seq[Seq[Seq[GeoCoord]]]) extends Geometry
 
 object MultiPolygon {
   implicit val rw: ReadWriter[MultiPolygon] = macroRW
@@ -89,5 +89,5 @@ object GeoJson {
   }
 
   def read(readable: ujson.Readable): FeatureCollection =
-    TypeTag.read[FeatureCollection](readable)
+    json.read[FeatureCollection](readable)
 }

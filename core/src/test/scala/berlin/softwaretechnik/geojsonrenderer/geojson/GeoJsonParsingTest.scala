@@ -1,5 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer.geojson
 
+import berlin.softwaretechnik.geojsonrenderer.GeoCoord
 import org.scalatest.FunSuite
 
 class GeoJsonParsingTest extends FunSuite {
@@ -60,19 +61,19 @@ class GeoJsonParsingTest extends FunSuite {
 
     val expectedFeatureCollection =
       FeatureCollection(Seq(
-        Feature(Point(Seq(102.0, 0.5)), Map("prop0" -> "value0")),
+        Feature(Point(GeoCoord(lon = 102.0, lat = 0.5)), Map("prop0" -> "value0")),
         Feature(LineString(Seq(
-          Seq(102.0, 0.0),
-          Seq(103.0, 1.0),
-          Seq(104.0, 0.0),
-          Seq(105.0, 1.0),
+          GeoCoord(lon = 102.0, lat = 0.0),
+          GeoCoord(lon = 103.0, lat = 1.0),
+          GeoCoord(lon = 104.0, lat = 0.0),
+          GeoCoord(lon = 105.0, lat = 1.0),
         )), Map("prop0" -> "value0", "prop1" -> 0.0)),
         Feature(Polygon(Seq(Seq(
-          Seq(100.0, 0.0),
-          Seq(101.0, 0.0),
-          Seq(101.0, 1.0),
-          Seq(100.0, 1.0),
-          Seq(100.0, 0.0),
+          GeoCoord(lon = 100.0, lat = 0.0),
+          GeoCoord(lon = 101.0, lat = 0.0),
+          GeoCoord(lon = 101.0, lat = 1.0),
+          GeoCoord(lon = 100.0, lat = 1.0),
+          GeoCoord(lon = 100.0, lat = 0.0),
         ))), Map("prop0" -> "value0", "prop1" -> Map("this" -> "that"))),
       ))
 

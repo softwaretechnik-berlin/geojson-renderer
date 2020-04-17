@@ -111,15 +111,15 @@ object Main {
                             projectedBox: Box2D,
                             feature: Feature): Elem = {
     val element = feature.geometry match {
-      case p: Point =>
-        val point = zoomLevel.bitmapPosition(GeoCoord(p)) - projectedBox.upperLeft
+      case Point(gc) =>
+        val point = zoomLevel.bitmapPosition(gc) - projectedBox.upperLeft
         <circle cx={point.x.toString} cy={point.y.toString} r="3"
                   style="fill:none"/>
 
       case MultiPoint(points) =>
         <g>
-        {points.map { coordinates =>
-          val point = zoomLevel.bitmapPosition(GeoCoord(Point(coordinates))) - projectedBox.upperLeft
+        {points.map { geoCoord =>
+          val point = zoomLevel.bitmapPosition(geoCoord) - projectedBox.upperLeft
             <circle cx={point.x.toString} cy={point.y.toString} r="3"
             />
         }}
@@ -198,7 +198,7 @@ object Main {
   }
 
   def determineBoundingBox(collection: FeatureCollection): BoundingBox = {
-    def boundingBox(coordinates: Seq[Seq[Double]]): BoundingBox = {
+    def boundingBox(coordinates: Seq[GeoCoord]): BoundingBox = {
       val geos = LineString(coordinates).points
       BoundingBox(
         geos.map(_.lon).min,
@@ -210,8 +210,7 @@ object Main {
 
     collection.features
       .map(_.geometry match {
-        case Point(coordinates) =>
-          val geo = GeoCoord(Point(coordinates))
+        case Point(geo) =>
           BoundingBox(geo.lon, geo.lat, geo.lon, geo.lat)
         case MultiPoint(coordinates) =>
           boundingBox(coordinates)
