@@ -8,6 +8,7 @@ import ujson._
 
 import scala.collection.immutable.Seq
 import scala.collection.mutable
+import scala.language.higherKinds
 
 class GeoJsonSerializationTest extends AnyFunSuite with Checkers {
 

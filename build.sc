@@ -7,13 +7,19 @@ object core extends SbtModule {
   def scalaVersion = "2.12.4"
 
   override def ivyDeps: Target[Loose.Agg[Dep]] =
-
     Agg(
       ivy"org.scala-lang.modules::scala-xml::1.2.0",
       ivy"org.rogach::scallop:3.3.2",
       ivy"com.lihaoyi::upickle:0.9.5",
       ivy"org.apache.xmlgraphics:batik-transcoder:1.12",
       ivy"org.apache.xmlgraphics:batik-codec:1.12"
+    )
+
+  override def scalacOptions: Target[Seq[String]] =
+    Seq(
+      "-deprecation",
+      "-feature",
+      "-Xfatal-warnings",
     )
 
   object test extends Tests {

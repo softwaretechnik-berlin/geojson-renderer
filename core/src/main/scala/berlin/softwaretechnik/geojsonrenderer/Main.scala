@@ -168,21 +168,15 @@ object Main {
     }
 
     val style: GeoJsonStyle = GeoJsonStyle(feature.properties)
-    addChild(
-      addChild(element, <title>{style.title}</title>),
-      <desc>{style.title}</desc>
+    element.copy(child = element.child
+      :+ <title>{style.title}</title>
+      :+ <desc>{style.title}</desc>
     ) %
       Attribute(null, "stroke", style.stroke, Null) %
       Attribute(null, "stroke-opacity", style.strokeOpacity, Null) %
       Attribute(null, "stroke-width", style.strokeWidth, Null) %
       Attribute(null, "fill", style.fill, Null) %
       Attribute(null, "fill-opacity", style.fillOpacity, Null)
-  }
-
-  def addChild(n: Node, newChild: Node) = n match {
-    case Elem(prefix, label, attribs, scope, child @ _*) =>
-      Elem(prefix, label, attribs, scope, child ++ newChild : _*)
-    case _ => throw new RuntimeException("Can only add children to elements!")
   }
 
   private def saveAsPng(svgContent: String, filename: String) = {
