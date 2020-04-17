@@ -84,6 +84,7 @@ object Main {
     <svg
       width={projectedBox.width.toString}
       height={projectedBox.height.toString}
+      viewport={s"${projectedBox.upperLeft.x} ${projectedBox.upperLeft.x} ${projectedBox.width} ${projectedBox.height}"}
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink= "http://www.w3.org/1999/xlink"
@@ -100,36 +101,34 @@ object Main {
       {imagesForTiles(zoomLevel, tiles)}
       <!--{screenDimensions.toBox2D.rect}-->
       <!--{projectedBoundingBox.rect}-->
-      {renderGeoJson(zoomLevel, projectedBox, geoJson)}
+      {renderGeoJson(zoomLevel, geoJson)}
     </svg>.toString()
   }
 
   //marker-end="url(#arrow)"
 
   private def renderGeoJson(zoomLevel: ZoomLevel,
-                            projectedBox: Box2D,
                             geoJson: GeoJson): NodeSeq = {
     val features = geoJson match {
       case geometry: Geometry => Seq(Feature(geometry, Map.empty))
       case feature: Feature => Seq(feature)
       case FeatureCollection(features) => features
     }
-    features.map(renderFeature(zoomLevel, projectedBox, _))
+    features.map(renderFeature(zoomLevel, _))
   }
 
   private def renderFeature(zoomLevel: ZoomLevel,
-                            projectedBox: Box2D,
                             feature: Feature): Elem = {
     val element = feature.geometry match {
       case Point(gc) =>
-        val point = zoomLevel.bitmapPosition(gc) - projectedBox.upperLeft
+        val point = zoomLevel.bitmapPosition(gc)
         <circle cx={point.x.toString} cy={point.y.toString} r="3"
                   style="fill:none"/>
 
       case MultiPoint(points) =>
         <g>
         {points.map { geoCoord =>
-          val point = zoomLevel.bitmapPosition(geoCoord) - projectedBox.upperLeft
+          val point = zoomLevel.bitmapPosition(geoCoord)
             <circle cx={point.x.toString} cy={point.y.toString} r="3"
             />
         }}
@@ -138,14 +137,14 @@ object Main {
       case geojson.LineString(coordinates) =>
         <g>
           <polyline
-            points={LineString(coordinates).points.map(zoomLevel.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+            points={LineString(coordinates).points.map(zoomLevel.bitmapPosition).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
             fill="None"/>
         </g>
       case geojson.MultiLineString(lines) =>
         <g>{
           lines.map { coordinates =>
               <polyline
-              points={LineString(coordinates).points.map(zoomLevel.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={LineString(coordinates).points.map(zoomLevel.bitmapPosition).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
               fill="None"
              />
           }}
@@ -153,14 +152,14 @@ object Main {
 
       case geojson.Polygon(coordinates) =>
         <polygon
-          points={LineString(coordinates(0)).points.map(zoomLevel.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+          points={LineString(coordinates(0)).points.map(zoomLevel.bitmapPosition).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
           />
 
       case geojson.MultiPolygon(lines) =>
         <g>{
           lines.map { coordinates =>
               <polygon
-              points={LineString(coordinates(0)).points.map(zoomLevel.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={LineString(coordinates(0)).points.map(zoomLevel.bitmapPosition).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
              />
           }}
         </g>
