@@ -19,18 +19,3 @@ object BoundingBox {
     }
   }
 }
-
-
-
-case class GeoCoord(lat: Double, lon: Double)
-
-object GeoCoord {
-  def apply(doubles: Seq[Double]): GeoCoord = GeoCoord(doubles(1), doubles(0))
-}
-
-case class LineString(points: Array[GeoCoord])
-
-object LineString {
-  def apply(doubles: Seq[Seq[Double]]): LineString = LineString(doubles.map(GeoCoord(_)).toArray)
-}
-
