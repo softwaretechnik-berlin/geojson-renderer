@@ -1,14 +1,9 @@
-package org.buildobjects.mapr;
+package berlin.softwaretechnik.geojsonrenderer;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.ImageObserver;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class Tester {
     public static void main(String[] args) throws IOException {

@@ -1,4 +1,5 @@
-package org.buildobjects.mapr.geojson
+package berlin.softwaretechnik.geojsonrenderer.geojson
+
 import ujson.{Num, Str}
 import ujson.Value.Value
 

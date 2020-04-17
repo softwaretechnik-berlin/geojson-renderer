@@ -1,4 +1,4 @@
-package org.buildobjects.mapr
+package berlin.softwaretechnik.geojsonrenderer
 
 import scala.xml.Elem
 
@@ -25,7 +25,7 @@ class Position2D(x: Double, y: Double) extends Vector2D(x, y)
  */
 case class Box2D(upperLeft: Vector2D, lowerRight: Vector2D) {
   require(upperLeft.x < lowerRight.x && upperLeft.y < lowerRight.y)
-  
+
   def dimensions: Dimensions =
     Dimensions(lowerRight.x - upperLeft.x, lowerRight.y - upperLeft.y)
 

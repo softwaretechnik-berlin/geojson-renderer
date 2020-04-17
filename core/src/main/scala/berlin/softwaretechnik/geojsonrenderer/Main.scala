@@ -1,12 +1,12 @@
-package org.buildobjects.mapr
+package berlin.softwaretechnik.geojsonrenderer
 
 import java.io.{File, FileOutputStream, StringReader}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
-import org.buildobjects.mapr.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, MultiPoint, Point}
-import org.buildobjects.mapr.tiling.{TilesWithOffset, TilingScheme, ZoomLevel}
-import org.rogach.scallop.{ScallopConf, ScallopOption}
+import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, MultiPoint, Point}
+import berlin.softwaretechnik.geojsonrenderer.tiling.{TilesWithOffset, TilingScheme, ZoomLevel}
+import org.rogach.scallop.ScallopConf
 
 import scala.xml.{Attribute, Elem, Node, Null}
 

@@ -21,5 +21,5 @@ object core extends SbtModule {
     def testFrameworks = Seq("org.scalatest.tools.Framework")
   }
 
-  override def mainClass = Some("org.buildobjects.mapr.Main")
+  override def mainClass = Some("berlin.softwaretechnik.geojsonrenderer.Main")
 }

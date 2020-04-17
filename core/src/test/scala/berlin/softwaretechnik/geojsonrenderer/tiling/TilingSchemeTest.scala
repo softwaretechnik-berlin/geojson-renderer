@@ -1,6 +1,6 @@
-package org.buildobjects.mapr.tiling
+package berlin.softwaretechnik.geojsonrenderer.tiling
 
-import org.buildobjects.mapr.{Vector2D, GeoCoord}
+import berlin.softwaretechnik.geojsonrenderer.{GeoCoord, Vector2D}
 import org.scalactic._
 import org.scalatest.FunSuite
 

@@ -1,4 +1,4 @@
-package org.buildobjects.mapr
+package berlin.softwaretechnik.geojsonrenderer
 
 trait GeoGeometry
 

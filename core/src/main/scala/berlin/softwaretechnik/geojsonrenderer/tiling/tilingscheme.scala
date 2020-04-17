@@ -1,8 +1,7 @@
-package org.buildobjects.mapr.tiling
+package berlin.softwaretechnik.geojsonrenderer
+package tiling
 
 import java.awt.geom.Point2D
-
-import org.buildobjects.mapr._
 
 case class SchemeInfo()
 

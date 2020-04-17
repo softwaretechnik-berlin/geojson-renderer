@@ -1,33 +1,34 @@
-package org.buildobjects.mapr.geojson {
+package berlin.softwaretechnik.geojsonrenderer
+package geojson
 
-  import java.io.File
+import java.io.File
 
-  import ujson.Value.Value
+import ujson.Value.Value
 
   object TypeTag extends upickle.AttributeTagged {
     override def tagName: String = "type"
   }
 
-  import org.buildobjects.mapr.geojson.TypeTag.{macroRW, ReadWriter => RW}
+  import TypeTag.{macroRW, ReadWriter}
 
   case class FeatureCollection(features: Seq[Feature])
 
   @upickle.implicits.key("FeatureCollection")
   object FeatureCollection {
-    implicit val rw: RW[FeatureCollection] = macroRW
+    implicit val rw: ReadWriter[FeatureCollection] = macroRW
   }
 
   @upickle.implicits.key("Feature")
   case class Feature(geometry: Geometry, properties: Map[String, Value])
 
   object Feature {
-    implicit val rw: RW[Feature] = macroRW
+    implicit val rw: ReadWriter[Feature] = macroRW
   }
 
   sealed trait Geometry
 
   object Geometry {
-    implicit val rw: RW[Geometry] = macroRW
+    implicit val rw: ReadWriter[Geometry] = macroRW
 
   }
 
@@ -35,7 +36,7 @@ package org.buildobjects.mapr.geojson {
   sealed case class Point(coordinates: Seq[Double]) extends Geometry
 
   object Point {
-    implicit val rw: RW[Point] = macroRW
+    implicit val rw: ReadWriter[Point] = macroRW
 
   }
 
@@ -43,7 +44,7 @@ package org.buildobjects.mapr.geojson {
   sealed case class MultiPoint(coordinates: Seq[Seq[Double]]) extends Geometry
 
   object MultiPoint {
-    implicit val rw: RW[MultiPoint] = macroRW
+    implicit val rw: ReadWriter[MultiPoint] = macroRW
 
   }
 
@@ -51,28 +52,28 @@ package org.buildobjects.mapr.geojson {
   sealed case class LineString(coordinates: Seq[Seq[Double]]) extends Geometry
 
   object LineString {
-    implicit val rw: RW[LineString] = macroRW
+    implicit val rw: ReadWriter[LineString] = macroRW
   }
 
   @upickle.implicits.key("MultiLineString")
   sealed case class MultiLineString(coordinates: Seq[Seq[Seq[Double]]]) extends Geometry
 
   object MultiLineString {
-    implicit val rw: RW[MultiLineString] = macroRW
+    implicit val rw: ReadWriter[MultiLineString] = macroRW
   }
 
   @upickle.implicits.key("Polygon")
   sealed case class Polygon(coordinates: Seq[Seq[Seq[Double]]]) extends Geometry
 
   object Polygon {
-    implicit val rw: RW[Polygon] = macroRW
+    implicit val rw: ReadWriter[Polygon] = macroRW
   }
 
   @upickle.implicits.key("MultiPolygon")
   sealed case class MultiPolygon(coordinates: Seq[Seq[Seq[Seq[Double]]]]) extends Geometry
 
   object MultiPolygon {
-    implicit val rw: RW[MultiPolygon] = macroRW
+    implicit val rw: ReadWriter[MultiPolygon] = macroRW
   }
 
 
@@ -88,5 +89,3 @@ package org.buildobjects.mapr.geojson {
       TypeTag.read[FeatureCollection](ujson.Readable.fromFile(file))
     }
   }
-
-}
