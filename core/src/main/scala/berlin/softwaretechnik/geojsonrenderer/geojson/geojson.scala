@@ -1,7 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer
 package geojson
 
-import java.io.{File, Writer}
+import java.io.File
 
 import ujson.Value.Value
 
