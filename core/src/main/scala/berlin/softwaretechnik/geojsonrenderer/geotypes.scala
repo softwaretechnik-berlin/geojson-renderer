@@ -1,7 +1,5 @@
 package berlin.softwaretechnik.geojsonrenderer
 
-trait GeoGeometry
-
 case class BoundingBox(west: Double,
                        south: Double,
                        east: Double,
