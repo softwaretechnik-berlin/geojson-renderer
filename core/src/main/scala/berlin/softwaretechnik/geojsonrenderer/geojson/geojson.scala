@@ -85,6 +85,9 @@ object GeoJson {
       System.exit(4)
     }
 
-    TypeTag.read[FeatureCollection](ujson.Readable.fromFile(file))
+    read(ujson.Readable.fromFile(file))
   }
+
+  def read(readable: ujson.Readable): FeatureCollection =
+    TypeTag.read[FeatureCollection](readable)
 }
