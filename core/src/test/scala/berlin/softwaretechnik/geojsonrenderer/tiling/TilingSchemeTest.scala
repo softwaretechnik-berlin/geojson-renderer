@@ -9,7 +9,7 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
   val charlottenburgPalace = GeoCoord(52.520789, 13.295727)
   val shibuyaCrossing = GeoCoord(35.659486, 139.700470)
   val gettyCentre = GeoCoord(34.076848, -118.473919)
-  val ayersRock = GeoCoord(-25.344649, 131.036802)
+  val uluru = GeoCoord(-25.344649, 131.036802)
 
   val vectorElementTolerance = 0.005
 
@@ -27,7 +27,7 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
     assert(tiling.zoomLevels(4).geoProjection.bitmapPosition(charlottenburgPalace) === Vector2D(2199.28, 1343.29))
 
     assert(tiling.zoomLevels(0).geoProjection.bitmapPosition(gettyCentre) === Vector2D(43.75, 102.20))
-    assert(tiling.zoomLevels(0).geoProjection.bitmapPosition(ayersRock) === Vector2D(221.18, 146.64))
+    assert(tiling.zoomLevels(0).geoProjection.bitmapPosition(uluru) === Vector2D(221.18, 146.64))
   }
 
   test("It should get tile and offset") {
@@ -46,7 +46,7 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
   test("It should roundtrip geo positions via the map") {
     testRoundTrip(charlottenburgPalace)
     testRoundTrip(shibuyaCrossing)
-    testRoundTrip(ayersRock)
+    testRoundTrip(uluru)
     testRoundTrip(gettyCentre)
   }
 
