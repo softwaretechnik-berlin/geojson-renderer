@@ -8,7 +8,7 @@ import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollectio
 import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme, ZoomLevel}
 import org.rogach.scallop.ScallopConf
 
-import scala.xml.{Attribute, Elem, Node, NodeSeq, Null}
+import scala.xml.{Attribute, Elem, NodeSeq, Null}
 
 object Main {
 
@@ -122,14 +122,14 @@ object Main {
                             feature: Feature): Elem = {
     val element = feature.geometry match {
       case Point(gc) =>
-        val point = zoomLevel.bitmapPosition(gc) - projectedBox.upperLeft
+        val point = zoomLevel.geoProjection.bitmapPosition(gc) - projectedBox.upperLeft
         <circle cx={point.x.toString} cy={point.y.toString} r="3"
                   style="fill:none"/>
 
       case MultiPoint(points) =>
         <g>
         {points.map { geoCoord =>
-          val point = zoomLevel.bitmapPosition(geoCoord) - projectedBox.upperLeft
+          val point = zoomLevel.geoProjection.bitmapPosition(geoCoord) - projectedBox.upperLeft
             <circle cx={point.x.toString} cy={point.y.toString} r="3"
             />
         }}
@@ -138,14 +138,14 @@ object Main {
       case geojson.LineString(coordinates) =>
         <g>
           <polyline
-            points={LineString(coordinates).points.map(zoomLevel.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+            points={LineString(coordinates).points.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
             fill="None"/>
         </g>
       case geojson.MultiLineString(lines) =>
         <g>{
           lines.map { coordinates =>
               <polyline
-              points={LineString(coordinates).points.map(zoomLevel.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={LineString(coordinates).points.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
               fill="None"
              />
           }}
@@ -153,14 +153,14 @@ object Main {
 
       case geojson.Polygon(coordinates) =>
         <polygon
-          points={LineString(coordinates(0)).points.map(zoomLevel.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+          points={LineString(coordinates(0)).points.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
           />
 
       case geojson.MultiPolygon(lines) =>
         <g>{
           lines.map { coordinates =>
               <polygon
-              points={LineString(coordinates(0)).points.map(zoomLevel.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={LineString(coordinates(0)).points.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
              />
           }}
         </g>

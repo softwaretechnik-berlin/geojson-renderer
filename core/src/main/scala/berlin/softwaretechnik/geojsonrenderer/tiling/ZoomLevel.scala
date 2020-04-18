@@ -2,21 +2,9 @@ package berlin.softwaretechnik.geojsonrenderer.tiling
 
 import berlin.softwaretechnik.geojsonrenderer._
 
-class ZoomLevel(val zoomLevel: Int,
-                mapWidth: Int,
-                val tileSize: Int) {
+class ZoomLevel(val zoomLevel: Int, val tileSize: Int) {
 
-  def mapCenter: Position2D =
-    Position2D(mapWidth / 2, mapWidth / 2)
-
-  def bitmapPosition(geoCoord: GeoCoord): Position2D = {
-    val x = mapCenter.x + geoCoord.lon * mapWidth / 360.0
-    var e = Math.sin(geoCoord.lat * (Math.PI / 180.0))
-    if (e > 0.9999) e = 0.9999
-    if (e < -0.9999) e = -0.9999
-    val y = mapCenter.y + 0.5 * Math.log((1 + e) / (1 - e)) * -1 * mapWidth / (Math.PI * 2)
-    Position2D(x, y)
-  }
+  def geoProjection: GeoProjection = SomeKindOfGeoProjection(tileSize << zoomLevel)
 
   def tileAndOffset(position2D: Position2D): (TileId, Position2D) =
     (
@@ -53,19 +41,10 @@ class ZoomLevel(val zoomLevel: Int,
     tiles
   }
 
-  def bitmapBox(boundingBox: BoundingBox): Box2D = {
-    new Box2D(
-      upperLeft = bitmapPosition(boundingBox.upperLeft()),
-      lowerRight = bitmapPosition(boundingBox.lowerRight())
+  def bitmapBox(boundingBox: BoundingBox): Box2D =
+    Box2D(
+      upperLeft = geoProjection.bitmapPosition(boundingBox.upperLeft()),
+      lowerRight = geoProjection.bitmapPosition(boundingBox.lowerRight())
     )
-  }
-
-  def geoCoords(pixelPosition: Position2D): GeoCoord = {
-    val lon = (pixelPosition.x - mapCenter.x) / (mapWidth / 360.0)
-    val e1 = (pixelPosition.y - mapCenter.y) / (-1 * mapWidth / (2 * Math.PI))
-    val e2 = (2 * Math.atan(Math.exp(e1)) - Math.PI / 2) / (Math.PI / 180.0)
-    val lat = e2
-    new GeoCoord(lat, lon)
-  }
 
 }

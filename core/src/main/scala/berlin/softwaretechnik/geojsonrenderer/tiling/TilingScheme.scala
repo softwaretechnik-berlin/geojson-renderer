@@ -8,7 +8,6 @@ class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId =>
       .map(zoomLevel => {
         new ZoomLevel(
           zoomLevel,
-          tileSize << zoomLevel,
           tileSize
         )
       })

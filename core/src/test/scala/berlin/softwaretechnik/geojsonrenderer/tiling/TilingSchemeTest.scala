@@ -2,6 +2,7 @@ package berlin.softwaretechnik.geojsonrenderer.tiling
 
 import berlin.softwaretechnik.geojsonrenderer.{GeoCoord, Vector2D, Vector2DOps}
 import org.scalactic._
+import org.scalatest.Assertion
 import org.scalatest.funsuite.AnyFunSuite
 
 class TilingSchemeTest extends AnyFunSuite with Tolerance {
@@ -22,18 +23,18 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
 
   test("It should project geopositions onto the map") {
     val tiling = TilingScheme.osm()
-    assert(tiling.zoomLevels(0).bitmapPosition(charlottenburgPalace) === Vector2D(137.45, 83.96))
-    assert(tiling.zoomLevels(4).bitmapPosition(charlottenburgPalace) === Vector2D(2199.28, 1343.29))
+    assert(tiling.zoomLevels(0).geoProjection.bitmapPosition(charlottenburgPalace) === Vector2D(137.45, 83.96))
+    assert(tiling.zoomLevels(4).geoProjection.bitmapPosition(charlottenburgPalace) === Vector2D(2199.28, 1343.29))
 
-    assert(tiling.zoomLevels(0).bitmapPosition(gettyCentre) === Vector2D(43.75, 102.20))
-    assert(tiling.zoomLevels(0).bitmapPosition(ayersRock) === Vector2D(221.18, 146.64))
+    assert(tiling.zoomLevels(0).geoProjection.bitmapPosition(gettyCentre) === Vector2D(43.75, 102.20))
+    assert(tiling.zoomLevels(0).geoProjection.bitmapPosition(ayersRock) === Vector2D(221.18, 146.64))
   }
 
   test("It should get tile and offset") {
     val tiling = TilingScheme.osm()
 
     val zoomLevel = tiling.zoomLevels(4)
-    val mapPosition = zoomLevel.bitmapPosition(charlottenburgPalace)
+    val mapPosition = zoomLevel.geoProjection.bitmapPosition(charlottenburgPalace)
 
     val (tile, offset) = zoomLevel.tileAndOffset(mapPosition)
     assert(tile.x == 8)
@@ -50,11 +51,11 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
   }
 
 
-  private def testRoundTrip(originalPosition: GeoCoord) = {
+  private def testRoundTrip(originalPosition: GeoCoord): Assertion = {
     val tiling = TilingScheme.osm()
-    val mapPosition = tiling.zoomLevels(4).bitmapPosition(originalPosition)
+    val mapPosition = tiling.zoomLevels(4).geoProjection.bitmapPosition(originalPosition)
 
-    val roundTrippedGeoPosition = tiling.zoomLevels(4).geoCoords(mapPosition)
+    val roundTrippedGeoPosition = tiling.zoomLevels(4).geoProjection.geoCoords(mapPosition)
 
     assert(roundTrippedGeoPosition.lat === (originalPosition.lat +- 0.00001))
     assert(roundTrippedGeoPosition.lon === (originalPosition.lon +- 0.00001))
