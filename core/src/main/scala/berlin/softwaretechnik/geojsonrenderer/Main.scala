@@ -8,7 +8,7 @@ import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollectio
 import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme, ZoomLevel}
 import org.rogach.scallop.ScallopConf
 
-import scala.xml.{Attribute, Elem, NodeSeq, Null}
+import scala.xml._
 
 object Main {
 
@@ -178,15 +178,17 @@ object Main {
   }
 
   private def imagesForTiles(zoomLevel: ZoomLevel,
-                             tiles: Seq[PositionedTile]) = {
-    tiles.map { tile =>
-      <image xlink:href={tiledMap.url(tile.tileId)}
+                             tiles: Seq[PositionedTile]): NodeSeq =
+    tiles.flatMap { tile =>
+      Seq(
+        Text("\n  "),
+        <image xlink:href={tiledMap.url(tile.tileId)}
                x={tile.position.x.toString}
                y={tile.position.y.toString}
                width={s"${zoomLevel.tileSize}px"}
                height={s"${zoomLevel.tileSize}px"}/>
+      )
     }
-  }
 
   def determineBoundingBox(geoJson: GeoJson): BoundingBox = {
 
