@@ -6,6 +6,8 @@ import java.nio.file.{Files, Paths}
 
 import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, Geometry, MultiPoint, Point}
 import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme, ZoomLevel}
+import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
+import org.apache.batik.transcoder.image.PNGTranscoder
 import org.rogach.scallop.ScallopConf
 
 object Main {
@@ -82,17 +84,11 @@ object Main {
     Svg.render(projectedBox, zoomLevel, tilingScheme, tiles, geoJson)
   }
 
-  private def saveAsPng(svgContent: String, filename: String) = {
-    import org.apache.batik.transcoder.TranscoderInput
-    val input = new TranscoderInput(new StringReader(svgContent))
-    import org.apache.batik.transcoder.TranscoderOutput
-    val output = new TranscoderOutput(new FileOutputStream(filename))
-    import org.apache.batik.transcoder.image.PNGTranscoder
-
-    val converter = new PNGTranscoder
-
-    converter.transcode(input, output)
-  }
+  private def saveAsPng(svgContent: String, filename: String): Unit =
+    new PNGTranscoder().transcode(
+      new TranscoderInput(new StringReader(svgContent)),
+      new TranscoderOutput(new FileOutputStream(filename))
+    )
 
   def determineBoundingBox(geoJson: GeoJson): BoundingBox = {
 
