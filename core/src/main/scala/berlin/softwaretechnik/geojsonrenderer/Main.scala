@@ -88,23 +88,12 @@ object Main {
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink= "http://www.w3.org/1999/xlink"
     >
-      <defs>
-        <marker id="arrow"
-                markerWidth="10" markerHeight="10"
-                refX="9" refY="3"
-                orient="auto"
-                markerUnits="strokeWidth">
-        <path d="M0,0 L0,6 L9,3 z" />
-      </marker>
-      </defs>
       {imagesForTiles(zoomLevel, tiles)}
       <!--{screenDimensions.toBox2D.rect}-->
       <!--{projectedBoundingBox.rect}-->
       {renderGeoJson(zoomLevel, projectedBox, geoJson)}
     </svg>.toString()
   }
-
-  //marker-end="url(#arrow)"
 
   private def renderGeoJson(zoomLevel: ZoomLevel,
                             projectedBox: Box2D,
