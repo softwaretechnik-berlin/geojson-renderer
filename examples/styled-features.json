@@ -19,6 +19,28 @@
     {
       "type": "Feature",
       "properties": {
+        "stroke": "purple",
+        "stroke-width": 1
+      },
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [-5, 10],
+            [-5, 9],
+            [-4, 9]
+          ],
+          [
+            [-5, 1],
+            [-5, 0],
+            [-4, 0]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "stroke": "green",
         "stroke-width": 0.5,
         "fill": "red"
