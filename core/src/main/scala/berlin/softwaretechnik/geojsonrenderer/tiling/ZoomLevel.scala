@@ -20,10 +20,8 @@ class ZoomLevel(val zoomLevel: Int, val tileSize: Int) {
     )
 
   def tileCover(projectedBox: Box2D): Seq[PositionedTile] = {
-    val (upperLeftTile, tileOffset) =
-      tileAndOffset(projectedBox.upperLeft)
-    val (lowerRightTile, _) =
-      tileAndOffset(projectedBox.lowerRight)
+    val (upperLeftTile, tileOffset) = tileAndOffset(projectedBox.upperLeft)
+    val (lowerRightTile, _) = tileAndOffset(projectedBox.lowerRight)
 
     val tiles: Seq[PositionedTile] =
       (upperLeftTile.x to lowerRightTile.x).zipWithIndex

@@ -4,10 +4,10 @@ import java.io.{File, FileOutputStream, StringReader}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
-import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, Geometry, MultiPoint, Point}
-import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme, ZoomLevel}
-import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
+import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, Geometry, MultiPoint, Point}
+import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme}
 import org.apache.batik.transcoder.image.PNGTranscoder
+import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
 import org.rogach.scallop.ScallopConf
 
 object Main {

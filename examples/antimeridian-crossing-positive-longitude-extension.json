@@ -4,7 +4,7 @@
     {
       "type": "Feature",
       "properties": {
-        "description": "Line crossing the antimeridian represented as LineString with coordinates that exceed 180 degrees of longitude"
+        "description": "Line crossing the antimeridian, represented as LineString with coordinates that exceed 180 degrees of longitude"
       },
       "geometry": {
         "type": "LineString",
@@ -19,7 +19,7 @@
       "properties": {
         "stroke": "none",
         "fill": "blue",
-        "description": "Filled rectangle straddling the antimeridian represented as Polygon with coordinates that exceed 180 degrees of longitude"
+        "description": "Filled rectangle straddling the antimeridian, represented as Polygon with coordinates that exceed 180 degrees of longitude"
       },
       "geometry": {
         "type": "Polygon",

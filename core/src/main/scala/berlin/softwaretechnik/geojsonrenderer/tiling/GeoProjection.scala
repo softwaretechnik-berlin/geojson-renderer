@@ -14,9 +14,7 @@ case class SomeKindOfGeoProjection(mapWidth: Int) extends GeoProjection {
 
   override def bitmapPosition(geoCoord: GeoCoord): Position2D = {
     val x = mapCenter.x + geoCoord.lon * mapWidth / 360.0
-    var e = Math.sin(geoCoord.lat * (Math.PI / 180.0))
-    if (e > 0.9999) e = 0.9999
-    if (e < -0.9999) e = -0.9999
+    val e = Math.sin(geoCoord.lat * (Math.PI / 180.0)) min 0.9999 max -0.9999
     val y = mapCenter.y + 0.5 * Math.log((1 + e) / (1 - e)) * -1 * mapWidth / (Math.PI * 2)
     Position2D(x, y)
   }
