@@ -88,9 +88,11 @@ object Main {
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink= "http://www.w3.org/1999/xlink"
     >
-      {imagesForTiles(zoomLevel, tiles)}
-      {renderGeoJson(zoomLevel, projectedBox, geoJson)}
-    </svg>.toString()
+  <g id="tiles">{imagesForTiles(zoomLevel, tiles)}
+  </g>
+  <g id="features">{renderGeoJson(zoomLevel, projectedBox, geoJson)}
+  </g>
+</svg>.toString()
   }
 
   private def renderGeoJson(zoomLevel: ZoomLevel,
@@ -101,12 +103,12 @@ object Main {
       case feature: Feature => Seq(feature)
       case FeatureCollection(features) => features
     }
-    features.map(renderFeature(zoomLevel, projectedBox, _))
+    features.flatMap(renderFeature(zoomLevel, projectedBox, _))
   }
 
   private def renderFeature(zoomLevel: ZoomLevel,
                             projectedBox: Box2D,
-                            feature: Feature): Elem = {
+                            feature: Feature): Seq[Node] = {
     val element = feature.geometry match {
       case Point(gc) =>
         val point = zoomLevel.geoProjection.bitmapPosition(gc) - projectedBox.upperLeft
@@ -154,15 +156,18 @@ object Main {
     }
 
     val style: GeoJsonStyle = GeoJsonStyle(feature.properties)
-    element.copy(child = element.child
-      :+ <title>{style.title}</title>
-      :+ <desc>{style.title}</desc>
-    ) %
-      Attribute(null, "stroke", style.stroke, Null) %
-      Attribute(null, "stroke-opacity", style.strokeOpacity.toString, Null) %
-      Attribute(null, "stroke-width", style.strokeWidth.toString, Null) %
-      Attribute(null, "fill", style.fill, Null) %
-      Attribute(null, "fill-opacity", style.fillOpacity.toString, Null)
+    Seq(
+      Text("\n    "),
+      element.copy(child = element.child
+        :+ <title>{style.title}</title>
+        :+ <desc>{style.title}</desc>
+      ) %
+        Attribute(null, "stroke", style.stroke, Null) %
+        Attribute(null, "stroke-opacity", style.strokeOpacity.toString, Null) %
+        Attribute(null, "stroke-width", style.strokeWidth.toString, Null) %
+        Attribute(null, "fill", style.fill, Null) %
+        Attribute(null, "fill-opacity", style.fillOpacity.toString, Null)
+    )
   }
 
   private def saveAsPng(svgContent: String, filename: String) = {
@@ -181,7 +186,7 @@ object Main {
                              tiles: Seq[PositionedTile]): NodeSeq =
     tiles.flatMap { tile =>
       Seq(
-        Text("\n  "),
+        Text("\n    "),
         <image xlink:href={tiledMap.url(tile.tileId)}
                x={tile.position.x.toString}
                y={tile.position.y.toString}
