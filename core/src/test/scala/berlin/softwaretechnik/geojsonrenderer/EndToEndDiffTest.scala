@@ -89,6 +89,6 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
 
     assert(status.getUntracked.isEmpty, s"There is not yet a reference version of ${svgFile.toUri} in the repository or index. Review the current version and add it to the index if it is acceptable.")
 
-    assert(status.getModified.isEmpty, s"${svgFile.toUri} differs from the reference version in the ${if (status.getChanged.isEmpty) "repository" else "index"}. Review the current version and add it o the index if it is acceptable.")
+    assert(status.getModified.isEmpty, s"${svgFile.toUri} differs from the reference version in the ${if (status.getChanged.isEmpty) "repository" else "index"}. Review the current version and add it to the index if it is acceptable.")
   }
 }
