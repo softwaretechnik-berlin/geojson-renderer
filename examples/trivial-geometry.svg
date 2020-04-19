@@ -1,4 +1,4 @@
-<svg width="1200.0" height="800.0" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<svg width="1199.999999999999" height="800.0" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
   <g id="tiles">
     <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/29.png" x="-25.0" y="-139.0" width="256px" height="256px"/>
     <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/30.png" x="-25.0" y="117.0" width="256px" height="256px"/>
@@ -23,7 +23,7 @@
   </g>
   <g id="features">
     <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555">
-          <polyline points="486.2222222222226,171.28027803579516 486.2222222222226,628.7197219642057 713.7777777777774,628.7197219642057" fill="None"/>
+          <polyline points="486.2222222222217,171.28027803579425 486.2222222222217,628.7197219642057 713.7777777777783,628.7197219642057" fill="None"/>
         <title></title><desc></desc></g>
   </g>
 </svg>

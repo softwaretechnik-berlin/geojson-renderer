@@ -4,7 +4,7 @@ import berlin.softwaretechnik.geojsonrenderer._
 
 class ZoomLevel(val zoomLevel: Int, val tileSize: Int) {
 
-  def geoProjection: GeoProjection = WebMercatorProjection(tileSize << zoomLevel)
+  def geoProjection: GeoProjection = WebMercatorProjection(zoomLevel, tileSize)
 
   def tileAndOffset(position2D: Position2D): (TileId, Position2D) =
     (

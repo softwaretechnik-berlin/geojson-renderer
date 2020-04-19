@@ -27,10 +27,10 @@
   </g>
   <g id="features">
     <g fill-opacity="0.6" fill="#555555" stroke-width="10.0" stroke-opacity="1.0" stroke="blue">
-          <polyline points="600.0,171.28027803579516 600.0,628.7197219642057 827.5555555555547,628.7197219642057" fill="None"/>
+          <polyline points="600.0,171.28027803579425 600.0,628.7197219642057 827.5555555555566,628.7197219642057" fill="None"/>
         <title></title><desc></desc></g>
-    <g fill-opacity="0.6" fill="#555555" stroke-width="1.0" stroke-opacity="1.0" stroke="purple"><polyline points="372.44444444444434,171.28027803579516 372.44444444444434,217.42484412297927 417.9555555555553,217.42484412297927" fill="None"/><polyline points="372.44444444444434,583.2063000975786 372.44444444444434,628.7197219642057 417.9555555555553,628.7197219642057" fill="None"/>
+    <g fill-opacity="0.6" fill="#555555" stroke-width="1.0" stroke-opacity="1.0" stroke="purple"><polyline points="372.44444444444434,171.28027803579425 372.44444444444434,217.42484412298018 417.9555555555562,217.42484412298018" fill="None"/><polyline points="372.44444444444434,583.2063000975786 372.44444444444434,628.7197219642057 417.9555555555562,628.7197219642057" fill="None"/>
         <title></title><desc></desc></g>
-    <circle fill-opacity="0.6" fill="red" stroke-width="0.5" stroke-opacity="1.0" stroke="green" cx="827.5555555555547" cy="400.8747928697021" r="3"><title></title><desc></desc></circle>
+    <circle fill-opacity="0.6" fill="red" stroke-width="0.5" stroke-opacity="1.0" stroke="green" cx="827.5555555555566" cy="400.8747928697021" r="3"><title></title><desc></desc></circle>
   </g>
 </svg>
