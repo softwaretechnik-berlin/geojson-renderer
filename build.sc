@@ -24,6 +24,7 @@ object core extends SbtModule {
 
   object test extends Tests {
     def ivyDeps = Agg(
+      ivy"org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r",
       ivy"com.github.chocpanda::scalacheck-magnolia::0.3.1",
       ivy"org.scalatest::scalatest::3.1.1",
       ivy"org.scalatestplus::scalacheck-1-14::3.1.1.1"
