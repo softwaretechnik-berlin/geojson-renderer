@@ -9,5 +9,9 @@ case class TileId(x: Int, y: Int, z: Int) {
     else copy(normalizedX)
   }
 
+  def normalizedPath: String =
+    normalized.path
+
   private def upperCoordinateLimit: Int = 1 << z
+  private def path: String = s"$z/$x/$y"
 }
