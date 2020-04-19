@@ -89,8 +89,6 @@ object Main {
       xmlns:xlink= "http://www.w3.org/1999/xlink"
     >
       {imagesForTiles(zoomLevel, tiles)}
-      <!--{screenDimensions.toBox2D.rect}-->
-      <!--{projectedBoundingBox.rect}-->
       {renderGeoJson(zoomLevel, projectedBox, geoJson)}
     </svg>.toString()
   }
