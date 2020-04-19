@@ -38,7 +38,7 @@ case class Box2D(upperLeft: Position2D, lowerRight: Position2D) {
     Dimensions(lowerRight.x - upperLeft.x, lowerRight.y - upperLeft.y)
 
   def width: Double = lowerRight.x - upperLeft.x
-  def height: Double = -upperLeft.y + lowerRight.y
+  def height: Double = lowerRight.y - upperLeft.y
 
   def -(v: Position2D): Box2D =
     Box2D(upperLeft - v, lowerRight - v)

@@ -48,21 +48,9 @@ object Main {
   }
 
   def render(screenDimensions: Dimensions, geoJson: GeoJson): String = {
-
     val boundingBox = GeoJsonSpatialOps.determineBoundingBox(geoJson)
 
-    val (bitMapBox: Box2D, zoomLevel) =
-      tilingScheme.zoomLevels.reverse
-        .map(zoomLevel => {
-          val bitmapBox: Box2D = zoomLevel.bitmapBox(boundingBox)
-          (bitmapBox, zoomLevel)
-        })
-        .find {
-          case (bitmapBox, _) =>
-            bitmapBox.width <= screenDimensions.width && bitmapBox.height <= screenDimensions.height
-        }
-        .get
-
+    val (bitMapBox, zoomLevel) = tilingScheme.optimalZoomLevel(boundingBox, screenDimensions)
     println(s"Best zoom level ${zoomLevel.zoomLevel}")
 
     val offset: Position2D = (screenDimensions.toVector - bitMapBox.dimensions.toVector) * 0.5

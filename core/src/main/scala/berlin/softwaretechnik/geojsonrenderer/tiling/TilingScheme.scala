@@ -4,15 +4,20 @@ package tiling
 class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId => String) {
 
   def zoomLevels: IndexedSeq[ZoomLevel] =
-    (minZoom to maxZoom)
-      .map(zoomLevel => {
-        new ZoomLevel(
-          zoomLevel,
-          tileSize
-        )
-      })
+    (minZoom to maxZoom).map(new ZoomLevel(_, tileSize))
 
   def url(tileId: TileId): String = tileUrl(tileId)
+
+  def optimalZoomLevel(boundingBox: BoundingBox, viewport: Dimensions): (Box2D, ZoomLevel) = {
+    zoomLevels.reverse
+      .map(zoomLevel => zoomLevel.bitmapBox(boundingBox) -> zoomLevel)
+      .find {
+        case (bitmapBox, _) =>
+          bitmapBox.width <= viewport.width && bitmapBox.height <= viewport.height
+      }
+      .get
+  }
+
 }
 
 object TilingScheme {
