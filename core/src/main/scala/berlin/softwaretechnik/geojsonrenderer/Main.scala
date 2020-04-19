@@ -112,8 +112,7 @@ object Main {
     val element = feature.geometry match {
       case Point(gc) =>
         val point = zoomLevel.geoProjection.bitmapPosition(gc) - projectedBox.upperLeft
-        <circle cx={point.x.toString} cy={point.y.toString} r="3"
-                  style="fill:none"/>
+        <circle cx={point.x.toString} cy={point.y.toString} r="3" />
 
       case MultiPoint(points) =>
         <g>

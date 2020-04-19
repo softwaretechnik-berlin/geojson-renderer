@@ -22,9 +22,9 @@
     <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/32.png" x="999.0" y="629.0" width="256px" height="256px"/>
   </g>
   <g id="features">
-    <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555">
+    <g fill-opacity="0.6" fill="#555555" stroke-width="10.0" stroke-opacity="1.0" stroke="blue">
           <polyline points="486.2222222222226,171.28027803579516 486.2222222222226,628.7197219642057 713.7777777777774,628.7197219642057" fill="None"/>
         <title></title><desc></desc></g>
-    <circle fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555" cx="713.7777777777774" cy="400.8747928697021" r="3"><title></title><desc></desc></circle>
+    <circle fill-opacity="0.6" fill="red" stroke-width="0.5" stroke-opacity="1.0" stroke="green" cx="713.7777777777774" cy="400.8747928697021" r="3"><title></title><desc></desc></circle>
   </g>
 </svg>

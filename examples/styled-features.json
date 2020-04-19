@@ -1,0 +1,32 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "blue",
+        "stroke-width": 10
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [0, 10],
+          [0, 0],
+          [5, 0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "green",
+        "stroke-width": 0.5,
+        "fill": "red"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [5, 5]
+      }
+    }
+  ]
+}
