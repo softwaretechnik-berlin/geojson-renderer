@@ -1,9 +1,10 @@
 package berlin.softwaretechnik.geojsonrenderer
 
-import java.io.{File, FileOutputStream, StringReader}
+import java.io.StringReader
 import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Files, Path, Paths}
 
+import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
 import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, Geometry, MultiPoint, Point}
 import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme}
 import org.apache.batik.transcoder.image.PNGTranscoder
@@ -28,11 +29,11 @@ object Main {
       verify
     }
 
-    val basename = Conf.inputFile.getOrElse(???).reverse.dropWhile(x => x != '.').reverse
+    val inputFile = Paths.get(Conf.inputFile.getOrElse(???))
 
     System.setProperty("http.agent", "curl/7.66.0");
 
-    val geoJson = GeoJson.load(new File(Conf.inputFile.getOrElse(???)))
+    val geoJson = GeoJson.load(inputFile)
 
     val svgContent = render(
       determineBoundingBox(geoJson),
@@ -41,11 +42,11 @@ object Main {
       geoJson
     )
     Files.write(
-      Paths.get(s"${basename}svg"),
+      replaceExtension(inputFile, ".svg"),
       svgContent.getBytes(StandardCharsets.UTF_8)
     )
     if (Conf.png.getOrElse(???))
-      saveAsPng(svgContent, s"${basename}png")
+      saveAsPng(svgContent, replaceExtension(inputFile, ".png"))
   }
 
   def render(boundingBox: BoundingBox,
@@ -84,10 +85,10 @@ object Main {
     Svg.render(projectedBox, zoomLevel, tilingScheme, tiles, geoJson)
   }
 
-  private def saveAsPng(svgContent: String, filename: String): Unit =
+  private def saveAsPng(svgContent: String, path: Path): Unit =
     new PNGTranscoder().transcode(
       new TranscoderInput(new StringReader(svgContent)),
-      new TranscoderOutput(new FileOutputStream(filename))
+      new TranscoderOutput(Files.newOutputStream(path))
     )
 
   def determineBoundingBox(geoJson: GeoJson): BoundingBox = {

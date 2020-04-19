@@ -1,7 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer
 package geojson
 
-import java.io.File
+import java.nio.file.{Files, Path}
 
 import ujson.Value.Value
 
@@ -78,14 +78,15 @@ object MultiPolygon {
 object GeoJson {
   private implicit val rw: ReadWriter[GeoJson] = macroRW
 
-  def load(file: File): GeoJson = {
+  def load(file: Path): GeoJson = {
 
-    if (!file.exists()) {
+    // TODO what is this check doing?
+    if (!Files.exists(file)) {
       System.err.println("File not found")
       System.exit(4)
     }
 
-    read(ujson.Readable.fromFile(file))
+    read(ujson.Readable.fromPath(file))
   }
 
   def read(readable: ujson.Readable): GeoJson =
