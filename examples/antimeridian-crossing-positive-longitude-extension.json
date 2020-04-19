@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "description": "Line crossing the antimeridian represented as LineString with coordinates that exceed 180 degrees of longitude"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [160, 40],
+          [200, 40]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "none",
+        "fill": "blue",
+        "description": "Filled rectangle straddling the antimeridian represented as Polygon with coordinates that exceed 180 degrees of longitude"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [160, -20],
+            [160, -60],
+            [200, -60],
+            [200, -20],
+            [160, -20]
+          ]
+        ]
+      }
+    }
+  ]
+}

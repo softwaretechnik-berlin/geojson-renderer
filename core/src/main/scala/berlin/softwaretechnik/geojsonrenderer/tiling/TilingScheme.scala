@@ -12,7 +12,7 @@ class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId =>
         )
       })
 
-  def url(tileId: TileId): String = tileUrl(tileId)
+  def url(tileId: TileId): String = tileUrl(tileId.normalized)
 }
 
 object TilingScheme {
