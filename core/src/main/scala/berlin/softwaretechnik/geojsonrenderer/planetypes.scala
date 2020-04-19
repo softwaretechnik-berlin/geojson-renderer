@@ -31,7 +31,7 @@ final case class Position2D(x: Double, y: Double) extends Vector2DOps[Position2D
  * The positive x direction is to the right, and the positive y direction is downward.
  */
 case class Box2D(upperLeft: Position2D, lowerRight: Position2D) {
-  require(upperLeft.x < lowerRight.x && upperLeft.y < lowerRight.y,
+  require(upperLeft.x <= lowerRight.x && upperLeft.y <= lowerRight.y,
     s"In each coordinate, upperLeft must have a value less than or equal to lowerRight. $this")
 
   def dimensions: Dimensions =
