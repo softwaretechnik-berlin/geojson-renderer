@@ -62,26 +62,6 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     }
   }
 
-  //  test("It renders a trivial geometry") {
-  //    val svg =
-  //      withInMemoryDirectory { dir =>
-  //        val inputPath = dir.resolve("input.json")
-  //        Files.write(inputPath, """{"type":"LineString","coordinates":[[0,10],[0,0],[10,0  ]]}""".getBytes(UTF_8))
-  //        Main.run(inputPath, Dimensions(1200, 800), false)
-  //        val outputPath = dir.resolve("input.svg")
-  //        Files.copy(outputPath, Paths.get("output.svg"), REPLACE_EXISTING)
-  //        new String(Files.readAllBytes(outputPath), UTF_8)
-  //      }
-  //
-  //    assert(svg === """<svg/>""")
-  //  }
-  //
-  //  private def withInMemoryDirectory[A](use: Path => A): A = {
-  //    val filesystem = Jimfs.newFileSystem()
-  //    try use(Files.createDirectories(filesystem.getPath("some", "test", "path")))
-  //    finally filesystem.close()
-  //  }
-
   private def assertUnchanged(svgFile: Path): Assertion = {
     assert(Files.exists(svgFile), s"Missing ${svgFile.toUri} after running")
 
