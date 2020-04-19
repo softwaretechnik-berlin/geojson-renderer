@@ -66,14 +66,14 @@ object Svg {
       case geojson.LineString(coordinates) =>
         <g>
           <polyline
-          points={LineString(coordinates).points.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+          points={coordinates.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
           fill="None"/>
         </g>
       case geojson.MultiLineString(lines) =>
         <g>{
           lines.map { coordinates =>
               <polyline
-              points={LineString(coordinates).points.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={coordinates.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
               fill="None"
               />
           }}
@@ -81,14 +81,14 @@ object Svg {
 
       case geojson.Polygon(coordinates) =>
           <polygon
-          points={LineString(coordinates(0)).points.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+          points={coordinates(0).map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
           />
 
       case geojson.MultiPolygon(lines) =>
         <g>{
           lines.map { coordinates =>
               <polygon
-              points={LineString(coordinates(0)).points.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={coordinates(0).map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
               />
           }}
         </g>

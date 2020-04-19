@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
 
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
-import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, Geometry, MultiPoint, Point}
+import berlin.softwaretechnik.geojsonrenderer.geojson.{GeoJson, GeoJsonSpatialOps}
 import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme}
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
@@ -30,14 +30,12 @@ object Main {
     }
 
     val inputFile = Paths.get(Conf.inputFile.getOrElse(???))
+    val geoJson: GeoJson = GeoJson.load(inputFile)
 
-    System.setProperty("http.agent", "curl/7.66.0");
-
-    val geoJson = GeoJson.load(inputFile)
+    // TODO Why curl?
+    System.setProperty("http.agent", "curl/7.66.0")
 
     val svgContent = render(
-      determineBoundingBox(geoJson),
-      //  BoundingBox(13.335, 52.5033, 13.4265, 52.5276),
       screenDimensions = Conf.dimensions.getOrElse(???),
       geoJson
     )
@@ -49,11 +47,9 @@ object Main {
       saveAsPng(svgContent, replaceExtension(inputFile, ".png"))
   }
 
-  def render(boundingBox: BoundingBox,
-             screenDimensions: Dimensions,
-             geoJson: GeoJson): String = {
+  def render(screenDimensions: Dimensions, geoJson: GeoJson): String = {
 
-
+    val boundingBox = GeoJsonSpatialOps.determineBoundingBox(geoJson)
 
     val (bitMapBox: Box2D, zoomLevel) =
       tilingScheme.zoomLevels.reverse
@@ -91,33 +87,4 @@ object Main {
       new TranscoderOutput(Files.newOutputStream(path))
     )
 
-  def determineBoundingBox(geoJson: GeoJson): BoundingBox = {
-
-    def coordinates(geometry: Geometry): Seq[GeoCoord] =
-      geometry match {
-        case Point(geo) => Seq(geo)
-        case MultiPoint(coordinates) => coordinates
-        case geojson.LineString(coordinates) => coordinates
-        case geojson.MultiLineString(lines) => lines.flatten
-        case geojson.Polygon(rings) => rings.flatten
-        case geojson.MultiPolygon(polygons) => polygons.flatten.flatten
-      }
-
-    def boundingBox(coordinates: Seq[GeoCoord]): BoundingBox = {
-      val geos = LineString(coordinates).points
-      BoundingBox(
-        geos.map(_.lon).min,
-        geos.map(_.lat).min,
-        geos.map(_.lon).max,
-        geos.map(_.lat).max
-      )
-    }
-
-    boundingBox(geoJson match {
-      case geometry: Geometry => coordinates(geometry)
-      case Feature(geometry, _) => coordinates(geometry)
-      case FeatureCollection(features) => features.flatMap(f => coordinates(f.geometry))
-    })
-
-  }
 }
