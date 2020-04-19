@@ -7,9 +7,9 @@ trait GeoProjection {
   def geoCoords(pixelPosition: Position2D): GeoCoord
 }
 
-case class SomeKindOfGeoProjection(mapWidth: Int) extends GeoProjection {
+case class WebMercatorProjection(mapWidth: Int) extends GeoProjection {
 
-  def mapCenter: Position2D =
+  private def mapCenter: Position2D =
     Position2D(mapWidth / 2, mapWidth / 2)
 
   override def bitmapPosition(geoCoord: GeoCoord): Position2D = {
