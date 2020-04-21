@@ -92,17 +92,20 @@ object Svg {
     val style: GeoJsonStyle = GeoJsonStyle(feature.properties)
     Seq(
       Text("\n    "),
-      element.copy(child = (
+      element.copy(
+        child = (
         style.title.map(t => <title>{t}</title>) ++
         style.description.map(t => <desc>{t}</desc>) ++
         element.child
       ).toSeq) %
-        Attribute(null, "stroke", style.stroke, Null) %
-        Attribute(null, "stroke-opacity", style.strokeOpacity.toString, Null) %
-        Attribute(null, "stroke-width", style.strokeWidth.toString, Null) %
-        Attribute(null, "fill", style.fill, Null) %
-        Attribute(null, "fill-opacity", style.fillOpacity.toString, Null)
+        attribute("stroke", style.stroke.getOrElse("#555555")) %
+        attribute("stroke-opacity", style.strokeOpacity.map(_.toString)) %
+        Attribute(null, "stroke-width", style.strokeWidth.getOrElse(3).toString, Null) %
+        attribute("fill", style.fill.getOrElse("#555555")) %
+        Attribute(null, "fill-opacity", style.fillOpacity.getOrElse(0.6).toString, Null)
     )
   }
 
+  def attribute(name: String, value: String): MetaData = Attribute(null, name, value, Null)
+  def attribute(name: String, value: Option[String]): MetaData = value.fold[MetaData](Null)(attribute(name, _))
 }

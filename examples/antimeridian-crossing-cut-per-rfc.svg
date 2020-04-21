@@ -26,9 +26,9 @@
     <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/5.png" x="1112" y="565" width="256px" height="256px"/>
   </g>
   <g id="features">
-    <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555"><desc>Line crossing the antimeridian, represented as MultiLineString cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9</desc><polyline points="486.22222222222223,60.33011505373372 600.0,60.33011505373372" fill="None"/><polyline points="600.0,60.33011505373372 713.7777777777778,60.33011505373372" fill="None"/>
+    <g fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555"><desc>Line crossing the antimeridian, represented as MultiLineString cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9</desc><polyline points="486.22222222222223,60.33011505373372 600.0,60.33011505373372" fill="None"/><polyline points="600.0,60.33011505373372 713.7777777777778,60.33011505373372" fill="None"/>
         </g>
-    <g fill-opacity="0.6" fill="blue" stroke-width="3.0" stroke-opacity="1.0" stroke="none"><desc>Filled rectangle straddling the antimeridian, represented as MultiPolygon cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9</desc><polygon points="600.0,425.16133250784173 486.22222222222223,425.16133250784173 486.22222222222223,738.2615355176783 600.0,738.2615355176783 600.0,425.16133250784173"/><polygon points="600.0,425.16133250784173 600.0,738.2615355176783 713.7777777777778,738.2615355176783 713.7777777777778,425.16133250784173 600.0,425.16133250784173"/>
+    <g fill-opacity="0.6" fill="blue" stroke-width="3" stroke="none"><desc>Filled rectangle straddling the antimeridian, represented as MultiPolygon cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9</desc><polygon points="600.0,425.16133250784173 486.22222222222223,425.16133250784173 486.22222222222223,738.2615355176783 600.0,738.2615355176783 600.0,425.16133250784173"/><polygon points="600.0,425.16133250784173 600.0,738.2615355176783 713.7777777777778,738.2615355176783 713.7777777777778,425.16133250784173 600.0,425.16133250784173"/>
         </g>
   </g>
 </svg>
