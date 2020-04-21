@@ -26,13 +26,15 @@
     <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/32.png" x="1112" y="629" width="256px" height="256px"/>
   </g>
   <g id="features">
-    <g fill-opacity="0.6" fill="#555555" stroke-width="10.0" stroke="blue">
+    <g stroke="blue" stroke-width="10.0" fill="#555555" fill-opacity="0.6">
       <polyline points="600.0,171.5605560715885 600.0,629.0 827.5555555555566,629.0" fill="None"/>
     </g>
-    <g fill-opacity="0.6" fill="#555555" stroke-width="1.0" stroke="purple">
+    <g stroke="purple" stroke-width="1.0" fill="#555555" fill-opacity="0.6">
       <polyline points="372.44444444444434,171.5605560715885 372.44444444444434,217.70512215877443 417.9555555555562,217.70512215877443" fill="None"/>
       <polyline points="372.44444444444434,583.4865781333729 372.44444444444434,629.0 417.9555555555562,629.0" fill="None"/>
     </g>
-    <circle fill-opacity="0.6" fill="red" stroke-width="0.5" stroke="green" cx="827.5555555555566" cy="401.15507090549636" r="3"/>
+    <g stroke="green" stroke-width="0.5" fill="red" fill-opacity="0.6">
+      <circle cx="827.5555555555566" cy="401.15507090549636" r="3"/>
+    </g>
   </g>
 </svg>

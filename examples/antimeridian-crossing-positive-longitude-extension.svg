@@ -26,12 +26,13 @@
     <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/5.png" x="1112" y="565" width="256px" height="256px"/>
   </g>
   <g id="features">
-    <g fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555">
+    <g stroke="#555555" stroke-width="3" fill="#555555" fill-opacity="0.6">
       <desc>Line crossing the antimeridian, represented as LineString with coordinates that exceed 180 degrees of longitude</desc>
       <polyline points="486.22222222222223,60.33011505373372 713.7777777777778,60.33011505373372" fill="None"/>
     </g>
-    <polygon fill-opacity="0.6" fill="blue" stroke-width="3" stroke="none" points="486.22222222222223,425.16133250784173 486.22222222222223,738.2615355176783 713.7777777777778,738.2615355176783 713.7777777777778,425.16133250784173 486.22222222222223,425.16133250784173">
+    <g stroke="none" stroke-width="3" fill="blue" fill-opacity="0.6">
       <desc>Filled rectangle straddling the antimeridian, represented as Polygon with coordinates that exceed 180 degrees of longitude</desc>
-    </polygon>
+      <polygon points="486.22222222222223,425.16133250784173 486.22222222222223,738.2615355176783 713.7777777777778,738.2615355176783 713.7777777777778,425.16133250784173 486.22222222222223,425.16133250784173"/>
+    </g>
   </g>
 </svg>

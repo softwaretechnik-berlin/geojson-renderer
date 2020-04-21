@@ -9,7 +9,7 @@ object XmlHelpers {
   def prettyPrint(elem: Elem): String =
     NodeSeq.fromSeq(Seq(normalizeWhitespace("\n", elem), Text("\n"))).toString()
 
-  def normalizeWhitespace(beginLine: String, elem: Elem): Elem = {
+  private def normalizeWhitespace(beginLine: String, elem: Elem): Elem = {
     val withoutWhitespace = elem.child.filterNot(isWhitespace)
     if (withoutWhitespace.exists(_.isInstanceOf[Elem])) elem.copy(
       child = withoutWhitespace.flatMap { case elem: Elem => Seq(
@@ -19,7 +19,7 @@ object XmlHelpers {
     ) else elem
   }
 
-  def isWhitespace: Node => Boolean = {
+  private def isWhitespace: Node => Boolean = {
     case Text(Whitespace(_)) => true
     case _ => false
   }

@@ -55,7 +55,7 @@ object Main {
 
     val tiles: Seq[PositionedTile] = tiledProjection.tileCover(viewport)
 
-    Svg.render(tiledProjection.geoProjection, viewport, tiles, geoJson)
+    new Svg(tiledProjection.geoProjection).render(viewport, tiles, geoJson)
   }
 
   private def saveAsPng(svgContent: String, path: Path): Unit =
