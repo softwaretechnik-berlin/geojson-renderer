@@ -2,6 +2,11 @@ package berlin.softwaretechnik.geojsonrenderer.geojson
 
 import ujson.Value.Value
 
+/**
+ * GeoJSON style, derived from commonly used properties.
+ *
+ * @see https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0
+ */
 case class GeoJsonStyle(
   stroke: String,
   strokeOpacity: Double,
