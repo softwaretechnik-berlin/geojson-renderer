@@ -7,7 +7,7 @@ import scala.xml._
 
 object Svg {
 
-  def render(geoProjection: GeoProjection, viewport: Box2D, tiles: Seq[PositionedTile], geoJson: GeoJson): String = {
+  def render(geoProjection: GeoProjection, viewport: Box2D, tiles: Seq[PositionedTile], geoJson: GeoJson): String = NodeSeq.fromSeq(Seq(
     <svg
       width={viewport.width.toString}
       height={viewport.height.toString}
@@ -18,8 +18,9 @@ object Svg {
   </g>
   <g id="features">{renderGeoJson(geoProjection.relativeTo(viewport), geoJson)}
   </g>
-</svg>.toString()
-  }
+</svg>,
+    Text("\n")
+  )).toString
 
   private def renderTiles(viewport: Box2D, tiles: Seq[PositionedTile]): NodeSeq =
     tiles.flatMap { tile =>
