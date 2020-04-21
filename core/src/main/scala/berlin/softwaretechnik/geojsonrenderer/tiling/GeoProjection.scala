@@ -9,13 +9,13 @@ trait GeoProjection { top =>
   def bitmapPosition(geoCoord: GeoCoord): Position2D
   def geoCoords(pixelPosition: Position2D): GeoCoord
 
-  def shiftLongitude(longitude: Double): GeoProjection = {
-    val translation = GeoCoord(lat = 0, lon = -longitude)
+  def withCentralLongitude(centralLongitude: Double): GeoProjection = {
+    val minimumLongitude = centralLongitude - 180
     new GeoProjection {
       override def bitmapPosition(geoCoord: GeoCoord): Position2D =
-        top.bitmapPosition(GeoJsonSpatialOps.normalizeLongitude(geoCoord + translation))
+        top.bitmapPosition(GeoJsonSpatialOps.normalizeLongitude(geoCoord, minimumLongitude))
       override def geoCoords(pixelPosition: Position2D): GeoCoord =
-        GeoJsonSpatialOps.normalizeLongitude(top.geoCoords(pixelPosition) - translation)
+        top.geoCoords(pixelPosition)
     }
   }
 }

@@ -5,14 +5,11 @@ import berlin.softwaretechnik.geojsonrenderer._
 class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => String, centralLongitude: Double) {
 
   def geoProjection: GeoProjection =
-    WebMercatorProjection(zoomLevel, tileSize).shiftLongitude(centralLongitude)
-
-  private val xOfLongitudeMinus180: Double =
-    geoProjection.bitmapPosition(GeoCoord(lat = 0, lon = -180)).x
+    WebMercatorProjection(zoomLevel, tileSize).withCentralLongitude(centralLongitude)
 
   def tile(position2D: Position2D): TileId = {
     TileId(
-      Math.floor((position2D.x - xOfLongitudeMinus180) / tileSize).toInt,
+      Math.floor(position2D.x / tileSize).toInt,
       Math.floor(position2D.y / tileSize).toInt,
       zoomLevel
     )
@@ -29,7 +26,7 @@ class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => 
           PositionedTile(
             id = tileId,
             position = Position2D(
-              x = tileId.x * tileSize - projectedBox.upperLeft.x + xOfLongitudeMinus180,
+              x = tileId.x * tileSize - projectedBox.upperLeft.x,
               y = tileId.y * tileSize - projectedBox.upperLeft.y,
             ),
             size = tileSize,

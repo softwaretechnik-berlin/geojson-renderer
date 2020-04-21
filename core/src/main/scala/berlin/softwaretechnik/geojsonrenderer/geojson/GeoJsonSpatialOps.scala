@@ -31,11 +31,11 @@ object GeoJsonSpatialOps {
       north = coordinates.map(_.lat).max
     )
 
-  def normalizeLongitude(longitude: Double): Double =
-    floorMod(longitude + 180, 360) - 180
+  def normalizeLongitude(longitude: Double, minimumLongitude: Double = -180): Double =
+    floorMod(longitude - minimumLongitude, 360) + minimumLongitude
 
-  def normalizeLongitude(geoCoord: GeoCoord): GeoCoord =
-    geoCoord.copy(lon = normalizeLongitude(geoCoord.lon))
+  def normalizeLongitude(geoCoord: GeoCoord, minimumLongitude: Double): GeoCoord =
+    geoCoord.copy(lon = normalizeLongitude(geoCoord.lon, minimumLongitude))
 
   def floorMod(x: Double, y: Double): Double = {
     val remainder = x % y

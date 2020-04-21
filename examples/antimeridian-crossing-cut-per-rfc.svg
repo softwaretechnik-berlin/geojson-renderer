@@ -26,9 +26,9 @@
     <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/5.png" x="1112.0" y="565.7041747142939" width="256px" height="256px"/>
   </g>
   <g id="features">
-    <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555"><polyline points="486.2222222222223,61.034289768027634 600.0,61.034289768027634" fill="None"/><polyline points="600.0,61.034289768027634 713.7777777777778,61.034289768027634" fill="None"/>
+    <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555"><polyline points="486.22222222222223,61.034289768027634 600.0,61.034289768027634" fill="None"/><polyline points="600.0,61.034289768027634 713.7777777777778,61.034289768027634" fill="None"/>
         <title></title><desc>Line crossing the antimeridian, represented as MultiLineString cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9</desc></g>
-    <g fill-opacity="0.6" fill="blue" stroke-width="3.0" stroke-opacity="1.0" stroke="none"><polygon points="600.0,425.86550722213565 486.2222222222223,425.86550722213565 486.2222222222223,738.9657102319723 600.0,738.9657102319723 600.0,425.86550722213565"/><polygon points="600.0,425.86550722213565 600.0,738.9657102319723 713.7777777777778,738.9657102319723 713.7777777777778,425.86550722213565 600.0,425.86550722213565"/>
+    <g fill-opacity="0.6" fill="blue" stroke-width="3.0" stroke-opacity="1.0" stroke="none"><polygon points="600.0,425.86550722213565 486.22222222222223,425.86550722213565 486.22222222222223,738.9657102319723 600.0,738.9657102319723 600.0,425.86550722213565"/><polygon points="600.0,425.86550722213565 600.0,738.9657102319723 713.7777777777778,738.9657102319723 713.7777777777778,425.86550722213565 600.0,425.86550722213565"/>
         <title></title><desc>Filled rectangle straddling the antimeridian, represented as MultiPolygon cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9</desc></g>
   </g>
 </svg>
