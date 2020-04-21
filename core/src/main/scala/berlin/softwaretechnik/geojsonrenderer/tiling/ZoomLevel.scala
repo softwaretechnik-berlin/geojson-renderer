@@ -6,18 +6,20 @@ class ZoomLevel(val zoomLevel: Int, val tileSize: Int) {
 
   def geoProjection: GeoProjection = WebMercatorProjection(zoomLevel, tileSize)
 
-  def tileAndOffset(position2D: Position2D): (TileId, Position2D) =
+  def tileAndOffset(position2D: Position2D): (TileId, Position2D) = {
+    val tileId = TileId(
+      Math.floor(position2D.x / tileSize).toInt,
+      Math.floor(position2D.y / tileSize).toInt,
+      zoomLevel
+    )
     (
-      TileId(
-        (position2D.x.toLong / tileSize).toInt,
-        (position2D.y.toLong / tileSize).toInt,
-        zoomLevel
-      ),
+      tileId,
       Position2D(
-        position2D.x.toLong % tileSize,
-        position2D.y.toLong % tileSize,
+        position2D.x - tileId.x * tileSize,
+        position2D.y - tileId.y * tileSize,
       )
     )
+  }
 
   def tileCover(projectedBox: Box2D): Seq[PositionedTile] = {
     val (upperLeftTile, tileOffset) = tileAndOffset(projectedBox.upperLeft)

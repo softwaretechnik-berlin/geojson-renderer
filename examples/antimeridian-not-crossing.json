@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "description": "Line crossing most of the world, but not the antimeridian unless the implementation is taking liberties"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-160, 20],
+          [160, 60]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "none",
+        "fill": "blue",
+        "description": "Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [160, -20],
+            [-160, -20],
+            [-160, -60],
+            [160, -60],
+            [160, -20]
+          ]
+        ]
+      }
+    }
+  ]
+}

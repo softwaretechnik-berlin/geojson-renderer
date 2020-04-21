@@ -37,10 +37,10 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
     val mapPosition = zoomLevel.geoProjection.bitmapPosition(charlottenburgPalace)
 
     val (tile, offset) = zoomLevel.tileAndOffset(mapPosition)
-    assert(tile.x == 8)
-    assert(offset.x == 151)
-    assert(tile.y == 5)
-    assert(offset.y == 63)
+    assert(tile.x === 8)
+    assert(offset.x === 151.28 +- 0.005)
+    assert(tile.y === 5)
+    assert(offset.y === 63.29 +- 0.005)
   }
 
   test("It should roundtrip geo positions via the map") {
