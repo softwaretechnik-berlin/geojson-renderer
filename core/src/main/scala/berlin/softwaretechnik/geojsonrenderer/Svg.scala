@@ -99,7 +99,7 @@ object Svg {
       Text("\n    "),
       element.copy(child = element.child
         :+ <title>{style.title}</title>
-        :+ <desc>{style.title}</desc>
+        :+ <desc>{style.description}</desc>
       ) %
         Attribute(null, "stroke", style.stroke, Null) %
         Attribute(null, "stroke-opacity", style.strokeOpacity.toString, Null) %
