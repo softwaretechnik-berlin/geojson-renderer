@@ -24,7 +24,7 @@
   <g id="features">
     <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555">
           <polyline points="486.0,171.5605560715885 486.0,629.0 713.5555555555566,629.0" fill="None"/>
-        <title></title><desc></desc></g>
-    <circle fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555" cx="713.5555555555566" cy="401.15507090549636" r="3"><title></title><desc></desc></circle>
+        </g>
+    <circle fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555" cx="713.5555555555566" cy="401.15507090549636" r="3"/>
   </g>
 </svg>

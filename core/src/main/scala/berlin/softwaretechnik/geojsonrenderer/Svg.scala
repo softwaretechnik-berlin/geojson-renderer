@@ -91,10 +91,11 @@ object Svg {
     val style: GeoJsonStyle = GeoJsonStyle(feature.properties)
     Seq(
       Text("\n    "),
-      element.copy(child = element.child
-        :+ <title>{style.title}</title>
-        :+ <desc>{style.description}</desc>
-      ) %
+      element.copy(child = (
+        style.title.map(t => <title>{t}</title>) ++
+        style.description.map(t => <desc>{t}</desc>) ++
+        element.child
+      ).toSeq) %
         Attribute(null, "stroke", style.stroke, Null) %
         Attribute(null, "stroke-opacity", style.strokeOpacity.toString, Null) %
         Attribute(null, "stroke-width", style.strokeWidth.toString, Null) %
