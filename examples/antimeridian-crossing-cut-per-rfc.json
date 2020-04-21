@@ -1,0 +1,55 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "description": "Line crossing the antimeridian, represented as MultiLineString cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9"
+      },
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [160, 40],
+            [180, 40]
+          ],
+          [
+            [-180, 40],
+            [-160, 40]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "none",
+        "fill": "blue",
+        "description": "Filled rectangle straddling the antimeridian, represented as MultiPolygon cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [180, -20],
+              [160, -20],
+              [160, -60],
+              [180, -60],
+              [180, -20]
+            ]
+          ],
+          [
+            [
+              [-180, -20],
+              [-180, -60],
+              [-160, -60],
+              [-160, -20],
+              [-180, -20]
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

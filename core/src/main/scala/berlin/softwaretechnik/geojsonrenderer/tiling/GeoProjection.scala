@@ -1,12 +1,23 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
+import berlin.softwaretechnik.geojsonrenderer.geojson.GeoJsonSpatialOps
 import berlin.softwaretechnik.geojsonrenderer.{GeoCoord, Position2D}
 
 import scala.math._
 
-trait GeoProjection {
+trait GeoProjection { top =>
   def bitmapPosition(geoCoord: GeoCoord): Position2D
   def geoCoords(pixelPosition: Position2D): GeoCoord
+
+  def shiftLongitude(longitude: Double): GeoProjection = {
+    val translation = GeoCoord(lat = 0, lon = -longitude)
+    new GeoProjection {
+      override def bitmapPosition(geoCoord: GeoCoord): Position2D =
+        top.bitmapPosition(GeoJsonSpatialOps.normalizeLongitude(geoCoord + translation))
+      override def geoCoords(pixelPosition: Position2D): GeoCoord =
+        GeoJsonSpatialOps.normalizeLongitude(top.geoCoords(pixelPosition) - translation)
+    }
+  }
 }
 
 /**

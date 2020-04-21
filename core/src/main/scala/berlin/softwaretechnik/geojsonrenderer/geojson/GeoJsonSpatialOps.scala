@@ -16,15 +16,6 @@ object GeoJsonSpatialOps {
         case geojson.MultiPolygon(polygons) => polygons.flatten.flatten
       }
 
-    def boundingBox(coordinates: Seq[GeoCoord]): BoundingBox = {
-      BoundingBox(
-        coordinates.map(_.lon).min,
-        coordinates.map(_.lat).min,
-        coordinates.map(_.lon).max,
-        coordinates.map(_.lat).max
-      )
-    }
-
     boundingBox(geoJson match {
       case geometry: Geometry => coordinates(geometry)
       case Feature(geometry, _) => coordinates(geometry)
@@ -32,4 +23,22 @@ object GeoJsonSpatialOps {
     })
   }
 
+  def boundingBox(coordinates: Seq[GeoCoord]): BoundingBox =
+    BoundingBox(
+      west = normalizeLongitude(coordinates.map(_.lon).min),
+      south = coordinates.map(_.lat).min,
+      east = normalizeLongitude(coordinates.map(_.lon).max),
+      north = coordinates.map(_.lat).max
+    )
+
+  def normalizeLongitude(longitude: Double): Double =
+    floorMod(longitude + 180, 360) - 180
+
+  def normalizeLongitude(geoCoord: GeoCoord): GeoCoord =
+    geoCoord.copy(lon = normalizeLongitude(geoCoord.lon))
+
+  def floorMod(x: Double, y: Double): Double = {
+    val remainder = x % y
+    if (remainder < 0) y + remainder else remainder
+  }
 }

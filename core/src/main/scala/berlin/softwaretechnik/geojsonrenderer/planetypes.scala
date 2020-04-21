@@ -61,11 +61,16 @@ final case class Vector2D(x: Double, y: Double) extends Vector2DOps[Vector2D] {
 }
 
 trait Vector2DOps[V <: Vector2DOps[V]] {
-  def x: Double
-  def y: Double
+  protected def x: Double
+  protected def y: Double
   protected def v(x: Double, y: Double): V
 
   final def +(other: V): V = v(x + other.x, y + other.y)
   final def -(other: V): V = v(x - other.x, y - other.y)
   final def *(scalar: Double): V = v(x * scalar, y * scalar)
+}
+
+object Vector2DOps {
+  def x(v: Vector2DOps[_]): Double = v.x
+  def y(v: Vector2DOps[_]): Double = v.y
 }

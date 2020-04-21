@@ -1,0 +1,45 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "none",
+        "fill": "green",
+        "description": "Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-160, 20],
+            [-200, 20],
+            [-200, 10],
+            [-160, 10],
+            [-160, 20]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "none",
+        "fill": "blue",
+        "description": "Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [200, -10],
+            [160, -10],
+            [160, -20],
+            [200, -20],
+            [200, -10]
+          ]
+        ]
+      }
+    }
+  ]
+}

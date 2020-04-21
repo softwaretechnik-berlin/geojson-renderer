@@ -1,29 +1,29 @@
-<svg width="1199.999999999999" height="800.0" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<svg width="1200.0" height="800.0" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
   <g id="tiles">
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/29.png" x="-25.777777777778283" y="-139.28027803579425" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/30.png" x="-25.777777777778283" y="116.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/31.png" x="-25.777777777778283" y="372.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/32.png" x="-25.777777777778283" y="628.7197219642057" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/31/29.png" x="230.22222222222172" y="-139.28027803579425" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/31/30.png" x="230.22222222222172" y="116.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/31/31.png" x="230.22222222222172" y="372.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/31/32.png" x="230.22222222222172" y="628.7197219642057" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/32/29.png" x="486.2222222222217" y="-139.28027803579425" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/32/30.png" x="486.2222222222217" y="116.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/32/31.png" x="486.2222222222217" y="372.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/32/32.png" x="486.2222222222217" y="628.7197219642057" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/33/29.png" x="742.2222222222217" y="-139.28027803579425" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/33/30.png" x="742.2222222222217" y="116.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/33/31.png" x="742.2222222222217" y="372.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/33/32.png" x="742.2222222222217" y="628.7197219642057" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/29.png" x="998.2222222222217" y="-139.28027803579425" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/30.png" x="998.2222222222217" y="116.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/31.png" x="998.2222222222217" y="372.71972196420575" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/32.png" x="998.2222222222217" y="628.7197219642057" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/29.png" x="-25.777777777777374" y="-139.28027803579425" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/30.png" x="-25.777777777777374" y="116.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/31.png" x="-25.777777777777374" y="372.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/30/32.png" x="-25.777777777777374" y="628.7197219642057" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/31/29.png" x="230.22222222222263" y="-139.28027803579425" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/31/30.png" x="230.22222222222263" y="116.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/31/31.png" x="230.22222222222263" y="372.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/31/32.png" x="230.22222222222263" y="628.7197219642057" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/32/29.png" x="486.2222222222226" y="-139.28027803579425" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/32/30.png" x="486.2222222222226" y="116.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/32/31.png" x="486.2222222222226" y="372.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/32/32.png" x="486.2222222222226" y="628.7197219642057" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/33/29.png" x="742.2222222222226" y="-139.28027803579425" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/33/30.png" x="742.2222222222226" y="116.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/33/31.png" x="742.2222222222226" y="372.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/33/32.png" x="742.2222222222226" y="628.7197219642057" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/29.png" x="998.2222222222226" y="-139.28027803579425" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/30.png" x="998.2222222222226" y="116.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/31.png" x="998.2222222222226" y="372.71972196420575" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/6/34/32.png" x="998.2222222222226" y="628.7197219642057" width="256px" height="256px"/>
   </g>
   <g id="features">
     <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555">
-          <polyline points="486.2222222222217,171.28027803579425 486.2222222222217,628.7197219642057 713.7777777777783,628.7197219642057" fill="None"/>
+          <polyline points="486.2222222222226,171.28027803579425 486.2222222222226,628.7197219642057 713.7777777777774,628.7197219642057" fill="None"/>
         <title></title><desc></desc></g>
   </g>
 </svg>

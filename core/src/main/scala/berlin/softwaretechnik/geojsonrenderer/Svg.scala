@@ -1,13 +1,13 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, Geometry, MultiPoint, Point}
-import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme, ZoomLevel}
+import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme, TiledProjection}
 
 import scala.xml._
 
 object Svg {
 
-  def render(projectedBox: Box2D, zoomLevel: ZoomLevel, tilingScheme: TilingScheme, tiles: Seq[PositionedTile], geoJson: GeoJson): String = {
+  def render(projectedBox: Box2D, zoomLevel: TiledProjection, tilingScheme: TilingScheme, tiles: Seq[PositionedTile], geoJson: GeoJson): String = {
     <svg
       width={projectedBox.width.toString}
       height={projectedBox.height.toString}
@@ -22,7 +22,7 @@ object Svg {
   }
 
   private def imagesForTiles(tilingScheme: TilingScheme,
-                             zoomLevel: ZoomLevel,
+                             zoomLevel: TiledProjection,
                              tiles: Seq[PositionedTile]): NodeSeq =
     tiles.flatMap { tile =>
       Seq(
@@ -35,7 +35,7 @@ object Svg {
       )
     }
 
-  private def renderGeoJson(zoomLevel: ZoomLevel,
+  private def renderGeoJson(zoomLevel: TiledProjection,
                             projectedBox: Box2D,
                             geoJson: GeoJson): NodeSeq = {
     val features = geoJson match {
@@ -46,7 +46,7 @@ object Svg {
     features.flatMap(renderFeature(zoomLevel, projectedBox, _))
   }
 
-  private def renderFeature(zoomLevel: ZoomLevel,
+  private def renderFeature(zoomLevel: TiledProjection,
                             projectedBox: Box2D,
                             feature: Feature): Seq[Node] = {
     val element = feature.geometry match {
