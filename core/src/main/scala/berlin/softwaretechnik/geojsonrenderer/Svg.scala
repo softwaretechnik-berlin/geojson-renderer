@@ -1,28 +1,27 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, Geometry, MultiPoint, Point}
-import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme, TiledProjection}
+import berlin.softwaretechnik.geojsonrenderer.tiling.{GeoProjection, PositionedTile, TilingScheme}
 
 import scala.xml._
 
 object Svg {
 
-  def render(projectedBox: Box2D, zoomLevel: TiledProjection, tilingScheme: TilingScheme, tiles: Seq[PositionedTile], geoJson: GeoJson): String = {
+  def render(geoProjection: GeoProjection, viewport: Box2D, tilingScheme: TilingScheme, tiles: Seq[PositionedTile], geoJson: GeoJson): String = {
     <svg
-      width={projectedBox.width.toString}
-      height={projectedBox.height.toString}
+      width={viewport.width.toString}
+      height={viewport.height.toString}
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink">
-  <g id="tiles">{imagesForTiles(tilingScheme, zoomLevel, tiles)}
+  <g id="tiles">{imagesForTiles(tilingScheme, tiles)}
   </g>
-  <g id="features">{renderGeoJson(zoomLevel, projectedBox, geoJson)}
+  <g id="features">{renderGeoJson(geoProjection, viewport, geoJson)}
   </g>
 </svg>.toString()
   }
 
   private def imagesForTiles(tilingScheme: TilingScheme,
-                             zoomLevel: TiledProjection,
                              tiles: Seq[PositionedTile]): NodeSeq =
     tiles.flatMap { tile =>
       Seq(
@@ -30,12 +29,12 @@ object Svg {
           <image xlink:href={tilingScheme.url(tile.tileId)}
                  x={tile.position.x.toString}
                  y={tile.position.y.toString}
-                 width={s"${zoomLevel.tileSize}px"}
-                 height={s"${zoomLevel.tileSize}px"}/>
+                 width={s"${tilingScheme.tileSize}px"}
+                 height={s"${tilingScheme.tileSize}px"}/>
       )
     }
 
-  private def renderGeoJson(zoomLevel: TiledProjection,
+  private def renderGeoJson(geoProjection: GeoProjection,
                             projectedBox: Box2D,
                             geoJson: GeoJson): NodeSeq = {
     val features = geoJson match {
@@ -43,21 +42,21 @@ object Svg {
       case feature: Feature => Seq(feature)
       case FeatureCollection(features) => features
     }
-    features.flatMap(renderFeature(zoomLevel, projectedBox, _))
+    features.flatMap(renderFeature(geoProjection, projectedBox, _))
   }
 
-  private def renderFeature(zoomLevel: TiledProjection,
-                            projectedBox: Box2D,
+  private def renderFeature(geoProjection: GeoProjection,
+                            viewport: Box2D,
                             feature: Feature): Seq[Node] = {
     val element = feature.geometry match {
       case Point(gc) =>
-        val point = zoomLevel.geoProjection.bitmapPosition(gc) - projectedBox.upperLeft
+        val point = geoProjection.bitmapPosition(gc) - viewport.upperLeft
           <circle cx={point.x.toString} cy={point.y.toString} r="3" />
 
       case MultiPoint(points) =>
         <g>
           {points.map { geoCoord =>
-          val point = zoomLevel.geoProjection.bitmapPosition(geoCoord) - projectedBox.upperLeft
+          val point = geoProjection.bitmapPosition(geoCoord) - viewport.upperLeft
             <circle cx={point.x.toString} cy={point.y.toString} r="3"
             />
         }}
@@ -66,14 +65,14 @@ object Svg {
       case geojson.LineString(coordinates) =>
         <g>
           <polyline
-          points={coordinates.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+          points={coordinates.map(geoProjection.bitmapPosition(_) - viewport.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
           fill="None"/>
         </g>
       case geojson.MultiLineString(lines) =>
         <g>{
           lines.map { coordinates =>
               <polyline
-              points={coordinates.map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={coordinates.map(geoProjection.bitmapPosition(_) - viewport.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
               fill="None"
               />
           }}
@@ -81,14 +80,14 @@ object Svg {
 
       case geojson.Polygon(coordinates) =>
           <polygon
-          points={coordinates(0).map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+          points={coordinates(0).map(geoProjection.bitmapPosition(_) - viewport.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
           />
 
       case geojson.MultiPolygon(lines) =>
         <g>{
           lines.map { coordinates =>
               <polygon
-              points={coordinates(0).map(zoomLevel.geoProjection.bitmapPosition(_) - projectedBox.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={coordinates(0).map(geoProjection.bitmapPosition(_) - viewport.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
               />
           }}
         </g>

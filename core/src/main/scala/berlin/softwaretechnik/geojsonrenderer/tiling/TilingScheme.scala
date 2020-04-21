@@ -1,7 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer
 package tiling
 
-class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId => String) {
+class TilingScheme(minZoom: Int, maxZoom: Int, val tileSize: Int, tileUrl: TileId => String) {
 
   def tiledProjection(zoomLevel: Int, centralLongitude: Double): TiledProjection =
     new TiledProjection(zoomLevel, tileSize, centralLongitude)

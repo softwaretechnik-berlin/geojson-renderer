@@ -50,23 +50,23 @@ object Main {
   def render(screenDimensions: Dimensions, geoJson: GeoJson): String = {
     val boundingBox = GeoJsonSpatialOps.determineBoundingBox(geoJson)
 
-    val (bitMapBox, zoomLevel) = tilingScheme.optimalZoomLevel(boundingBox, screenDimensions)
-    println(s"Best zoom level ${zoomLevel.zoomLevel}")
+    val (bitMapBox, tiledProjection) = tilingScheme.optimalZoomLevel(boundingBox, screenDimensions)
+    println(s"Best zoom level ${tiledProjection.zoomLevel}")
 
     val offset: Position2D = (screenDimensions.toVector - bitMapBox.dimensions.toVector) * 0.5
 
-    val projectedBox = Box2D(
+    val viewport = Box2D(
       bitMapBox.upperLeft - offset,
       bitMapBox.upperLeft - offset + screenDimensions.toVector
     )
 
-    val tiles: Seq[PositionedTile] = zoomLevel.tileCover(projectedBox)
+    val tiles: Seq[PositionedTile] = tiledProjection.tileCover(viewport)
 
-    val projectedBoundingBox = zoomLevel.bitmapBox(boundingBox) - projectedBox.upperLeft
+    val projectedBoundingBox = tiledProjection.bitmapBox(boundingBox) - viewport.upperLeft
 
     println(s"${projectedBoundingBox}")
 
-    Svg.render(projectedBox, zoomLevel, tilingScheme, tiles, geoJson)
+    Svg.render(tiledProjection.geoProjection, viewport, tilingScheme, tiles, geoJson)
   }
 
   private def saveAsPng(svgContent: String, path: Path): Unit =
