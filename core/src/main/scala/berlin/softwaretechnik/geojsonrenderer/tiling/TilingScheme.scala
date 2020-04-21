@@ -6,15 +6,15 @@ class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId =>
   def tiledProjection(zoomLevel: Int, centralLongitude: Double): TiledProjection =
     new TiledProjection(zoomLevel, tileSize, tileUrl, centralLongitude)
 
-  def optimalZoomLevel(boundingBox: BoundingBox, viewport: Dimensions): (Box2D, TiledProjection) = {
+  def optimalViewportAndProjection(boundingBox: BoundingBox, dimensions: Dimensions): (Box2D, TiledProjection) = {
     (minZoom to maxZoom).reverse
       .map { zoomLevel =>
         val tiledProjection = this.tiledProjection(zoomLevel, boundingBox.centralLongitude)
-        tiledProjection.bitmapBox(boundingBox) -> tiledProjection}
-      .find {
-        case (bitmapBox, _) =>
-          bitmapBox.width <= viewport.width && bitmapBox.height <= viewport.height}
-      .get
+        tiledProjection.geoProjection.coveringViewport(boundingBox) -> tiledProjection
+      }.collectFirst {
+        case (bitmapBox, tp) if bitmapBox.width <= dimensions.width && bitmapBox.height <= dimensions.height =>
+          bitmapBox.expandTo(dimensions) -> tp
+      }.get
   }
 
 }

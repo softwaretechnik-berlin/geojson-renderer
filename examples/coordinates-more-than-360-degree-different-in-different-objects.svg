@@ -1,29 +1,29 @@
-<svg width="1200.0" height="800.0" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<svg width="1200" height="800" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
   <g id="tiles">
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/13/6.png" x="-168.0" y="-112.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/13/7.png" x="-168.0" y="144.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/13/8.png" x="-168.0" y="400.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/13/9.png" x="-168.0" y="656.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/14/6.png" x="88.0" y="-112.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/14/7.png" x="88.0" y="144.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/14/8.png" x="88.0" y="400.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/14/9.png" x="88.0" y="656.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/15/6.png" x="344.0" y="-112.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/15/7.png" x="344.0" y="144.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/15/8.png" x="344.0" y="400.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/15/9.png" x="344.0" y="656.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/0/6.png" x="600.0" y="-112.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/0/7.png" x="600.0" y="144.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/0/8.png" x="600.0" y="400.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/0/9.png" x="600.0" y="656.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/1/6.png" x="856.0" y="-112.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/1/7.png" x="856.0" y="144.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/1/8.png" x="856.0" y="400.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/1/9.png" x="856.0" y="656.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/2/6.png" x="1112.0" y="-112.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/2/7.png" x="1112.0" y="144.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/2/8.png" x="1112.0" y="400.0" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/2/9.png" x="1112.0" y="656.0" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/13/6.png" x="-168" y="-112" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/13/7.png" x="-168" y="144" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/13/8.png" x="-168" y="400" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/13/9.png" x="-168" y="656" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/14/6.png" x="88" y="-112" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/14/7.png" x="88" y="144" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/14/8.png" x="88" y="400" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/14/9.png" x="88" y="656" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/15/6.png" x="344" y="-112" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/15/7.png" x="344" y="144" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/15/8.png" x="344" y="400" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/15/9.png" x="344" y="656" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/0/6.png" x="600" y="-112" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/0/7.png" x="600" y="144" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/0/8.png" x="600" y="400" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/0/9.png" x="600" y="656" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/1/6.png" x="856" y="-112" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/1/7.png" x="856" y="144" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/1/8.png" x="856" y="400" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/1/9.png" x="856" y="656" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/2/6.png" x="1112" y="-112" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/2/7.png" x="1112" y="144" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/2/8.png" x="1112" y="400" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/4/2/9.png" x="1112" y="656" width="256px" height="256px"/>
   </g>
   <g id="features">
     <polygon fill-opacity="0.6" fill="green" stroke-width="3.0" stroke-opacity="1.0" stroke="none" points="827.5555555555555,167.67733498431653 372.44444444444446,167.67733498431653 372.44444444444446,285.6401390178971 827.5555555555555,285.6401390178971 827.5555555555555,167.67733498431653"><title></title><desc>Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6</desc></polygon>

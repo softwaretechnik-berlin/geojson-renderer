@@ -1,6 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
-import berlin.softwaretechnik.geojsonrenderer.{Box2D, GeoCoord, Position2D, Vector2D, Vector2DOps}
+import berlin.softwaretechnik.geojsonrenderer._
 import org.scalactic._
 import org.scalatest.Assertion
 import org.scalatest.funsuite.AnyFunSuite
@@ -34,7 +34,7 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
     val tiledProjection = TilingScheme.osm().tiledProjection(zoomLevel = 4, centralLongitude = -45)
     val mapPosition = tiledProjection.geoProjection.bitmapPosition(charlottenburgPalace)
 
-    assert(tiledProjection.tile(mapPosition) === TileId(
+    assert(tiledProjection.tile(mapPosition.x.toInt, mapPosition.y.toInt) === TileId(
       x = 8,
       y = 5,
       z = 4,
@@ -47,7 +47,11 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
     val tiledProjection = tiling.tiledProjection(4, 0)
     val mapPosition = tiledProjection.geoProjection.bitmapPosition(charlottenburgPalace)
 
-    val tiles = tiledProjection.tileCover(Box2D(mapPosition - Position2D(256, 256), mapPosition + Position2D(256, 256))).map(_.id)
+    val tiles =
+      tiledProjection.tileCover(Box2D.covering(
+        mapPosition - Position2D(256, 256),
+        mapPosition + Position2D(256, 256)
+      )).map(_.id)
 
     assert(tiles === Seq(
       TileId(x = 7, y = 4, z = 4),
@@ -59,6 +63,22 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
       TileId(x = 9, y = 4, z = 4),
       TileId(x = 9, y = 5, z = 4),
       TileId(x = 9, y = 6, z = 4),
+    ))
+  }
+
+  test("It should give no more than enough tiles to cover") {
+    val tiledProjection = TilingScheme.osm().tiledProjection(6, 0)
+
+    val viewport = Box2D(left = -512, bottom = 768, right = 256, top = 256)
+    val tiles = tiledProjection.tileCover(viewport).map(_.id)
+
+    assert(tiles === Seq(
+      TileId(x = -2, y = 1, z = 6),
+      TileId(x = -2, y = 2, z = 6),
+      TileId(x = -1, y = 1, z = 6),
+      TileId(x = -1, y = 2, z = 6),
+      TileId(x = 0, y = 1, z = 6),
+      TileId(x = 0, y = 2, z = 6),
     ))
   }
 

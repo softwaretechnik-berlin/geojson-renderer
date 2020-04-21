@@ -1,13 +1,19 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
 import berlin.softwaretechnik.geojsonrenderer.geojson.GeoJsonSpatialOps
-import berlin.softwaretechnik.geojsonrenderer.{GeoCoord, Position2D}
+import berlin.softwaretechnik.geojsonrenderer.{BoundingBox, Box2D, GeoCoord, Position2D}
 
 import scala.math._
 
 trait GeoProjection { top =>
   def bitmapPosition(geoCoord: GeoCoord): Position2D
   def geoCoords(pixelPosition: Position2D): GeoCoord
+
+  def coveringViewport(boundingBox: BoundingBox): Box2D =
+    Box2D.covering(
+      upperLeft = bitmapPosition(boundingBox.upperLeft()),
+      lowerRight = bitmapPosition(boundingBox.lowerRight()),
+    )
 
   def withCentralLongitude(centralLongitude: Double): GeoProjection = {
     val minimumLongitude = centralLongitude - 180
@@ -18,6 +24,13 @@ trait GeoProjection { top =>
         top.geoCoords(pixelPosition)
     }
   }
+
+  def relativeTo(viewport: Box2D): GeoProjection = new GeoProjection {
+    private val origin: Position2D = Position2D(x = viewport.left, y = viewport.top)
+    override def bitmapPosition(geoCoord: GeoCoord): Position2D = top.bitmapPosition(geoCoord) - origin
+    override def geoCoords(pixelPosition: Position2D): GeoCoord = top.geoCoords(pixelPosition + origin)
+  }
+
 }
 
 /**

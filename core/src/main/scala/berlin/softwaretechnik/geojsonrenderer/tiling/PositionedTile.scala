@@ -1,5 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
-import berlin.softwaretechnik.geojsonrenderer.Position2D
-
-case class PositionedTile(id: TileId, position: Position2D, size: Int, url: String)
+case class PositionedTile(id: TileId, size: Int, url: String) {
+  def leftXPosition: Int = id.x * size
+  def topYPosition: Int = id.y * size
+}

@@ -50,15 +50,8 @@ object Main {
   def render(screenDimensions: Dimensions, geoJson: GeoJson): String = {
     val boundingBox = GeoJsonSpatialOps.determineBoundingBox(geoJson)
 
-    val (bitMapBox, tiledProjection) = tilingScheme.optimalZoomLevel(boundingBox, screenDimensions)
+    val (viewport, tiledProjection) = tilingScheme.optimalViewportAndProjection(boundingBox, screenDimensions)
     println(s"Best zoom level ${tiledProjection.zoomLevel}")
-
-    val offset: Position2D = (screenDimensions.toVector - bitMapBox.dimensions.toVector) * 0.5
-
-    val viewport = Box2D(
-      bitMapBox.upperLeft - offset,
-      bitMapBox.upperLeft - offset + screenDimensions.toVector
-    )
 
     val tiles: Seq[PositionedTile] = tiledProjection.tileCover(viewport)
 

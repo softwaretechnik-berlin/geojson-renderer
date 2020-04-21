@@ -7,28 +7,24 @@ class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => 
   def geoProjection: GeoProjection =
     WebMercatorProjection(zoomLevel, tileSize).withCentralLongitude(centralLongitude)
 
-  def tile(position2D: Position2D): TileId = {
+  def tile(x: Int, y: Int): TileId = {
     TileId(
-      Math.floor(position2D.x / tileSize).toInt,
-      Math.floor(position2D.y / tileSize).toInt,
+      Math.floorDiv(x, tileSize),
+      Math.floorDiv(y, tileSize),
       zoomLevel
     )
   }
 
-  def tileCover(projectedBox: Box2D): Seq[PositionedTile] = {
-    val upperLeftTile = tile(projectedBox.upperLeft)
-    val lowerRightTile = tile(projectedBox.lowerRight)
+  def tileCover(viewport: Box2D): Seq[PositionedTile] = {
+    val upperLeftTile = tile(x = viewport.left, y = viewport.top)
+    val lowerRightTile = tile(x = viewport.right - 1, y = viewport.bottom - 1)
 
     val tiles: Seq[PositionedTile] =
       (upperLeftTile.x to lowerRightTile.x).flatMap { tileX =>
         (upperLeftTile.y to lowerRightTile.y).map { tileY =>
-          val tileId = TileId(tileX, tileY, upperLeftTile.z)
+          val tileId = TileId(tileX, tileY, zoomLevel)
           PositionedTile(
             id = tileId,
-            position = Position2D(
-              x = tileId.x * tileSize - projectedBox.upperLeft.x,
-              y = tileId.y * tileSize - projectedBox.upperLeft.y,
-            ),
             size = tileSize,
             url = tileUrl(tileId)
           )
@@ -36,11 +32,5 @@ class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => 
       }
     tiles
   }
-
-  def bitmapBox(boundingBox: BoundingBox): Box2D =
-    Box2D(
-      upperLeft = geoProjection.bitmapPosition(boundingBox.upperLeft()),
-      lowerRight = geoProjection.bitmapPosition(boundingBox.lowerRight())
-    )
 
 }

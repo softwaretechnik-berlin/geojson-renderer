@@ -14,48 +14,44 @@ object Svg {
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink">
-  <g id="tiles">{renderTiles(tiles)}
+  <g id="tiles">{renderTiles(viewport, tiles)}
   </g>
-  <g id="features">{renderGeoJson(geoProjection, viewport, geoJson)}
+  <g id="features">{renderGeoJson(geoProjection.relativeTo(viewport), geoJson)}
   </g>
 </svg>.toString()
   }
 
-  private def renderTiles(tiles: Seq[PositionedTile]): NodeSeq =
+  private def renderTiles(viewport: Box2D, tiles: Seq[PositionedTile]): NodeSeq =
     tiles.flatMap { tile =>
       Seq(
         Text("\n    "),
           <image xlink:href={tile.url}
-                 x={tile.position.x.toString}
-                 y={tile.position.y.toString}
+                 x={(tile.leftXPosition - viewport.left).toString}
+                 y={(tile.topYPosition - viewport.top).toString}
                  width={s"${tile.size}px"}
                  height={s"${tile.size}px"}/>
       )
     }
 
-  private def renderGeoJson(geoProjection: GeoProjection,
-                            projectedBox: Box2D,
-                            geoJson: GeoJson): NodeSeq = {
+  private def renderGeoJson(geoProjection: GeoProjection, geoJson: GeoJson): NodeSeq = {
     val features = geoJson match {
       case geometry: Geometry => Seq(Feature(geometry, Map.empty))
       case feature: Feature => Seq(feature)
       case FeatureCollection(features) => features
     }
-    features.flatMap(renderFeature(geoProjection, projectedBox, _))
+    features.flatMap(renderFeature(geoProjection, _))
   }
 
-  private def renderFeature(geoProjection: GeoProjection,
-                            viewport: Box2D,
-                            feature: Feature): Seq[Node] = {
+  private def renderFeature(geoProjection: GeoProjection, feature: Feature): Seq[Node] = {
     val element = feature.geometry match {
       case Point(gc) =>
-        val point = geoProjection.bitmapPosition(gc) - viewport.upperLeft
+        val point = geoProjection.bitmapPosition(gc)
           <circle cx={point.x.toString} cy={point.y.toString} r="3" />
 
       case MultiPoint(points) =>
         <g>
           {points.map { geoCoord =>
-          val point = geoProjection.bitmapPosition(geoCoord) - viewport.upperLeft
+          val point = geoProjection.bitmapPosition(geoCoord)
             <circle cx={point.x.toString} cy={point.y.toString} r="3"
             />
         }}
@@ -64,14 +60,14 @@ object Svg {
       case geojson.LineString(coordinates) =>
         <g>
           <polyline
-          points={coordinates.map(geoProjection.bitmapPosition(_) - viewport.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+          points={coordinates.map(geoProjection.bitmapPosition).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
           fill="None"/>
         </g>
       case geojson.MultiLineString(lines) =>
         <g>{
           lines.map { coordinates =>
               <polyline
-              points={coordinates.map(geoProjection.bitmapPosition(_) - viewport.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={coordinates.map(geoProjection.bitmapPosition).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
               fill="None"
               />
           }}
@@ -79,14 +75,14 @@ object Svg {
 
       case geojson.Polygon(coordinates) =>
           <polygon
-          points={coordinates(0).map(geoProjection.bitmapPosition(_) - viewport.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+          points={coordinates(0).map(geoProjection.bitmapPosition).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
           />
 
       case geojson.MultiPolygon(lines) =>
         <g>{
           lines.map { coordinates =>
               <polygon
-              points={coordinates(0).map(geoProjection.bitmapPosition(_) - viewport.upperLeft).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
+              points={coordinates(0).map(geoProjection.bitmapPosition).map(pos => s"${pos.x},${pos.y}").mkString(" ")}
               />
           }}
         </g>

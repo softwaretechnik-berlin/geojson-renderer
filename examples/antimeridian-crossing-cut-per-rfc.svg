@@ -1,34 +1,34 @@
-<svg width="1200.0" height="800.0" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<svg width="1200" height="800" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
   <g id="tiles">
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/5/2.png" x="-168.0" y="-202.2958252857061" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/5/3.png" x="-168.0" y="53.70417471429391" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/5/4.png" x="-168.0" y="309.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/5/5.png" x="-168.0" y="565.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/6/2.png" x="88.0" y="-202.2958252857061" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/6/3.png" x="88.0" y="53.70417471429391" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/6/4.png" x="88.0" y="309.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/6/5.png" x="88.0" y="565.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/7/2.png" x="344.0" y="-202.2958252857061" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/7/3.png" x="344.0" y="53.70417471429391" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/7/4.png" x="344.0" y="309.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/7/5.png" x="344.0" y="565.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/0/2.png" x="600.0" y="-202.2958252857061" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/0/3.png" x="600.0" y="53.70417471429391" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/0/4.png" x="600.0" y="309.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/0/5.png" x="600.0" y="565.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/1/2.png" x="856.0" y="-202.2958252857061" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/1/3.png" x="856.0" y="53.70417471429391" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/1/4.png" x="856.0" y="309.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/1/5.png" x="856.0" y="565.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/2.png" x="1112.0" y="-202.2958252857061" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/3.png" x="1112.0" y="53.70417471429391" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/4.png" x="1112.0" y="309.7041747142939" width="256px" height="256px"/>
-    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/5.png" x="1112.0" y="565.7041747142939" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/5/2.png" x="-168" y="-203" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/5/3.png" x="-168" y="53" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/5/4.png" x="-168" y="309" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/5/5.png" x="-168" y="565" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/6/2.png" x="88" y="-203" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/6/3.png" x="88" y="53" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/6/4.png" x="88" y="309" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/6/5.png" x="88" y="565" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/7/2.png" x="344" y="-203" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/7/3.png" x="344" y="53" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/7/4.png" x="344" y="309" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/7/5.png" x="344" y="565" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/0/2.png" x="600" y="-203" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/0/3.png" x="600" y="53" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/0/4.png" x="600" y="309" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/0/5.png" x="600" y="565" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/1/2.png" x="856" y="-203" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/1/3.png" x="856" y="53" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/1/4.png" x="856" y="309" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/1/5.png" x="856" y="565" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/2.png" x="1112" y="-203" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/3.png" x="1112" y="53" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/4.png" x="1112" y="309" width="256px" height="256px"/>
+    <image xlink:href="https://c.osm.rrze.fau.de/osmhd/3/2/5.png" x="1112" y="565" width="256px" height="256px"/>
   </g>
   <g id="features">
-    <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555"><polyline points="486.22222222222223,61.034289768027634 600.0,61.034289768027634" fill="None"/><polyline points="600.0,61.034289768027634 713.7777777777778,61.034289768027634" fill="None"/>
+    <g fill-opacity="0.6" fill="#555555" stroke-width="3.0" stroke-opacity="1.0" stroke="#555555"><polyline points="486.22222222222223,60.33011505373372 600.0,60.33011505373372" fill="None"/><polyline points="600.0,60.33011505373372 713.7777777777778,60.33011505373372" fill="None"/>
         <title></title><desc>Line crossing the antimeridian, represented as MultiLineString cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9</desc></g>
-    <g fill-opacity="0.6" fill="blue" stroke-width="3.0" stroke-opacity="1.0" stroke="none"><polygon points="600.0,425.86550722213565 486.22222222222223,425.86550722213565 486.22222222222223,738.9657102319723 600.0,738.9657102319723 600.0,425.86550722213565"/><polygon points="600.0,425.86550722213565 600.0,738.9657102319723 713.7777777777778,738.9657102319723 713.7777777777778,425.86550722213565 600.0,425.86550722213565"/>
+    <g fill-opacity="0.6" fill="blue" stroke-width="3.0" stroke-opacity="1.0" stroke="none"><polygon points="600.0,425.16133250784173 486.22222222222223,425.16133250784173 486.22222222222223,738.2615355176783 600.0,738.2615355176783 600.0,425.16133250784173"/><polygon points="600.0,425.16133250784173 600.0,738.2615355176783 713.7777777777778,738.2615355176783 713.7777777777778,425.16133250784173 600.0,425.16133250784173"/>
         <title></title><desc>Filled rectangle straddling the antimeridian, represented as MultiPolygon cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9</desc></g>
   </g>
 </svg>
