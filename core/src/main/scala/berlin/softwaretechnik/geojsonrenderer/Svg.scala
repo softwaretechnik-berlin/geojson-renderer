@@ -1,36 +1,35 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.geojson.{Feature, FeatureCollection, GeoJson, GeoJsonStyle, Geometry, MultiPoint, Point}
-import berlin.softwaretechnik.geojsonrenderer.tiling.{GeoProjection, PositionedTile, TilingScheme}
+import berlin.softwaretechnik.geojsonrenderer.tiling.{GeoProjection, PositionedTile}
 
 import scala.xml._
 
 object Svg {
 
-  def render(geoProjection: GeoProjection, viewport: Box2D, tilingScheme: TilingScheme, tiles: Seq[PositionedTile], geoJson: GeoJson): String = {
+  def render(geoProjection: GeoProjection, viewport: Box2D, tiles: Seq[PositionedTile], geoJson: GeoJson): String = {
     <svg
       width={viewport.width.toString}
       height={viewport.height.toString}
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink">
-  <g id="tiles">{imagesForTiles(tilingScheme, tiles)}
+  <g id="tiles">{renderTiles(tiles)}
   </g>
   <g id="features">{renderGeoJson(geoProjection, viewport, geoJson)}
   </g>
 </svg>.toString()
   }
 
-  private def imagesForTiles(tilingScheme: TilingScheme,
-                             tiles: Seq[PositionedTile]): NodeSeq =
+  private def renderTiles(tiles: Seq[PositionedTile]): NodeSeq =
     tiles.flatMap { tile =>
       Seq(
         Text("\n    "),
-          <image xlink:href={tilingScheme.url(tile.tileId)}
+          <image xlink:href={tile.url}
                  x={tile.position.x.toString}
                  y={tile.position.y.toString}
-                 width={s"${tilingScheme.tileSize}px"}
-                 height={s"${tilingScheme.tileSize}px"}/>
+                 width={s"${tile.size}px"}
+                 height={s"${tile.size}px"}/>
       )
     }
 

@@ -62,11 +62,7 @@ object Main {
 
     val tiles: Seq[PositionedTile] = tiledProjection.tileCover(viewport)
 
-    val projectedBoundingBox = tiledProjection.bitmapBox(boundingBox) - viewport.upperLeft
-
-    println(s"${projectedBoundingBox}")
-
-    Svg.render(tiledProjection.geoProjection, viewport, tilingScheme, tiles, geoJson)
+    Svg.render(tiledProjection.geoProjection, viewport, tiles, geoJson)
   }
 
   private def saveAsPng(svgContent: String, path: Path): Unit =

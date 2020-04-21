@@ -47,7 +47,7 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
     val tiledProjection = tiling.tiledProjection(4, 0)
     val mapPosition = tiledProjection.geoProjection.bitmapPosition(charlottenburgPalace)
 
-    val tiles = tiledProjection.tileCover(Box2D(mapPosition - Position2D(256, 256), mapPosition + Position2D(256, 256))).map(_.tileId)
+    val tiles = tiledProjection.tileCover(Box2D(mapPosition - Position2D(256, 256), mapPosition + Position2D(256, 256))).map(_.id)
 
     assert(tiles === Seq(
       TileId(x = 7, y = 4, z = 4),
