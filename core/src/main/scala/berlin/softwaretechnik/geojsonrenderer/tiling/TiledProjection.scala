@@ -17,7 +17,7 @@ class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => 
     )
   }
 
-  def tileCover(viewport: Box2D): Seq[PositionedTile] = {
+  def tileCover(viewport: MapBox): Seq[PositionedTile] = {
     val upperLeftTile = tile(x = viewport.left, y = viewport.top)
     val lowerRightTile = tile(x = viewport.right - 1, y = viewport.bottom - 1)
 

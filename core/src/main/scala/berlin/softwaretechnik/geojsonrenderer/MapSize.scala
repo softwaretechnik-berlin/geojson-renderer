@@ -1,7 +1,11 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 /** The size of a map or of an object when projected to the map. */
-case class MapSize(width: Int, height: Int)
+case class MapSize(width: Int, height: Int) {
+
+  def fitsIn(other: MapSize): Boolean = width <= other.width && height <= other.height
+
+}
 
 object MapSize {
   def apply(s: String): MapSize = {

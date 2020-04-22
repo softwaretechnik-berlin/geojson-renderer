@@ -2,13 +2,13 @@ package berlin.softwaretechnik.geojsonrenderer
 
 import org.scalatest.funsuite.AnyFunSuite
 
-class Box2DTest extends AnyFunSuite {
+class MapBoxTest extends AnyFunSuite {
 
   test(s"Should round outward with positive coordinates") {
-    assert(Box2D.covering(
+    assert(MapBox.covering(
       upperLeft = MapCoordinates(1.1, 2.2),
       lowerRight = MapCoordinates(3.3, 4.4)
-    ) === Box2D(
+    ) === MapBox(
       left = 1,
       bottom = 5,
       right = 4,
@@ -17,10 +17,10 @@ class Box2DTest extends AnyFunSuite {
   }
 
   test(s"Should round outward with negative coordinates") {
-    assert(Box2D.covering(
+    assert(MapBox.covering(
       upperLeft = MapCoordinates(-3.3, -4.4),
       lowerRight = MapCoordinates(-1.1, -2.2)
-    ) === Box2D(
+    ) === MapBox(
       left = -4,
       bottom = -2,
       right = -1,

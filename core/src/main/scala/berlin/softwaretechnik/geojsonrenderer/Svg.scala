@@ -7,7 +7,7 @@ import scala.xml._
 
 class Svg(mapProjection: MapProjection) {
 
-  def render(viewport: Box2D, tiles: Seq[PositionedTile], geoJson: GeoJson): String =
+  def render(viewport: MapBox, tiles: Seq[PositionedTile], geoJson: GeoJson): String =
     XmlHelpers.prettyPrint(
       <svg width={viewport.width.toString}
            height={viewport.height.toString}
@@ -23,7 +23,7 @@ class Svg(mapProjection: MapProjection) {
       </svg>
     )
 
-  private def renderTile(viewport: Box2D, tile: PositionedTile): Elem =
+  private def renderTile(viewport: MapBox, tile: PositionedTile): Elem =
       <image xlink:href={tile.url}
              x={(tile.leftXPosition - viewport.left).toString}
              y={(tile.topYPosition - viewport.top).toString}

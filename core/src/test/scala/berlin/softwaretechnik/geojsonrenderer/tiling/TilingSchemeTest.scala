@@ -45,7 +45,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
     val mapPosition = tiledProjection.mapProjection(charlottenburgPalace)
 
     val tiles =
-      tiledProjection.tileCover(Box2D.covering(
+      tiledProjection.tileCover(MapBox.covering(
         mapPosition - MapCoordinates(256, 256),
         mapPosition + MapCoordinates(256, 256)
       )).map(_.id)
@@ -66,7 +66,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   test("It should give no more than enough tiles to cover") {
     val tiledProjection = TilingScheme.osm().tiledProjection(6, 0)
 
-    val viewport = Box2D(left = -512, bottom = 768, right = 256, top = 256)
+    val viewport = MapBox(left = -512, bottom = 768, right = 256, top = 256)
     val tiles = tiledProjection.tileCover(viewport).map(_.id)
 
     assert(tiles === Seq(
