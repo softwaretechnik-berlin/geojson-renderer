@@ -28,17 +28,6 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
     assert(tiling.tiledProjection(0, 0).mapProjection(uluru) === MapCoordinates(221.18, 146.64))
   }
 
-  test("It should get tile and offset") {
-    val tiledProjection = TilingScheme.osm().tiledProjection(zoomLevel = 4, centralLongitude = -45)
-    val mapPosition = tiledProjection.mapProjection(charlottenburgPalace)
-
-    assert(tiledProjection.tile(mapPosition.x.toInt, mapPosition.y.toInt) === TileId(
-      x = 8,
-      y = 5,
-      z = 4,
-    ))
-  }
-
   test("It should give covering tiles") {
     val tiling = TilingScheme.osm()
 

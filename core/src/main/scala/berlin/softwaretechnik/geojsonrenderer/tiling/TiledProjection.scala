@@ -9,30 +9,14 @@ class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => 
   def mapProjection: MapProjection =
     WebMercatorProjection(zoomLevel, tileSize).withCentralMeridian(centralMeridianLongitude)
 
-  def tile(x: Int, y: Int): TileId = {
-    TileId(
-      floorDiv(x, tileSize),
-      floorDiv(y, tileSize),
-      zoomLevel
-    )
-  }
-
-  def tileCover(viewport: MapBox): Seq[PositionedTile] = {
-    val upperLeftTile = tile(x = viewport.left, y = viewport.top)
-    val lowerRightTile = tile(x = viewport.right - 1, y = viewport.bottom - 1)
-
-    val tiles: Seq[PositionedTile] =
-      (upperLeftTile.x to lowerRightTile.x).flatMap { tileX =>
-        (upperLeftTile.y to lowerRightTile.y).map { tileY =>
-          val tileId = TileId(tileX, tileY, zoomLevel)
-          PositionedTile(
-            id = tileId,
-            size = tileSize,
-            url = tileUrl(tileId)
-          )
-        }
+  def tileCover(viewport: MapBox): Seq[PositionedTile] =
+    tileCoordinates(viewport.left, viewport.right).flatMap { tileX =>
+      tileCoordinates(viewport.top, viewport.bottom).map { tileY =>
+        val tileId = TileId(tileX, tileY, zoomLevel)
+        PositionedTile(tileId, tileSize, tileUrl(tileId))
       }
-    tiles
-  }
+    }
 
+  private def tileCoordinates(minMapCoordinate: Int, maxMapCoordinate: Int): Range.Inclusive =
+    floorDiv(minMapCoordinate, tileSize) to floorDiv(maxMapCoordinate - 1, tileSize)
 }
