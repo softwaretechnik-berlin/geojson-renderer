@@ -11,8 +11,6 @@ object Dimensions {
 
 }
 
-
-
 /**
  * A 2-dimensional box in screen coordinates.
  *

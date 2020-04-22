@@ -1,6 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer
 
-import berlin.softwaretechnik.geojsonrenderer.geojson.GeoJsonSpatialOps
+import berlin.softwaretechnik.geojsonrenderer.Math._
 
 case class BoundingBox(west: Double,
                        south: Double,
@@ -14,19 +14,21 @@ case class BoundingBox(west: Double,
   def lowerRight(): GeoCoord = GeoCoord(south, east)
 
   def centralLongitude: Double =
-    GeoJsonSpatialOps.normalizeLongitude(
-      west + GeoJsonSpatialOps.floorMod(east - west, 360) / 2
+    GeoCoord.normalizeLongitude(
+      west + floorMod(east - west, 360) / 2
     )
 }
 
 object BoundingBox {
-  def apply(string: String): BoundingBox = {
-    string
-      .split(",")
-      .map(_.toDouble) match {
-      case Array(west, south, east, north) =>
-        BoundingBox(west, south, east, north)
-      case _ => throw new IllegalArgumentException("")
-    }
+
+  def apply(coordinates: Seq[GeoCoord]): BoundingBox = {
+    import Ordering.Double.IeeeOrdering
+    BoundingBox(
+      west = GeoCoord.normalizeLongitude(coordinates.map(_.lon).min),
+      south = coordinates.map(_.lat).min,
+      east = GeoCoord.normalizeLongitude(coordinates.map(_.lon).max),
+      north = coordinates.map(_.lat).max
+    )
   }
+
 }

@@ -19,7 +19,7 @@ trait MapProjection { outer =>
     val leftmostLongitude = longitude - 180
     new MapProjection {
       override def apply(geoCoord: GeoCoord): MapCoordinates =
-        outer.apply(GeoJsonSpatialOps.normalizeLongitude(geoCoord, leftmostLongitude))
+        outer.apply(geoCoord.normalizeLongitude(leftmostLongitude))
       override def invert(pixelPosition: MapCoordinates): GeoCoord =
         outer.invert(pixelPosition)
     }

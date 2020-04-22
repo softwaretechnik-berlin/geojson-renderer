@@ -2,6 +2,8 @@ package berlin.softwaretechnik.geojsonrenderer.tiling
 
 import berlin.softwaretechnik.geojsonrenderer._
 
+import scala.math._
+
 class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => String, centralMeridianLongitude: Double) {
 
   def mapProjection: MapProjection =
@@ -9,8 +11,8 @@ class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => 
 
   def tile(x: Int, y: Int): TileId = {
     TileId(
-      Math.floorDiv(x, tileSize),
-      Math.floorDiv(y, tileSize),
+      floorDiv(x, tileSize),
+      floorDiv(y, tileSize),
       zoomLevel
     )
   }
