@@ -5,7 +5,7 @@ import org.scalactic._
 import org.scalatest.Assertion
 import org.scalatest.funsuite.AnyFunSuite
 
-class TilingSchemeTest extends AnyFunSuite with Tolerance {
+class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tolerance {
   val charlottenburgPalace = GeoCoord(52.520789, 13.295727)
   val shibuyaCrossing = GeoCoord(35.659486, 139.700470)
   val gettyCentre = GeoCoord(34.076848, -118.473919)
@@ -13,21 +13,18 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
 
   val vectorElementTolerance = 0.005
 
-  implicit def vectorEq[A <: Vector2DOps[A]]: Equality[A] =
-    (a: A, b: Any) => b match {
-      case b: Vector2D =>
-        Vector2DOps.x(a) === Vector2DOps.x(b) +- vectorElementTolerance &&
-          Vector2DOps.x(a) === Vector2DOps.x(b) +- vectorElementTolerance
-      case _ => false
-    }
+  implicit def vectorEq[A <: Vector2DOps[A]]: Equivalence[A] =
+    (a: A, b: A) =>
+      Vector2DOps.x(a) === Vector2DOps.x(b) +- vectorElementTolerance &&
+        Vector2DOps.x(a) === Vector2DOps.x(b) +- vectorElementTolerance
 
   test("It should project geopositions onto the map") {
     val tiling = TilingScheme.osm()
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(charlottenburgPalace) === Vector2D(137.45, 83.96))
-    assert(tiling.tiledProjection(4, 0).geoProjection.bitmapPosition(charlottenburgPalace) === Vector2D(2199.28, 1343.29))
+    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(charlottenburgPalace) === Position2D(137.45, 83.96))
+    assert(tiling.tiledProjection(4, 0).geoProjection.bitmapPosition(charlottenburgPalace) === Position2D(2199.28, 1343.29))
 
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(gettyCentre) === Vector2D(43.75, 102.20))
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(uluru) === Vector2D(221.18, 146.64))
+    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(gettyCentre) === Position2D(43.75, 102.20))
+    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(uluru) === Position2D(221.18, 146.64))
   }
 
   test("It should get tile and offset") {
@@ -88,7 +85,6 @@ class TilingSchemeTest extends AnyFunSuite with Tolerance {
     testRoundTrip(uluru)
     testRoundTrip(gettyCentre)
   }
-
 
   private def testRoundTrip(originalPosition: GeoCoord): Assertion = {
     val tiledProjection = TilingScheme.osm().tiledProjection(4, 0)

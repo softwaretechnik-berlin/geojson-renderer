@@ -59,10 +59,6 @@ object Box2D {
   }
 }
 
-final case class Vector2D(x: Double, y: Double) extends Vector2DOps[Vector2D] {
-  override protected def v(x: Double, y: Double): Vector2D = Vector2D(x, y)
-}
-
 trait Vector2DOps[V <: Vector2DOps[V]] {
   protected def x: Double
   protected def y: Double
