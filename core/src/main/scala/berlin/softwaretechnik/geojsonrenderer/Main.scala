@@ -13,6 +13,7 @@ import org.rogach.scallop.ScallopConf
 
 object Main {
 
+  // TODO args for tiling scheme
   //val tiledMap = TilingScheme.here("VgTVFr1a0ft1qGcLCVJ6", "LJXqQ8ErW71UsRUK3R33Ow")
   val tilingScheme = TilingScheme.rrze()
 
