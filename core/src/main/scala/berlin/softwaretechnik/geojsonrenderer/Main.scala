@@ -7,7 +7,7 @@ import java.nio.file.{Files, Path, Paths}
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
 import berlin.softwaretechnik.geojsonrenderer.geojson.{GeoJson, GeoJsonSpatialOps}
 import berlin.softwaretechnik.geojsonrenderer.map.MapSize
-import berlin.softwaretechnik.geojsonrenderer.tiling.TilingScheme
+import berlin.softwaretechnik.geojsonrenderer.tiling.{TilingScheme, Viewport}
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
 import org.rogach.scallop.ScallopConf
@@ -49,9 +49,9 @@ object Main {
 
   def render(mapSize: MapSize, geoJson: GeoJson): String = {
     val boundingBox = GeoJsonSpatialOps.boundingBox(geoJson)
-    val (tiledProjection, viewport) = tilingScheme.optimalProjectionAndViewport(boundingBox, mapSize)
-    val tiles = tiledProjection.tileCover(viewport).map(tilingScheme.tile)
-    new Svg(tiledProjection.mapProjection).render(viewport, tiles, geoJson)
+    val viewport = Viewport.optimal(boundingBox, mapSize, tilingScheme)
+    val tiles = tilingScheme.tileCover(viewport)
+    new Svg(viewport).render(tiles, geoJson)
   }
 
   private def saveAsPng(svgContent: String, path: Path): Unit =

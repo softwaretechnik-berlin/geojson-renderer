@@ -21,24 +21,23 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
 
   test("It should project geopositions onto the map") {
     val tiling = TilingScheme.osm()
-    assert(tiling.tiledProjection(0, 0).mapProjection(charlottenburgPalace) === MapCoordinates(137.45, 83.96))
-    assert(tiling.tiledProjection(4, 0).mapProjection(charlottenburgPalace) === MapCoordinates(2199.28, 1343.29))
+    assert(tiling.projection(0)(charlottenburgPalace) === MapCoordinates(137.45, 83.96))
+    assert(tiling.projection(4)(charlottenburgPalace) === MapCoordinates(2199.28, 1343.29))
 
-    assert(tiling.tiledProjection(0, 0).mapProjection(gettyCentre) === MapCoordinates(43.75, 102.20))
-    assert(tiling.tiledProjection(0, 0).mapProjection(uluru) === MapCoordinates(221.18, 146.64))
+    assert(tiling.projection(0)(gettyCentre) === MapCoordinates(43.75, 102.20))
+    assert(tiling.projection(0)(uluru) === MapCoordinates(221.18, 146.64))
   }
 
   test("It should give covering tiles") {
     val tiling = TilingScheme.osm()
 
-    val tiledProjection = tiling.tiledProjection(4, 0)
-    val mapPosition = tiledProjection.mapProjection(charlottenburgPalace)
-
-    val tiles =
-      tiledProjection.tileCover(MapBox.covering(
-        mapPosition - MapCoordinates(256, 256),
-        mapPosition + MapCoordinates(256, 256)
-      ))
+    val projection = tiling.projection(4)
+    val mapPosition = projection(charlottenburgPalace)
+    val viewport = Viewport(4, projection, MapBox.covering(
+      mapPosition - MapCoordinates(256, 256),
+      mapPosition + MapCoordinates(256, 256)
+    ))
+    val tiles = tiling.tileCover(viewport).map(_.id)
 
     assert(tiles === Seq(
       TileId(x = 7, y = 4, z = 4),
@@ -54,10 +53,10 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   }
 
   test("It should give no more than enough tiles to cover") {
-    val tiledProjection = TilingScheme.osm().tiledProjection(6, 0)
-
-    val viewport = MapBox(left = -512, top = 256, size = MapSize(768, 512))
-    val tiles = tiledProjection.tileCover(viewport)
+    val tiling = TilingScheme.osm()
+    val projection = tiling.projection(6)
+    val viewport = Viewport(6, projection, MapBox(left = -512, top = 256, size = MapSize(768, 512)))
+    val tiles = tiling.tileCover(viewport).map(_.id)
 
     assert(tiles === Seq(
       TileId(x = -2, y = 1, z = 6),
@@ -77,10 +76,10 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   }
 
   private def testRoundTrip(originalPosition: GeoCoord): Assertion = {
-    val tiledProjection = TilingScheme.osm().tiledProjection(4, 0)
+    val tiledProjection = TilingScheme.osm().projection(4)
 
-    val mapCoordinates = tiledProjection.mapProjection(originalPosition)
-    val roundTrippedGeoPosition = tiledProjection.mapProjection.invert(mapCoordinates)
+    val mapCoordinates = tiledProjection(originalPosition)
+    val roundTrippedGeoPosition = tiledProjection.invert(mapCoordinates)
 
     assert(roundTrippedGeoPosition.lat === (originalPosition.lat +- 0.00001))
     assert(roundTrippedGeoPosition.lon === (originalPosition.lon +- 0.00001))

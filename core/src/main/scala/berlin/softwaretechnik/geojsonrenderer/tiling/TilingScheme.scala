@@ -3,23 +3,21 @@ package tiling
 
 import berlin.softwaretechnik.geojsonrenderer.map._
 
-class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId => String) {
+import scala.math.floorDiv
 
-  def tile(id: TileId): Tile = Tile(id, tileSize, tileUrl(id))
+class TilingScheme(val minZoom: Int, val maxZoom: Int, tileSize: Int, tileUrl: TileId => String) {
 
-  def tiledProjection(zoomLevel: Int, centralLongitude: Double): TiledProjection =
-    new TiledProjection(zoomLevel, tileSize, centralLongitude)
+  def projection(zoomLevel: Int): MapProjection = WebMercatorProjection(zoomLevel, tileSize)
 
-  def optimalProjectionAndViewport(boundingBox: GeoBoundingBox, mapSize: MapSize): (TiledProjection, MapBox) = {
-    @scala.annotation.tailrec
-    def rec(zoomLevel: Int): (TiledProjection, MapBox) = {
-      val tiledProjection = this.tiledProjection(zoomLevel, boundingBox.centralLongitude)
-      val mapBBox = tiledProjection.mapProjection(boundingBox)
-      if (zoomLevel <= minZoom || !(mapBBox.size fitsIn mapSize)) rec(zoomLevel - 1)
-      else tiledProjection -> mapBBox.expandTo(mapSize)
-    }
-    rec(maxZoom)
-  }
+  def tileCover(viewport: Viewport): Seq[Tile] =
+    for {
+      x <- tileCoordinates(viewport.box.left, viewport.box.right)
+      y <- tileCoordinates(viewport.box.top, viewport.box.bottom)
+      id = TileId(x, y, viewport.zoomLevel)
+    } yield Tile(id, tileSize, tileUrl(id))
+
+  private def tileCoordinates(minMapCoordinate: Int, maxMapCoordinate: Int): Range =
+    floorDiv(minMapCoordinate, tileSize) to floorDiv(maxMapCoordinate - 1, tileSize)
 
 }
 
@@ -28,6 +26,7 @@ object TilingScheme {
   def osm() = new TilingScheme(0, 19, 256, tileId =>
     s"http://tile.openstreetmap.org/${tileId.normalizedPath}.png"
   )
+
   def rrze() = new TilingScheme(0, 19, 256, tileId =>
     s"https://c.osm.rrze.fau.de/osmhd/${tileId.normalizedPath}.png"
   )

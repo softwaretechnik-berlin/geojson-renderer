@@ -1,33 +1,32 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.geojson._
-import berlin.softwaretechnik.geojsonrenderer.map.{MapBox, MapCoordinates, MapProjection}
-import berlin.softwaretechnik.geojsonrenderer.tiling.Tile
+import berlin.softwaretechnik.geojsonrenderer.tiling.{Tile, Viewport}
 
 import scala.xml._
 
-class Svg(mapProjection: MapProjection) {
+class Svg(viewport: Viewport) {
 
-  def render(viewport: MapBox, tiles: Seq[Tile], geoJson: GeoJson): String =
+  def render(tiles: Seq[Tile], geoJson: GeoJson): String =
     XmlHelpers.prettyPrint(
-      <svg width={viewport.size.width.toString}
-           height={viewport.size.height.toString}
+      <svg width={viewport.box.size.width.toString}
+           height={viewport.box.size.height.toString}
            version="1.1"
            xmlns="http://www.w3.org/2000/svg"
            xmlns:xlink="http://www.w3.org/1999/xlink">
         <g id="tiles">
-          {tiles.map(renderTile(viewport, _))}
+          {tiles.map(renderTile)}
         </g>
         <g id="features">
-          {new Svg(mapProjection.relativeTo(MapCoordinates(x = viewport.left, y = viewport.top))).renderGeoJson(geoJson)}
+          {renderGeoJson(geoJson)}
         </g>
       </svg>
     )
 
-  private def renderTile(viewport: MapBox, tile: Tile): Elem =
+  private def renderTile(tile: Tile): Elem =
       <image xlink:href={tile.url}
-             x={(tile.leftXPosition - viewport.left).toString}
-             y={(tile.topYPosition - viewport.top).toString}
+             x={(tile.leftXPosition - viewport.box.left).toString}
+             y={(tile.topYPosition - viewport.box.top).toString}
              width={s"${tile.size}px"}
              height={s"${tile.size}px"}/>
 
@@ -67,8 +66,8 @@ class Svg(mapProjection: MapProjection) {
     }
 
   private def renderPoint(gc: GeoCoord): Elem = {
-    val mc = mapProjection(gc)
-      <circle cx={mc.x.toString} cy={mc.y.toString} r="3"/>
+    val mc = viewport.projection(gc)
+    <circle cx={mc.x.toString} cy={mc.y.toString} r="3"/>
   }
 
   private def renderLineString(geoCoords: Seq[GeoCoord]): Elem =
@@ -79,7 +78,7 @@ class Svg(mapProjection: MapProjection) {
 
   private def asSvgPoints(geoCoords: Seq[GeoCoord]): String =
     geoCoords
-      .map(mapProjection.apply)
+      .map(viewport.projection.apply)
       .map(pos => s"${pos.x},${pos.y}")
       .mkString(" ")
 
