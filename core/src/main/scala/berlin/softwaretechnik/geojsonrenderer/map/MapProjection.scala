@@ -13,7 +13,7 @@ trait MapProjection { outer =>
       lowerRight = apply(boundingBox.lowerRight()),
     )
 
-  def withCentralMeridian(longitude: Double): MapProjection = {
+  def normalizingLongitudesAround(longitude: Double): MapProjection = {
     val leftmostLongitude = longitude - 180
     new MapProjection {
       override def apply(geoCoord: GeoCoord): MapCoordinates =
