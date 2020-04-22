@@ -4,7 +4,7 @@ import mill.define.Target
 import mill.scalalib._
 
 object core extends SbtModule {
-  def scalaVersion = "2.12.4"
+  def scalaVersion = "2.13.1"
 
   override def ivyDeps: Target[Loose.Agg[Dep]] =
     Agg(

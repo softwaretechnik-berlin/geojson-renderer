@@ -23,13 +23,15 @@ object GeoJsonSpatialOps {
     })
   }
 
-  def boundingBox(coordinates: Seq[GeoCoord]): BoundingBox =
+  def boundingBox(coordinates: Seq[GeoCoord]): BoundingBox = {
+    import Ordering.Double.IeeeOrdering
     BoundingBox(
       west = normalizeLongitude(coordinates.map(_.lon).min),
       south = coordinates.map(_.lat).min,
       east = normalizeLongitude(coordinates.map(_.lon).max),
       north = coordinates.map(_.lat).max
     )
+  }
 
   def normalizeLongitude(longitude: Double, minimumLongitude: Double = -180): Double =
     floorMod(longitude - minimumLongitude, 360) + minimumLongitude

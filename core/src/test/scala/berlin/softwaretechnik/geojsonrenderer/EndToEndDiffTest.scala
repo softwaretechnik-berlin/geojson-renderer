@@ -8,7 +8,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{Assertion, BeforeAndAfterAll}
 
-import scala.collection.JavaConverters._
+import scala.jdk.StreamConverters._
 
 class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
 
@@ -17,7 +17,7 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
   val geoJsonFiles: Seq[Path] =
     Files.list(examplesDirectory)
       .filter(_.getFileName.toString.endsWith(".json"))
-      .iterator().asScala.toSeq
+      .toScala(Seq)
 
   var git: Git = _
 
