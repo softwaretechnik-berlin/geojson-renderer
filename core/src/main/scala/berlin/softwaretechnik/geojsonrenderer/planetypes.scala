@@ -1,7 +1,5 @@
 package berlin.softwaretechnik.geojsonrenderer
 
-import berlin.softwaretechnik.geojsonrenderer.tiling.GeoProjection
-
 case class Dimensions(width: Int, height: Int)
 
 object Dimensions {
@@ -13,14 +11,7 @@ object Dimensions {
 
 }
 
-/**
- * A position in screen coordinates.
- *
- * The positive x direction is to the right, and the positive y direction is downward.
- */
-final case class Position2D(x: Double, y: Double) extends Vector2DOps[Position2D] {
-  override protected def v(x: Double, y: Double): Position2D = Position2D(x, y)
-}
+
 
 /**
  * A 2-dimensional box in screen coordinates.
@@ -47,7 +38,7 @@ case class Box2D(left: Int, bottom: Int, right: Int, top: Int) {
 }
 
 object Box2D {
-  def covering(upperLeft: Position2D, lowerRight: Position2D): Box2D = {
+  def covering(upperLeft: MapCoordinates, lowerRight: MapCoordinates): Box2D = {
     require(upperLeft.x <= lowerRight.x && upperLeft.y <= lowerRight.y,
       s"In each coordinate, upperLeft must have a value less than or equal to lowerRight. $upperLeft, $lowerRight")
     Box2D(
@@ -59,17 +50,6 @@ object Box2D {
   }
 }
 
-trait Vector2DOps[V <: Vector2DOps[V]] {
-  protected def x: Double
-  protected def y: Double
-  protected def v(x: Double, y: Double): V
 
-  final def +(other: V): V = v(x + other.x, y + other.y)
-  final def -(other: V): V = v(x - other.x, y - other.y)
-  final def *(scalar: Double): V = v(x * scalar, y * scalar)
-}
 
-object Vector2DOps {
-  def x(v: Vector2DOps[_]): Double = v.x
-  def y(v: Vector2DOps[_]): Double = v.y
-}
+

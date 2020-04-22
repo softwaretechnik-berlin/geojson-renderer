@@ -13,18 +13,18 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
 
   val vectorElementTolerance = 0.005
 
-  implicit def vectorEq[A <: Vector2DOps[A]]: Equivalence[A] =
+  implicit def vectorEq[A <: Vector2D[A]]: Equivalence[A] =
     (a: A, b: A) =>
-      Vector2DOps.x(a) === Vector2DOps.x(b) +- vectorElementTolerance &&
-        Vector2DOps.x(a) === Vector2DOps.x(b) +- vectorElementTolerance
+      Vector2D.x(a) === Vector2D.x(b) +- vectorElementTolerance &&
+        Vector2D.x(a) === Vector2D.x(b) +- vectorElementTolerance
 
   test("It should project geopositions onto the map") {
     val tiling = TilingScheme.osm()
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(charlottenburgPalace) === Position2D(137.45, 83.96))
-    assert(tiling.tiledProjection(4, 0).geoProjection.bitmapPosition(charlottenburgPalace) === Position2D(2199.28, 1343.29))
+    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(charlottenburgPalace) === MapCoordinates(137.45, 83.96))
+    assert(tiling.tiledProjection(4, 0).geoProjection.bitmapPosition(charlottenburgPalace) === MapCoordinates(2199.28, 1343.29))
 
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(gettyCentre) === Position2D(43.75, 102.20))
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(uluru) === Position2D(221.18, 146.64))
+    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(gettyCentre) === MapCoordinates(43.75, 102.20))
+    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(uluru) === MapCoordinates(221.18, 146.64))
   }
 
   test("It should get tile and offset") {
@@ -46,8 +46,8 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
 
     val tiles =
       tiledProjection.tileCover(Box2D.covering(
-        mapPosition - Position2D(256, 256),
-        mapPosition + Position2D(256, 256)
+        mapPosition - MapCoordinates(256, 256),
+        mapPosition + MapCoordinates(256, 256)
       )).map(_.id)
 
     assert(tiles === Seq(
