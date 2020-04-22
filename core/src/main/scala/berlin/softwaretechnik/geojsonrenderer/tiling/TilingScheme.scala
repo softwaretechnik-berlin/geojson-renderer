@@ -5,8 +5,10 @@ import berlin.softwaretechnik.geojsonrenderer.map._
 
 class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId => String) {
 
+  def tile(id: TileId): Tile = Tile(id, tileSize, tileUrl(id))
+
   def tiledProjection(zoomLevel: Int, centralLongitude: Double): TiledProjection =
-    new TiledProjection(zoomLevel, tileSize, tileUrl, centralLongitude)
+    new TiledProjection(zoomLevel, tileSize, centralLongitude)
 
   def optimalProjectionAndViewport(boundingBox: GeoBoundingBox, mapSize: MapSize): (TiledProjection, MapBox) = {
     @scala.annotation.tailrec
