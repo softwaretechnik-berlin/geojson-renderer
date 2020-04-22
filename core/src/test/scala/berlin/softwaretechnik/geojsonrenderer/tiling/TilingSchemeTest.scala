@@ -17,7 +17,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   implicit def vectorEq[A <: Vector2D[A]]: Equivalence[A] =
     (a: A, b: A) =>
       Vector2D.x(a) === Vector2D.x(b) +- vectorElementTolerance &&
-        Vector2D.x(a) === Vector2D.x(b) +- vectorElementTolerance
+        Vector2D.y(a) === Vector2D.y(b) +- vectorElementTolerance
 
   test("It should project geopositions onto the map") {
     val tiling = TilingScheme.osm()
