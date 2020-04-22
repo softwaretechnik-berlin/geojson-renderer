@@ -1,15 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer
 
-case class Dimensions(width: Int, height: Int)
 
-object Dimensions {
-  def apply(s: String): Dimensions = {
-    val components = s.split("x")
-    if (components.size != 2) throw new IllegalArgumentException("Please specify dimensions as <width>x<height>.")
-    Dimensions(components(0).toInt, components(1).toInt)
-  }
-
-}
 
 /**
  * A 2-dimensional box in screen coordinates.
@@ -21,15 +12,15 @@ case class Box2D(left: Int, bottom: Int, right: Int, top: Int) {
 
   def width: Int = right - left
   def height: Int = bottom - top
-  def dimensions: Dimensions = Dimensions(width, height)
+  def size: MapSize = MapSize(width, height)
 
-  def expandTo(dimensions: Dimensions): Box2D = {
-    val left = this.left - (dimensions.width - this.width) / 2
-    val top = this.top - (dimensions.height - this.height) / 2
+  def expandTo(size: MapSize): Box2D = {
+    val left = this.left - (size.width - this.width) / 2
+    val top = this.top - (size.height - this.height) / 2
     Box2D(
       left = left,
-      bottom = top + dimensions.height,
-      right = left + dimensions.width,
+      bottom = top + size.height,
+      right = left + size.width,
       top = top,
     )
   }

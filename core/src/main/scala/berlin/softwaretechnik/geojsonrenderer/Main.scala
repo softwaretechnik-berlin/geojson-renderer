@@ -23,7 +23,7 @@ object Main {
                |geojson2svg renders a geojson file to svg
                |Options:
                |""".stripMargin)
-      val dimensions = opt[String]("dimensions", descr= "the dimensions of the target file in pixels",  default = Some("1200x800")).map(s => Dimensions(s))
+      val dimensions = opt[String]("dimensions", descr= "the dimensions of the target file in pixels",  default = Some("1200x800")).map(s => MapSize(s))
       val png = opt[Boolean]("png", descr = "render the resulting svg into png", default = Some(false))
       val inputFile = trailArg[String](descr = "geojson input file")
       verify
@@ -32,25 +32,23 @@ object Main {
     val inputFile = Paths.get(Conf.inputFile.getOrElse(???))
     val geoJson: GeoJson = GeoJson.load(inputFile)
 
-    // TODO Why curl?
-    System.setProperty("http.agent", "curl/7.66.0")
-
-    val svgContent = render(
-      screenDimensions = Conf.dimensions.getOrElse(???),
-      geoJson
-    )
+    val mapSize: MapSize = Conf.dimensions.getOrElse(???)
+    val svgContent = render(mapSize, geoJson)
     Files.write(
       replaceExtension(inputFile, ".svg"),
       svgContent.getBytes(StandardCharsets.UTF_8)
     )
-    if (Conf.png.getOrElse(???))
+
+    if (Conf.png.getOrElse(???)) {
+      System.setProperty("http.agent", "curl/7.66.0") // TODO Why curl?
       saveAsPng(svgContent, replaceExtension(inputFile, ".png"))
+    }
   }
 
-  def render(screenDimensions: Dimensions, geoJson: GeoJson): String = {
-    val boundingBox = GeoJsonSpatialOps.determineBoundingBox(geoJson)
+  def render(mapSize: MapSize, geoJson: GeoJson): String = {
+    val boundingBox = GeoJsonSpatialOps.boundingBox(geoJson)
 
-    val (viewport, tiledProjection) = tilingScheme.optimalViewportAndProjection(boundingBox, screenDimensions)
+    val (viewport, tiledProjection) = tilingScheme.optimalViewportAndProjection(boundingBox, mapSize)
     println(s"Best zoom level ${tiledProjection.zoomLevel}")
 
     val tiles: Seq[PositionedTile] = tiledProjection.tileCover(viewport)

@@ -4,7 +4,7 @@ import berlin.softwaretechnik.geojsonrenderer.{BoundingBox, GeoCoord, geojson}
 
 object GeoJsonSpatialOps {
 
-  def determineBoundingBox(geoJson: GeoJson): BoundingBox = {
+  def boundingBox(geoJson: GeoJson): BoundingBox = {
 
     def coordinates(geometry: Geometry): Seq[GeoCoord] =
       geometry match {
