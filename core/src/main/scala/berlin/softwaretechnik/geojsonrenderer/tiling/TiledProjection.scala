@@ -2,10 +2,10 @@ package berlin.softwaretechnik.geojsonrenderer.tiling
 
 import berlin.softwaretechnik.geojsonrenderer._
 
-class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => String, centralLongitude: Double) {
+class TiledProjection(val zoomLevel: Int, val tileSize: Int, tileUrl: TileId => String, centralMeridianLongitude: Double) {
 
-  def geoProjection: GeoProjection =
-    WebMercatorProjection(zoomLevel, tileSize).withCentralLongitude(centralLongitude)
+  def mapProjection: MapProjection =
+    WebMercatorProjection(zoomLevel, tileSize).withCentralMeridian(centralMeridianLongitude)
 
   def tile(x: Int, y: Int): TileId = {
     TileId(

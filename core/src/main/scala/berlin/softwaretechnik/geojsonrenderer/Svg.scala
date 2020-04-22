@@ -1,11 +1,11 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.geojson._
-import berlin.softwaretechnik.geojsonrenderer.tiling.{GeoProjection, PositionedTile}
+import berlin.softwaretechnik.geojsonrenderer.tiling.{MapProjection, PositionedTile}
 
 import scala.xml._
 
-class Svg(geoProjection: GeoProjection) {
+class Svg(mapProjection: MapProjection) {
 
   def render(viewport: Box2D, tiles: Seq[PositionedTile], geoJson: GeoJson): String =
     XmlHelpers.prettyPrint(
@@ -18,7 +18,7 @@ class Svg(geoProjection: GeoProjection) {
           {tiles.map(renderTile(viewport, _))}
         </g>
         <g id="features">
-          {new Svg(geoProjection.relativeTo(viewport)).renderGeoJson(geoJson)}
+          {new Svg(mapProjection.relativeTo(MapCoordinates(x = viewport.left, y = viewport.top))).renderGeoJson(geoJson)}
         </g>
       </svg>
     )
@@ -66,8 +66,8 @@ class Svg(geoProjection: GeoProjection) {
     }
 
   private def renderPoint(gc: GeoCoord): Elem = {
-    val point = geoProjection.bitmapPosition(gc)
-      <circle cx={point.x.toString} cy={point.y.toString} r="3"/>
+    val mc = mapProjection(gc)
+      <circle cx={mc.x.toString} cy={mc.y.toString} r="3"/>
   }
 
   private def renderLineString(geoCoords: Seq[GeoCoord]): Elem =
@@ -78,7 +78,7 @@ class Svg(geoProjection: GeoProjection) {
 
   private def asSvgPoints(geoCoords: Seq[GeoCoord]): String =
     geoCoords
-      .map(geoProjection.bitmapPosition)
+      .map(mapProjection.apply)
       .map(pos => s"${pos.x},${pos.y}")
       .mkString(" ")
 

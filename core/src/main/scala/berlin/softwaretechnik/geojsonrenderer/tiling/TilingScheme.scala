@@ -10,7 +10,7 @@ class TilingScheme(minZoom: Int, maxZoom: Int, tileSize: Int, tileUrl: TileId =>
     (minZoom to maxZoom).reverse
       .map { zoomLevel =>
         val tiledProjection = this.tiledProjection(zoomLevel, boundingBox.centralLongitude)
-        tiledProjection.geoProjection.coveringViewport(boundingBox) -> tiledProjection
+        tiledProjection.mapProjection.viewport(boundingBox) -> tiledProjection
       }.collectFirst {
         case (bitmapBox, tp) if bitmapBox.width <= dimensions.width && bitmapBox.height <= dimensions.height =>
           bitmapBox.expandTo(dimensions) -> tp

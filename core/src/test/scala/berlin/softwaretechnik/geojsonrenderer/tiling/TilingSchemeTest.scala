@@ -20,16 +20,16 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
 
   test("It should project geopositions onto the map") {
     val tiling = TilingScheme.osm()
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(charlottenburgPalace) === MapCoordinates(137.45, 83.96))
-    assert(tiling.tiledProjection(4, 0).geoProjection.bitmapPosition(charlottenburgPalace) === MapCoordinates(2199.28, 1343.29))
+    assert(tiling.tiledProjection(0, 0).mapProjection(charlottenburgPalace) === MapCoordinates(137.45, 83.96))
+    assert(tiling.tiledProjection(4, 0).mapProjection(charlottenburgPalace) === MapCoordinates(2199.28, 1343.29))
 
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(gettyCentre) === MapCoordinates(43.75, 102.20))
-    assert(tiling.tiledProjection(0, 0).geoProjection.bitmapPosition(uluru) === MapCoordinates(221.18, 146.64))
+    assert(tiling.tiledProjection(0, 0).mapProjection(gettyCentre) === MapCoordinates(43.75, 102.20))
+    assert(tiling.tiledProjection(0, 0).mapProjection(uluru) === MapCoordinates(221.18, 146.64))
   }
 
   test("It should get tile and offset") {
     val tiledProjection = TilingScheme.osm().tiledProjection(zoomLevel = 4, centralLongitude = -45)
-    val mapPosition = tiledProjection.geoProjection.bitmapPosition(charlottenburgPalace)
+    val mapPosition = tiledProjection.mapProjection(charlottenburgPalace)
 
     assert(tiledProjection.tile(mapPosition.x.toInt, mapPosition.y.toInt) === TileId(
       x = 8,
@@ -42,7 +42,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
     val tiling = TilingScheme.osm()
 
     val tiledProjection = tiling.tiledProjection(4, 0)
-    val mapPosition = tiledProjection.geoProjection.bitmapPosition(charlottenburgPalace)
+    val mapPosition = tiledProjection.mapProjection(charlottenburgPalace)
 
     val tiles =
       tiledProjection.tileCover(Box2D.covering(
@@ -89,8 +89,8 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   private def testRoundTrip(originalPosition: GeoCoord): Assertion = {
     val tiledProjection = TilingScheme.osm().tiledProjection(4, 0)
 
-    val mapPosition = tiledProjection.geoProjection.bitmapPosition(originalPosition)
-    val roundTrippedGeoPosition = tiledProjection.geoProjection.geoCoords(mapPosition)
+    val mapCoordinates = tiledProjection.mapProjection(originalPosition)
+    val roundTrippedGeoPosition = tiledProjection.mapProjection.invert(mapCoordinates)
 
     assert(roundTrippedGeoPosition.lat === (originalPosition.lat +- 0.00001))
     assert(roundTrippedGeoPosition.lon === (originalPosition.lon +- 0.00001))
