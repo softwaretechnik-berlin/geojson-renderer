@@ -1,6 +1,5 @@
-package berlin.softwaretechnik.geojsonrenderer.tiling
-
-import berlin.softwaretechnik.geojsonrenderer.{GeoBoundingBox, MapBox, GeoCoord, MapCoordinates}
+package berlin.softwaretechnik.geojsonrenderer
+package map
 
 import scala.math._
 

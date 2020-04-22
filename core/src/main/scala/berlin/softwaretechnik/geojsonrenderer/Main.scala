@@ -6,7 +6,8 @@ import java.nio.file.{Files, Path, Paths}
 
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
 import berlin.softwaretechnik.geojsonrenderer.geojson.{GeoJson, GeoJsonSpatialOps}
-import berlin.softwaretechnik.geojsonrenderer.tiling.{PositionedTile, TilingScheme}
+import berlin.softwaretechnik.geojsonrenderer.map.MapSize
+import berlin.softwaretechnik.geojsonrenderer.tiling.TilingScheme
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
 import org.rogach.scallop.ScallopConf

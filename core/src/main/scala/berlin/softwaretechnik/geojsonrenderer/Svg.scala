@@ -1,7 +1,8 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.geojson._
-import berlin.softwaretechnik.geojsonrenderer.tiling.{MapProjection, PositionedTile}
+import berlin.softwaretechnik.geojsonrenderer.map.{MapBox, MapCoordinates, MapProjection}
+import berlin.softwaretechnik.geojsonrenderer.tiling.PositionedTile
 
 import scala.xml._
 
@@ -9,8 +10,8 @@ class Svg(mapProjection: MapProjection) {
 
   def render(viewport: MapBox, tiles: Seq[PositionedTile], geoJson: GeoJson): String =
     XmlHelpers.prettyPrint(
-      <svg width={viewport.width.toString}
-           height={viewport.height.toString}
+      <svg width={viewport.size.width.toString}
+           height={viewport.size.height.toString}
            version="1.1"
            xmlns="http://www.w3.org/2000/svg"
            xmlns:xlink="http://www.w3.org/1999/xlink">

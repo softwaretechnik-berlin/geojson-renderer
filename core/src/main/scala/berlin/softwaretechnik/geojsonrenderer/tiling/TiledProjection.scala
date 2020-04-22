@@ -1,6 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
-import berlin.softwaretechnik.geojsonrenderer._
+import berlin.softwaretechnik.geojsonrenderer.map._
 
 import scala.math._
 

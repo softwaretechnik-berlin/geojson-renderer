@@ -1,6 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
 import berlin.softwaretechnik.geojsonrenderer._
+import berlin.softwaretechnik.geojsonrenderer.map.{MapBox, MapCoordinates, MapSize}
 import org.scalactic._
 import org.scalatest.Assertion
 import org.scalatest.funsuite.AnyFunSuite
@@ -66,7 +67,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   test("It should give no more than enough tiles to cover") {
     val tiledProjection = TilingScheme.osm().tiledProjection(6, 0)
 
-    val viewport = MapBox(left = -512, bottom = 768, right = 256, top = 256)
+    val viewport = MapBox(left = -512, top = 256, size = MapSize(768, 512))
     val tiles = tiledProjection.tileCover(viewport).map(_.id)
 
     assert(tiles === Seq(

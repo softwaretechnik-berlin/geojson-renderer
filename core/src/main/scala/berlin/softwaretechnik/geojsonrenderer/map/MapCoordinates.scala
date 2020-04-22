@@ -1,4 +1,5 @@
 package berlin.softwaretechnik.geojsonrenderer
+package map
 
 /**
  * A position on the cartesian plane of the map.
