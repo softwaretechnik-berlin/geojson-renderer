@@ -1,7 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
-import berlin.softwaretechnik.geojsonrenderer.geojson.GeoJsonSpatialOps
-import berlin.softwaretechnik.geojsonrenderer.{BoundingBox, Box2D, GeoCoord, MapCoordinates}
+import berlin.softwaretechnik.geojsonrenderer.{GeoBoundingBox, Box2D, GeoCoord, MapCoordinates}
 
 import scala.math._
 
@@ -9,7 +8,7 @@ trait MapProjection { outer =>
   def apply(geoCoord: GeoCoord): MapCoordinates
   def invert(pixelPosition: MapCoordinates): GeoCoord
 
-  def viewport(boundingBox: BoundingBox): Box2D =
+  def apply(boundingBox: GeoBoundingBox): Box2D =
     Box2D.covering(
       upperLeft = apply(boundingBox.upperLeft()),
       lowerRight = apply(boundingBox.lowerRight()),

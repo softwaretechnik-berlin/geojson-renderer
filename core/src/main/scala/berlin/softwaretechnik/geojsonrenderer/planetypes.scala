@@ -1,7 +1,5 @@
 package berlin.softwaretechnik.geojsonrenderer
 
-
-
 /**
  * A 2-dimensional box in screen coordinates.
  *

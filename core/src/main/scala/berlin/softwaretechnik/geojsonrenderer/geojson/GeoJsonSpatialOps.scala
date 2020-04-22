@@ -1,10 +1,10 @@
 package berlin.softwaretechnik.geojsonrenderer.geojson
 
-import berlin.softwaretechnik.geojsonrenderer.{BoundingBox, GeoCoord, geojson}
+import berlin.softwaretechnik.geojsonrenderer.{GeoBoundingBox, GeoCoord, geojson}
 
 object GeoJsonSpatialOps {
 
-  def boundingBox(geoJson: GeoJson): BoundingBox = {
+  def boundingBox(geoJson: GeoJson): GeoBoundingBox = {
 
     def coordinates(geometry: Geometry): Seq[GeoCoord] =
       geometry match {
@@ -16,7 +16,7 @@ object GeoJsonSpatialOps {
         case geojson.MultiPolygon(polygons) => polygons.flatten.flatten
       }
 
-    BoundingBox(geoJson match {
+    GeoBoundingBox(geoJson match {
       case geometry: Geometry => coordinates(geometry)
       case Feature(geometry, _) => coordinates(geometry)
       case FeatureCollection(features) => features.flatMap(f => coordinates(f.geometry))

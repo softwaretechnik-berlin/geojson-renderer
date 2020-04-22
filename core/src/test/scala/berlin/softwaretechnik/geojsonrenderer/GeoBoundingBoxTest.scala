@@ -3,7 +3,7 @@ package berlin.softwaretechnik.geojsonrenderer
 import berlin.softwaretechnik.geojsonrenderer.geojson.GeoJsonSpatialOps
 import org.scalatest.funsuite.AnyFunSuite
 
-class BoundingBoxTest extends AnyFunSuite {
+class GeoBoundingBoxTest extends AnyFunSuite {
 
   Seq(
     (-20, 0, 20),
@@ -16,15 +16,15 @@ class BoundingBoxTest extends AnyFunSuite {
     (-180, -170, -160),
   ).foreach { case (west, central, east) =>
     test(s"Should compute central longitude between $west and $east") {
-      assert(BoundingBox(west = west, south = 0, east = east, north = 0).centralLongitude === central)
+      assert(GeoBoundingBox(west = west, south = 0, east = east, north = 0).centralLongitude === central)
     }
   }
   
   test("computes a straightforward bounding box") {
-    assert(BoundingBox(Seq(
+    assert(GeoBoundingBox(Seq(
       GeoCoord(-1, 2),
       GeoCoord(3, -4)
-    )) == BoundingBox(
+    )) == GeoBoundingBox(
       west = -4,
       south = -1,
       east = 2,
@@ -33,10 +33,10 @@ class BoundingBoxTest extends AnyFunSuite {
   }
 
   test("computes a bounding box when longitudes cross 180 degrees") {
-    assert(BoundingBox(Seq(
+    assert(GeoBoundingBox(Seq(
       GeoCoord(0, 160),
       GeoCoord(0, 200)
-    )) == BoundingBox(
+    )) == GeoBoundingBox(
       west = 160,
       south = 0,
       east = -160,
@@ -45,10 +45,10 @@ class BoundingBoxTest extends AnyFunSuite {
   }
 
   test("computes a bounding box when longitudes exceed 180 degrees") {
-    assert(BoundingBox(Seq(
+    assert(GeoBoundingBox(Seq(
       GeoCoord(0, 200),
       GeoCoord(0, 240)
-    )) == BoundingBox(
+    )) == GeoBoundingBox(
       west = -160,
       south = 0,
       east = -120,
@@ -57,10 +57,10 @@ class BoundingBoxTest extends AnyFunSuite {
   }
 
   test("computes a bounding box when longitudes cross -180 degrees") {
-    assert(BoundingBox(Seq(
+    assert(GeoBoundingBox(Seq(
       GeoCoord(0, -160),
       GeoCoord(0, -200)
-    )) == BoundingBox(
+    )) == GeoBoundingBox(
       west = 160,
       south = 0,
       east = -160,
@@ -69,10 +69,10 @@ class BoundingBoxTest extends AnyFunSuite {
   }
 
   test("computes a bounding box when longitudes are less than -180 degrees") {
-    assert(BoundingBox(Seq(
+    assert(GeoBoundingBox(Seq(
       GeoCoord(0, -200),
       GeoCoord(0, -240)
-    )) == BoundingBox(
+    )) == GeoBoundingBox(
       west = 120,
       south = 0,
       east = 160,
@@ -81,10 +81,10 @@ class BoundingBoxTest extends AnyFunSuite {
   }
 
   test("computes a bounding box when longitudes span most of the world") {
-    assert(BoundingBox(Seq(
+    assert(GeoBoundingBox(Seq(
       GeoCoord(0, -160),
       GeoCoord(0, 160)
-    )) == BoundingBox(
+    )) == GeoBoundingBox(
       west = -160,
       south = 0,
       east = 160,

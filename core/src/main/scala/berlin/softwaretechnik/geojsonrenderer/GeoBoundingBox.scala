@@ -2,10 +2,10 @@ package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.Math._
 
-case class BoundingBox(west: Double,
-                       south: Double,
-                       east: Double,
-                       north: Double) {
+case class GeoBoundingBox(west: Double,
+                          south: Double,
+                          east: Double,
+                          north: Double) {
   assert(-90 <= south && south <= north && north <= 90, s"Invalid or inconsistent latitudes: $this")
   assert(-180 <= west && west <= 180, s"Invalid west longitude: $this")
   assert(-180 <= east && east <= 180, s"Invalid east longitude: $this")
@@ -19,11 +19,11 @@ case class BoundingBox(west: Double,
     )
 }
 
-object BoundingBox {
+object GeoBoundingBox {
 
-  def apply(coordinates: Seq[GeoCoord]): BoundingBox = {
+  def apply(coordinates: Seq[GeoCoord]): GeoBoundingBox = {
     import Ordering.Double.IeeeOrdering
-    BoundingBox(
+    GeoBoundingBox(
       west = GeoCoord.normalizeLongitude(coordinates.map(_.lon).min),
       south = coordinates.map(_.lat).min,
       east = GeoCoord.normalizeLongitude(coordinates.map(_.lon).max),
