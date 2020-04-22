@@ -47,12 +47,8 @@ object Main {
 
   def render(mapSize: MapSize, geoJson: GeoJson): String = {
     val boundingBox = GeoJsonSpatialOps.boundingBox(geoJson)
-
     val (tiledProjection, viewport) = tilingScheme.optimalProjectionAndViewport(boundingBox, mapSize)
-    println(s"Best zoom level ${tiledProjection.zoomLevel}")
-
-    val tiles: Seq[PositionedTile] = tiledProjection.tileCover(viewport)
-
+    val tiles = tiledProjection.tileCover(viewport)
     new Svg(tiledProjection.mapProjection).render(viewport, tiles, geoJson)
   }
 
