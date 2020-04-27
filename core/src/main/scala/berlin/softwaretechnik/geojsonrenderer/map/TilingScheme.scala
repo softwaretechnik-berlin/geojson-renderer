@@ -1,7 +1,4 @@
-package berlin.softwaretechnik.geojsonrenderer
-package tiling
-
-import berlin.softwaretechnik.geojsonrenderer.map._
+package berlin.softwaretechnik.geojsonrenderer.map
 
 import scala.math.floorDiv
 

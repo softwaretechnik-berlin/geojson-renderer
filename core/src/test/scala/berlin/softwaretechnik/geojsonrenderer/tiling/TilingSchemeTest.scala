@@ -1,7 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer.tiling
 
 import berlin.softwaretechnik.geojsonrenderer._
-import berlin.softwaretechnik.geojsonrenderer.map.{MapBox, MapCoordinates, MapSize}
+import berlin.softwaretechnik.geojsonrenderer.map._
 import org.scalactic._
 import org.scalatest.Assertion
 import org.scalatest.funsuite.AnyFunSuite

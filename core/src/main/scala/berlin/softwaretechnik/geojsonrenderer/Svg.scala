@@ -1,7 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.geojson._
-import berlin.softwaretechnik.geojsonrenderer.tiling.{Tile, Viewport}
+import berlin.softwaretechnik.geojsonrenderer.map._
 
 import scala.xml._
 

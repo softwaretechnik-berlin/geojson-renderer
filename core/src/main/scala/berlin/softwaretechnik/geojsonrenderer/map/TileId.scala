@@ -1,4 +1,4 @@
-package berlin.softwaretechnik.geojsonrenderer.tiling
+package berlin.softwaretechnik.geojsonrenderer.map
 
 case class TileId(x: Int, y: Int, z: Int) {
   assert(0 <= y && y < upperCoordinateLimit, s"At zoom level $z, y must be on [0, $upperCoordinateLimit). $this")

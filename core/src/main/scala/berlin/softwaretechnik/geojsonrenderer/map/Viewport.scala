@@ -1,7 +1,6 @@
-package berlin.softwaretechnik.geojsonrenderer.tiling
+package berlin.softwaretechnik.geojsonrenderer.map
 
 import berlin.softwaretechnik.geojsonrenderer.GeoBoundingBox
-import berlin.softwaretechnik.geojsonrenderer.map.{MapBox, MapCoordinates, MapProjection, MapSize, WebMercatorProjection}
 
 case class Viewport(zoomLevel: Int, projection: MapProjection, box: MapBox)
 
@@ -16,7 +15,7 @@ object Viewport {
           .normalizingLongitudesAround(boundingBox.centralLongitude)
       val mapBBox = normalizingProjection(boundingBox)
 
-      if (zoomLevel > tilingScheme.minZoom && !(mapBBox.size fitsIn mapSize)) rec(zoomLevel - 1)
+      if (!(mapBBox.size fitsIn mapSize) && zoomLevel > tilingScheme.minZoom) rec(zoomLevel - 1)
       else {
         val viewportBox = mapBBox.expandTo(mapSize)
         Viewport(zoomLevel, normalizingProjection.relativeTo(MapCoordinates(viewportBox.left, viewportBox.top)), viewportBox)
