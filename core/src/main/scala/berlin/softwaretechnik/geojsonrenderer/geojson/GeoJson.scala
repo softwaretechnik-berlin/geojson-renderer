@@ -78,16 +78,8 @@ object MultiPolygon {
 object GeoJson {
   private implicit val rw: ReadWriter[GeoJson] = macroRW
 
-  def load(file: Path): GeoJson = {
-
-    // TODO what is this check doing?
-    if (!Files.exists(file)) {
-      System.err.println("File not found")
-      System.exit(4)
-    }
-
+  def load(file: Path): GeoJson =
     read(ujson.Readable.fromPath(file))
-  }
 
   def read(readable: ujson.Readable): GeoJson =
     json.read[GeoJson](readable)

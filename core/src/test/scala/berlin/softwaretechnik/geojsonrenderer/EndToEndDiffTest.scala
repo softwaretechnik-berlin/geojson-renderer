@@ -44,10 +44,11 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     lazy val run: Unit = {
       Files.deleteIfExists(svgFile)
       Files.deleteIfExists(pngFile)
-      Main.main(Array(
+      val exitStatus = Main.mainWithExitStatus(Array(
         "--png",
         geoJsonFile.toString,
       ))
+      assert(exitStatus === 0)
     }
 
     test(s"$svgFile matches accepted XML") {
@@ -57,8 +58,7 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
 
     test(s"$pngFile matches accepted binary") {
       run
-      // TODO semantic image diff instead of just binary diff
-      assertUnchanged(pngFile)
+      assertUnchanged(pngFile) // Ideally we would create a semantic image diff, but this is good enough for now
     }
   }
 
