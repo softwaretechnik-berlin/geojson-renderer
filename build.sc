@@ -2,9 +2,23 @@ import mill._
 import mill.api.Loose
 import mill.define.Target
 import mill.scalalib._
+import mill.scalalib.publish._
 
-object core extends SbtModule {
+object core extends SbtModule with PublishModule {
   def scalaVersion = "2.13.1"
+
+  def publishVersion = "0.0.1"
+
+  def pomSettings = PomSettings(
+    description = "A command line tool to render geojson file on top of map tiles.",
+    organization = "berlin.softwaretechnik",
+    url = "https://github.com/softwaretechnik-berlin/geojson-renderer",
+    licenses = Seq(License.MIT),
+    versionControl = VersionControl.github("softwaretechnik-berlin", "geojson-renderer"),
+    developers = Seq(
+      Developer("softwaretechnik-berlin", "Softwaretechnik","https://github.com/softwaretechnik-berlin")
+    )
+  )
 
   override def ivyDeps: Target[Loose.Agg[Dep]] =
     Agg(
