@@ -19,6 +19,8 @@ object core extends SbtModule with PublishModule {
       Developer("softwaretechnik-berlin", "Softwaretechnik","https://github.com/softwaretechnik-berlin")
     )
   )
+  
+  override def artifactName = "geojsonrenderer"
 
   override def ivyDeps: Target[Loose.Agg[Dep]] =
     Agg(
