@@ -15,9 +15,12 @@ TODO
   way that is convenient and not violating terms of service of
   the tile providers.
 
-* [ ] Create `j` distribution.
+* [X] Create `j` distribution.
 
 * [ ] Fix SVG to PNG rendering to have proper high-res bitmaps.
+
+* [ ] Add an option to embed the bitmap data into the svg rather than 
+      to link, so that we get a self-contained svg file.
 
 * [ ] Provide our own PNG rendering that uses batik only to render
   the geojson graphics and do the overlay at the bitmap level

@@ -7,7 +7,7 @@ import mill.scalalib.publish._
 object core extends SbtModule with PublishModule {
   def scalaVersion = "2.13.1"
 
-  def publishVersion = "0.0.1"
+  def publishVersion = "0.0.2"
 
   def pomSettings = PomSettings(
     description = "A command line tool to render geojson file on top of map tiles.",
@@ -42,7 +42,7 @@ object core extends SbtModule with PublishModule {
               "version" -> ujson.Str(x.version)
             )
         )), indent = 4)
-    
+
     os.write(T.dest / "j-manifest.json", jsonManifest)
 
     Seq(PathRef(T.dest))

@@ -7,9 +7,11 @@ import java.nio.file.{Files, NoSuchFileException, Path, Paths}
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
 import berlin.softwaretechnik.geojsonrenderer.geojson._
 import berlin.softwaretechnik.geojsonrenderer.map._
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
-import org.rogach.scallop.ScallopConf
+import org.rogach.scallop.{ScallopConf, ScallopOption, overrideColorOutput}
+import org.rogach.scallop.exceptions.{RequiredOptionNotFound, UnknownOption}
 
 object Main {
 
@@ -30,38 +32,62 @@ object Main {
         - error when specifying both --max-foo and --foo
         - when no dimensional arguments are specified, default to --max-width 1200 --max-height 800
 
+
       TODO: Specify margin
         - `--margin` to specify a number of pixels to use as a (minimum) margin.
      */
 
     object Conf extends ScallopConf(args) {
+
       banner("""Usage: geojson2svg [OPTION]... [input-file]
-               |geojson2svg renders a geojson file to svg
+               |geojson2svg renders a geojson file to svg and optionally to png.
+               |
                |Options:
                |""".stripMargin)
-      val dimensions = opt[String]("dimensions", descr= "the dimensions of the target file in pixels",  default = Some("1200x800")).map(s => MapSize(s))
-      val png = opt[Boolean]("png", descr = "render the resulting svg into png", default = Some(false))
-      val inputFile = trailArg[String](descr = "geojson input file")
+
+      errorMessageHandler = { message =>
+
+        Console.err.println("Error: %s\n" format message)
+
+        builder.printHelp
+        sys.exit(1)
+      }
+
+      val dimensions = opt[String]("dimensions", descr= "The dimensions of the target file in pixels.",  default = Some("1200x800")).map(s => MapSize(s))
+      val png = opt[Boolean]("png", descr = "Render the resulting svg into png.", default = Some(false))
+      val inputFile = trailArg[String](descr = "Geojson input file.")
+
       verify
     }
 
-    val inputFile = Paths.get(Conf.inputFile.getOrElse(???))
+    val inputFileOpt: String = Conf.inputFile.getOrElse(???)
+
+    val inputFile = Paths.get(inputFileOpt)
+
     val geoJson: GeoJson =
       try GeoJson.load(inputFile)
       catch { case e: NoSuchFileException =>
-        System.err.println(e.getMessage)
+        System.err.println(s"Error: File '${inputFile.toString}' does not exist.")
+        return 1
+      case e:ujson.ParseException =>
+        System.err.println(s"Error: Could not parse '${inputFile.toString}': ${e.getMessage}.")
+        return 1
+      case e: upickle.core.AbortException =>
+        System.err.println(s"Error: Could not parse geojson from '${inputFile.toString}': ${e.getMessage}.")
         return 1
       }
 
     val mapSize: MapSize = Conf.dimensions.getOrElse(???)
     val svgContent = render(mapSize, geoJson)
+
     Files.write(
       replaceExtension(inputFile, ".svg"),
       svgContent.getBytes(StandardCharsets.UTF_8)
     )
 
     if (Conf.png.getOrElse(???)) {
-      System.setProperty("http.agent", "curl/7.66.0") // TODO Why curl?
+      // Setting user agent to curl, so that batik can pull map tiles.
+      System.setProperty("http.agent", "curl/7.66.0")
       saveAsPng(svgContent, replaceExtension(inputFile, ".png"))
     }
 
