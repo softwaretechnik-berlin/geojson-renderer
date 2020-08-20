@@ -39,8 +39,8 @@ object Main {
 
     object Conf extends ScallopConf(args) {
 
-      banner("""Usage: geojson2svg [OPTION]... [input-file]
-               |geojson2svg renders a geojson file to svg and optionally to png.
+      banner("""Usage: geojson-renderer [OPTION]... [input-file]
+               |geojson-renderer renders a geojson file to svg and optionally to png.
                |
                |Options:
                |""".stripMargin)
