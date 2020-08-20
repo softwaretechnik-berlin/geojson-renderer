@@ -1,5 +1,7 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/berlin.softwaretechnik/geojson-renderer_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/berlin.softwaretechnik/geojson-renderer_2.13)
+
 `geojson-renderer` is a command line tool that
-renders geojson to svg adds maptiles in the background,
+renders geojson to svg adds map tiles in the background,
 so that the geojson is displayed on top of a map view.
 
 # Getting started
@@ -95,12 +97,12 @@ The tests can be run using
 
 - [ ] Add different dimension strategies.
 
-      Currently we determine a bounding box that contains the whole geojson
-      and maintains the aspect ration of the given dimensions.
-
-      Other strategies could be:
-
-      * Use the given dimensions as the maximum and cut the box to the boundary
-        of the geojson content.
-
-      * Specify a width or a height in pixels.
+    Currently we determine a bounding box that contains the whole geojson
+    and maintains the aspect ration of the given dimensions.
+    
+    Other strategies could be:
+    
+    * Use the given dimensions as the maximum and cut the box to the boundary
+    of the geojson content.
+    
+    * Specify a width or a height in pixels.
