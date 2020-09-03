@@ -5,7 +5,7 @@ renders geojson to SVG on top of a tiled map display.
 
 # Getting started
 
-`geojson-renderer` is distributed with a `jlauncher` manifest, i.e. it can
+`geojson-renderer` is distributed with a [`jlauncher`](https://github.com/softwaretechnik-berlin/jlauncher) manifest, i.e. it can
 be run without manual download once `jlauncher` is installed:
 
 ```bash
