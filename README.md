@@ -15,7 +15,7 @@ gem install jlauncher
 Then `geojson-renderer` can be started like so:
 
 ```bash
-j berlin.softwaretechnik:geojson-renderer_2.13:0.0.3 --dimensions 600x200 example.geojson
+j berlin.softwaretechnik:geojson-renderer_2.13:0.0.4 --dimensions 600x200 example.geojson
 ```
 
 If the input file exists an svg file will be written
@@ -25,7 +25,7 @@ To learn more about the options, there is a `--help`
 command:
 
 ```bash
-j berlin.softwaretechnik:geojson-renderer_2.13:0.0.3 --help
+j berlin.softwaretechnik:geojson-renderer_2.13:0.0.4 --help
 ```
 
 ```
@@ -64,6 +64,12 @@ parameters are supported:
 * `{1-4}`: will be replaced with a number between 1 and 4,
 * `{a-c}` will be replaced with one of the letters 'a', 'b' or 'c'. 
 
+The use of tile servers is not generally free, so please make sure you adhere 
+to the relevant policies.
+
+There are a number of tile services based on open street map, see [list](https://wiki.openstreetmap.org/wiki/Tile_servers). 
+Also, there are services based on proprietary maps, such as the [HERE Map Tile API](https://developer.here.com/documentation/map-tile/dev_guide/topics/introduction.html).
+
 # Development
 
 This project is work in progress. Pull requests
@@ -94,14 +100,10 @@ The tests can be run using
 
 ## Backlog
 
-- [ ] Make tile source configurable for command line util in a
-      way that is convenient and not violating terms of service of
-      the tile providers.
-
-- [ ] Fix SVG to PNG rendering to have proper high-res bitmaps.
-
 - [ ] Add an option to embed the bitmap data into the svg rather than
       to link, so that we get a self-contained svg file.
+
+- [ ] Fix SVG to PNG rendering to have proper high-res bitmaps.
 
 - [ ] Provide our own PNG rendering that uses batik only to render
       the geojson graphics and do the overlay at the bitmap level
@@ -128,3 +130,12 @@ The tests can be run using
     of the geojson content.
     
     * Specify a width or a height in pixels.
+
+
+### Done
+
+- [X] Make tile source configurable for command line util in a
+      way that is convenient and not violating terms of service of
+      the tile providers.
+
+
