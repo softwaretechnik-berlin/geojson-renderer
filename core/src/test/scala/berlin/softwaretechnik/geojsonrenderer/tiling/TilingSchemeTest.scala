@@ -20,7 +20,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
         Vector2D.y(a) === Vector2D.y(b) +- vectorElementTolerance
 
   test("It should project geopositions onto the map") {
-    val tiling = TilingScheme.osm()
+    val tiling = TilingScheme.template("")
     assert(tiling.projection(0)(charlottenburgPalace) === MapCoordinates(137.45, 83.96))
     assert(tiling.projection(4)(charlottenburgPalace) === MapCoordinates(2199.28, 1343.29))
 
@@ -29,7 +29,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   }
 
   test("It should give covering tiles") {
-    val tiling = TilingScheme.osm()
+    val tiling = TilingScheme.template("")
 
     val projection = tiling.projection(4)
     val mapPosition = projection(charlottenburgPalace)
@@ -53,7 +53,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   }
 
   test("It should give no more than enough tiles to cover") {
-    val tiling = TilingScheme.osm()
+    val tiling = TilingScheme.template("")
     val projection = tiling.projection(6)
     val viewport = Viewport(6, projection, MapBox(left = -512, top = 256, size = MapSize(768, 512)))
     val tiles = tiling.tileCover(viewport).map(_.id)
@@ -76,7 +76,7 @@ class TilingSchemeTest extends AnyFunSuite with TypeCheckedTripleEquals with Tol
   }
 
   private def testRoundTrip(originalPosition: GeoCoord): Assertion = {
-    val tiledProjection = TilingScheme.osm().projection(4)
+    val tiledProjection = TilingScheme.template("").projection(4)
 
     val mapCoordinates = tiledProjection(originalPosition)
     val roundTrippedGeoPosition = tiledProjection.invert(mapCoordinates)

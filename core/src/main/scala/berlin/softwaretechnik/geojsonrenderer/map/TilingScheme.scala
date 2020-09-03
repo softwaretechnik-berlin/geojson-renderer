@@ -20,16 +20,16 @@ class TilingScheme(val minZoom: Int, val maxZoom: Int, tileSize: Int, tileUrl: T
 
 object TilingScheme {
 
+  def template(templateString: String) = {
+    new TilingScheme(0,19, 256, tileId =>  templateString
+      .replaceAll("\\{tile}",tileId.normalizedPath)
+      .replaceAll("\\{1-4}", (1 + (Math.abs(tileId.x + tileId.y) % 4)).toString)
+      .replaceAll("\\{a-c}", "".appended((Math.abs(tileId.x + tileId.y) % 3 + 'a'.toInt).toChar))
+    )
+  }
+
   def osm() = new TilingScheme(0, 19, 256, tileId =>
-    s"http://tile.openstreetmap.org/${tileId.normalizedPath}.png"
-  )
-
-  def rrze() = new TilingScheme(0, 19, 256, tileId =>
-    s"https://c.osm.rrze.fau.de/osmhd/${tileId.normalizedPath}.png"
-  )
-
-  def here(appId: String, appCode: String) = new TilingScheme(0, 19, 512, tileId =>
-    s"https://1.base.maps.api.here.com/maptile/2.1/maptile/844fb05a40/normal.day/${tileId.normalizedPath}/512/png8?app_id=${appId}&app_code=${appCode}&lg=eng&ppi=320&pview=DEF"
+    s"http://a.tile.openstreetmap.org/${tileId.normalizedPath}.png"
   )
 
 }

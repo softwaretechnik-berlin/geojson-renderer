@@ -1,13 +1,12 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/berlin.softwaretechnik/geojson-renderer_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/berlin.softwaretechnik/geojson-renderer_2.13)
 
 `geojson-renderer` is a command line tool that
-renders geojson to svg adds map tiles in the background,
-so that the geojson is displayed on top of a map view.
+renders geojson to SVG on top of a tiled map display. 
 
 # Getting started
 
-`geojson-renderer` is distributed with a `jlauncher` manifest.
-`jlauncher` needs to be installed:
+`geojson-renderer` is distributed with a `jlauncher` manifest, i.e. it can
+be run without manual download once `jlauncher` is installed:
 
 ```bash
 gem install jlauncher
@@ -35,18 +34,41 @@ geojson-renderer renders a geojson file to svg and optionally to png.
 
 Options:
 
-  -d, --dimensions  <arg>   The dimensions of the target file in pixels.
-  -p, --png                 Render the resulting svg into png.
-  -h, --help                Show help message
+  -d, --dimensions  <arg>          The dimensions of the target file in pixels.
+  -p, --png                        Render the resulting svg into png.
+  -t, --tile-url-template  <arg>   Template for tile URLs, placeholders are
+                                   {tile} for tile coordinate, {a-c} and {1-4}
+                                   for load balancing.
+  -h, --help                       Show help message
 
  trailing arguments:
   input-file (required)   Geojson input file.
 ```
 
+# How it Works
+geojson renderer creates an SVG image with 
+the geojson features and adds map tiles in the background,
+so that the geojson is displayed on top of the map view.
+
+Currently the tiles are rendered as SVG image tag that have a 
+url pointing to the actual tile. That means that for SVG rendering
+no tiles need to be downloaded. 
+
+The image can also be rendered to PNG using apache batik. This will
+lead to the downloading of tiles.
+
+The tile source can be configured by providing a template, where the following
+parameters are supported:
+
+* `{tile}`:  the coordinate of the tile as `{z}/{x}/{Y}`.
+* `{1-4}`: will be replaced with a number between 1 and 4,
+* `{a-c}` will be replaced with one of the letters 'a', 'b' or 'c'. 
+
 # Development
 
 This project is work in progress. Pull requests
-are welcome.
+are welcome. There is a backlog with more tasks at
+the end of this document.
 
 `geojson-renderer` is implemented in Scala and uses
 the mill build tool.
@@ -60,7 +82,7 @@ Mill can create an intellij project:
 ## Testing
 
 There is a comprehensive test suite that might
-fail from time to time as maptiles get updated.
+fail from time to time as map tiles get updated.
 
 We will address this at some point, by either
 not using tiles in the test by providing
