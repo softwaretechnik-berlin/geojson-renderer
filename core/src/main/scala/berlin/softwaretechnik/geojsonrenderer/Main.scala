@@ -60,7 +60,7 @@ object Main {
       verify
     }
 
-    val inputFileOpt: String = Conf.inputFile.getOrElse(???)
+    val inputFileOpt: String = Conf.inputFile()
 
     val inputFile = Paths.get(inputFileOpt)
 
@@ -77,7 +77,7 @@ object Main {
         return 1
       }
 
-    val mapSize: MapSize = Conf.dimensions.getOrElse(???)
+    val mapSize: MapSize = Conf.dimensions()
     val svgContent = render(mapSize, geoJson)
 
     Files.write(
@@ -85,7 +85,7 @@ object Main {
       svgContent.getBytes(StandardCharsets.UTF_8)
     )
 
-    if (Conf.png.getOrElse(???)) {
+    if (Conf.png()) {
       // Setting user agent to curl, so that batik can pull map tiles.
       System.setProperty("http.agent", "curl/7.66.0")
       saveAsPng(svgContent, replaceExtension(inputFile, ".png"))
