@@ -1,0 +1,26 @@
+{
+    "type": "Feature",
+    "geometry": {
+        "type": "LineString",
+        "coordinates": [
+            [13.3907, 52.5074],
+            [13.3902, 52.5076],
+            [13.3891, 52.5076],
+            [13.3871, 52.5077],
+            [13.3855, 52.5073],
+            [13.3841, 52.5095],
+            [13.3838, 52.5109],
+            [13.3827, 52.5136],
+            [13.3813, 52.5156],
+            [13.3796, 52.5165],
+            [13.3785, 52.5163]
+        ]
+    },
+    "properties": {
+        "stroke": "green",
+        "id": 42,
+        "title": "Berlin Walk",
+        "description": "Represents GPS data collected during a hypothetical walk through Berlin.",
+        "source": "handcrafted"
+    }
+}

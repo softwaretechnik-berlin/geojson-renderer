@@ -1,0 +1,19 @@
+<svg width="600" height="200" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <g id="tiles">
+    <image xlink:href="http://a.tile.openstreetmap.org/14/8799/5373.png" x="-250" y="-111" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/14/8799/5374.png" x="-250" y="145" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/14/8800/5373.png" x="6" y="-111" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/14/8800/5374.png" x="6" y="145" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/14/8801/5373.png" x="262" y="-111" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/14/8801/5374.png" x="262" y="145" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/14/8802/5373.png" x="518" y="-111" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/14/8802/5374.png" x="518" y="145" width="256px" height="256px"/>
+  </g>
+  <g id="features">
+    <g stroke="green" stroke-width="3" fill="#555555" fill-opacity="0.6">
+      <title>Berlin Walk</title>
+      <desc>Represents GPS data collected during a hypothetical walk through Berlin.</desc>
+      <polyline points="370.9627022226341,185.86439651995897 365.13727999990806,182.03602242586203 352.3213511114009,182.03602242586203 329.01966222235933,180.12182884593494 310.3783111111261,187.77857703412883 294.067128888797,145.66559965210035 290.57187555590644,118.86533462745138 277.7559466669336,67.17669812613167 261.4447644446045,28.886771627236158 241.6383288889192,11.655736102489755 228.82239999994636,15.484885609243065" fill="None"/>
+    </g>
+  </g>
+</svg>
