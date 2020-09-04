@@ -36,9 +36,9 @@ For example, the following
 }
 ```
 
-...would produce an SVG image that looks like:
+...would produce an [SVG image](examples/berlin-walk.svg) that looks like:
 
-<img src="examples/berlin-walk.svg" width="600" height="200">
+<img src="examples/berlin-walk.png" width="600" height="200">
 
 ## Getting started
 
