@@ -150,31 +150,22 @@ mill core.test
 
 - [ ] Add an option to embed the bitmap data into the SVG rather than to link,
       so that we get a self-contained SVG file.
-
 - [ ] Fix SVG to PNG rendering to have proper high-res bitmaps.
-
 - [ ] Provide our own PNG rendering that uses batik only to render the GeoJSON
       graphics and do the overlay at the bitmap level
-
 - [ ] Provide caching for bitmap data
-
 - [ ] Add an option(s) to write SVG embedded into html
-
 - [ ] Add option to add scripting to SVG/HTML which adds inspection of
       properties etc.
-
 - [ ] Add meaningful classes and IDs to SVG
-
 - [ ] Support "GeoJSON" files with multiple feature collections.
-
 - [ ] Add different dimension strategies. Currently we determine a bounding box
       that contains the whole GeoJSON and maintains the aspect ration of the
       given dimensions. Other strategies could be:
-
   - Use the given dimensions as the maximum and cut the box to the boundary of
     the GeoJSON content.
-
   - Specify width or height in pixels.
-
+- [ ] Add a flag that allow specifying the output file path.
+- [ ] Allow reading input GeoJSON from stdin.
 - [x] Make tile source configurable for command line util in a way that is
       convenient and not violating terms of service of the tile providers.
