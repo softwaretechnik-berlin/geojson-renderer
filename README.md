@@ -38,7 +38,7 @@ For example, the following
 
 ...would produce an SVG image that looks like:
 
-<img src="examples/berlin-walk.json" width="600" height="200">
+<img src="examples/berlin-walk.svg" width="600" height="200">
 
 ## Getting started
 
