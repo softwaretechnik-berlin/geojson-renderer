@@ -99,9 +99,6 @@ The `-p` flag allows rendering the output as a PNG file instead. This will lead
 to the downloading of tiles. Underneath,
 [Apache Batik](https://xmlgraphics.apache.org/batik/) is used.
 
-The `-p` flag allows rendering the output as a PNG file instead, which will lead
-to the downloading of the necessary tiles. Underneath, Apache Batik is used.
-
 Optionally, the tile source can be configured by providing a template URL where
 the following parameters are supported:
 
