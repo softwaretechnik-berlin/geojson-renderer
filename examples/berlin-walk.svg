@@ -1,19 +1,31 @@
-<svg width="600" height="200" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<svg width="1200" height="800" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
   <g id="tiles">
-    <image xlink:href="http://a.tile.openstreetmap.org/14/8799/5373.png" x="-250" y="-111" width="256px" height="256px"/>
-    <image xlink:href="http://b.tile.openstreetmap.org/14/8799/5374.png" x="-250" y="145" width="256px" height="256px"/>
-    <image xlink:href="http://b.tile.openstreetmap.org/14/8800/5373.png" x="6" y="-111" width="256px" height="256px"/>
-    <image xlink:href="http://c.tile.openstreetmap.org/14/8800/5374.png" x="6" y="145" width="256px" height="256px"/>
-    <image xlink:href="http://c.tile.openstreetmap.org/14/8801/5373.png" x="262" y="-111" width="256px" height="256px"/>
-    <image xlink:href="http://a.tile.openstreetmap.org/14/8801/5374.png" x="262" y="145" width="256px" height="256px"/>
-    <image xlink:href="http://a.tile.openstreetmap.org/14/8802/5373.png" x="518" y="-111" width="256px" height="256px"/>
-    <image xlink:href="http://b.tile.openstreetmap.org/14/8802/5374.png" x="518" y="145" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35202/21493.png" x="-64" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35202/21494.png" x="-64" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35202/21495.png" x="-64" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35202/21496.png" x="-64" y="581" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35203/21493.png" x="192" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35203/21494.png" x="192" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35203/21495.png" x="192" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35203/21496.png" x="192" y="581" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35204/21493.png" x="448" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35204/21494.png" x="448" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35204/21495.png" x="448" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35204/21496.png" x="448" y="581" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35205/21493.png" x="704" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35205/21494.png" x="704" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35205/21495.png" x="704" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35205/21496.png" x="704" y="581" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35206/21493.png" x="960" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35206/21494.png" x="960" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35206/21495.png" x="960" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35206/21496.png" x="960" y="581" width="256px" height="256px"/>
   </g>
   <g id="features">
     <g stroke="green" stroke-width="3" fill="#555555" fill-opacity="0.6">
       <title>Berlin Walk</title>
       <desc>Represents GPS data collected during a hypothetical walk through Berlin.</desc>
-      <polyline points="370.9627022226341,185.86439651995897 365.13727999990806,182.03602242586203 352.3213511114009,182.03602242586203 329.01966222235933,180.12182884593494 310.3783111111261,187.77857703412883 294.067128888797,145.66559965210035 290.57187555590644,118.86533462745138 277.7559466669336,67.17669812613167 261.4447644446045,28.886771627236158 241.6383288889192,11.655736102489755 228.82239999994636,15.484885609243065" fill="None"/>
+      <polyline points="883.8508088905364,744.4575860798359 860.5491199996322,729.1440897034481 809.2854044456035,729.1440897034481 716.0786488894373,721.4873153837398 641.5132444445044,752.1143081365153 576.2685155551881,583.6623986084014 562.2875022236258,476.4613385098055 511.0237866677344,269.7067925045267 445.77905777841806,116.54708650894463 366.5533155556768,47.62294440995902 315.2895999997854,62.93954243697226" fill="None"/>
     </g>
   </g>
 </svg>

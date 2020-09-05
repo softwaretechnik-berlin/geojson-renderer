@@ -1,117 +1,200 @@
 package berlin.softwaretechnik.geojsonrenderer
 
-import java.io.StringReader
+import java.io.{ByteArrayOutputStream, InputStream, StringReader}
 import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, NoSuchFileException, Path, Paths}
+import java.nio.file.{Files, Path, Paths}
 
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
 import berlin.softwaretechnik.geojsonrenderer.geojson._
 import berlin.softwaretechnik.geojsonrenderer.map._
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
-import org.rogach.scallop.{ScallopConf}
+import org.rogach.scallop.ScallopConf
+
+import scala.io.AnsiColor
 
 object Main {
 
-  def main(args: Array[String]): Unit =
-    System.exit(mainWithExitStatus(args))
-
-  val template= s"https://1.base.maps.api.here.com/maptile/2.1/maptile/newest/normal.day/{tile}/256/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=eng&ppi=320&pview=DEF"
-  def mainWithExitStatus(args: Array[String]): Int = {
-
-    /*
-      TODO: replace --dimension flag with the following:
-        - when `--width` or `--height` is specified, use that exact number of pixels
-        - when `--max-width` or `--max-height` is specified, use a zoom level that gets us close to that many pixels, but don't add extra margin
-        - when only one of height or width is specified, use the specified dimension to determine the zoom level, and compute the other dimension from bounding box + margin
-        - error when specifying both --max-foo and --foo
-        - when no dimensional arguments are specified, default to --max-width 1200 --max-height 800
+  /*
+    TODO: replace --dimension flag with the following:
+      - when `--width` or `--height` is specified, use that exact number of pixels
+      - when `--max-width` or `--max-height` is specified, use a zoom level that gets us close to that many pixels, but don't add extra margin
+      - when only one of height or width is specified, use the specified dimension to determine the zoom level, and compute the other dimension from bounding box + margin
+      - error when specifying both --max-foo and --foo
+      - when no dimensional arguments are specified, default to --max-width 1200 --max-height 800
 
 
-      TODO: Specify margin
-        - `--margin` to specify a number of pixels to use as a (minimum) margin.
-     */
+    TODO: Specify margin
+      - `--margin` to specify a number of pixels to use as a (minimum) margin.
+   */
 
-    object Conf extends ScallopConf(args) {
-
-      banner("""Usage: geojson-renderer [OPTION]... [input-file]
-               |geojson-renderer renders a geojson file to svg and optionally to png.
-               |
-               |Options:
-               |""".stripMargin)
-
-      errorMessageHandler = { message =>
-
-        Console.err.println("Error: %s\n" format message)
-
-        builder.printHelp
-        sys.exit(1)
+  def main(args: Array[String]): Unit = {
+    val exitCode =
+      try {
+        run(new Conf(args))
+        0
+      } catch {
+        case err: GeoJsonRendererError =>
+          printError(AnsiColor.RED + err.message + AnsiColor.RESET)
+          1
+        case e: Exception =>
+          printError(AnsiColor.RED + e.getMessage + AnsiColor.RESET)
+          127
       }
 
-      val dimensions = opt[String]("dimensions", descr= "The dimensions of the target file in pixels.",  default = Some("1200x800")).map(s => MapSize(s))
-      val png = opt[Boolean]("png", descr = "Render the resulting svg into png.", default = Some(false))
-      val tileUrlTemplate = opt[String]("tile-url-template", descr =
-        "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing."
-          , default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png"))
-      val inputFile = trailArg[String](descr = "Geojson input file.")
-
-      verify
-    }
-
-    val inputFileOpt: String = Conf.inputFile()
-
-    val inputFile = Paths.get(inputFileOpt)
-
-    val geoJson: GeoJson =
-      try GeoJson.load(inputFile)
-      catch { case e: NoSuchFileException =>
-        System.err.println(s"Error: File '${inputFile.toString}' does not exist.")
-        return 1
-      case e:ujson.ParseException =>
-        System.err.println(s"Error: Could not parse '${inputFile.toString}': ${e.getMessage}.")
-        return 1
-      case e: upickle.core.AbortException =>
-        System.err.println(s"Error: Could not parse geojson from '${inputFile.toString}': ${e.getMessage}.")
-        return 1
-      }
-
-    val mapSize: MapSize = Conf.dimensions()
-
-    if (!Conf.tileUrlTemplate.isSupplied) {
-      System.err.println("Warning: No tile-url-template defined. Falling back to OpenStreetMap tile server. Make sure you adhere" +
-        " to the usage policy: https://operations.osmfoundation.org/policies/tiles/.")
-    }
-
-
-    val tilingScheme = TilingScheme.template(Conf.tileUrlTemplate())
-
-    val svgContent = render(mapSize, geoJson, tilingScheme)
-
-    Files.write(
-      replaceExtension(inputFile, ".svg"),
-      svgContent.getBytes(StandardCharsets.UTF_8)
-    )
-
-    if (Conf.png()) {
-      // Setting user agent to curl, so that batik can pull map tiles.
-      System.setProperty("http.agent", "curl/7.66.0")
-      saveAsPng(svgContent, replaceExtension(inputFile, ".png"))
-    }
-
-    0
+    System.exit(exitCode)
   }
 
-  def render(mapSize: MapSize, geoJson: GeoJson, tilingScheme: TilingScheme): String = {
+  def run(conf: Conf): Unit = {
+
+    val input = {
+      val inputFileOpt: String = conf.inputFile()
+      val inputFile = Paths.get(inputFileOpt)
+
+      if (inputFileOpt == "-") {
+        StdInput
+      } else if (Files.exists(inputFile)) {
+        FileInput(inputFile)
+      } else {
+        throw new GeoJsonRendererError(s"Error: File '${inputFile.toString}' does not exist.")
+      }
+    }
+
+    val geoJson: GeoJson =
+      try GeoJson.load(input.in)
+      catch {
+        case e: ujson.ParseException =>
+          throw new GeoJsonRendererError(s"Error: Could not parse '${input.name}': ${e.getMessage}.")
+        case e: upickle.core.AbortException =>
+          throw new GeoJsonRendererError(s"Error: Could not parse GeoJSON from '${input.name}': ${e.getMessage}.")
+      }
+
+    val mapSize: MapSize = conf.dimensions()
+
+    if (!conf.tileUrlTemplate.isSupplied) {
+      printWarning(AnsiColor.YELLOW + "Warning: No tile-url-template defined. Falling back to OpenStreetMap tile server. Make sure you adhere" +
+        " to the usage policy: https://operations.osmfoundation.org/policies/tiles/." + AnsiColor.RESET)
+    }
+
+    val tilingScheme = TilingScheme.template(conf.tileUrlTemplate())
+
+    val svgContent = render(mapSize, geoJson, tilingScheme)
+    val outputFormats = if (conf.png()) Set(SVGFormat,PNGFormat) else Set(SVGFormat)
+    val output = input.matchingOutput
+
+    // Setting user agent to curl, so that batik can pull map tiles.
+    System.setProperty("http.agent", "curl/7.66.0")
+    outputFormats.foreach { format =>
+      output.write(svgContent, format)
+    }
+  }
+
+  private def printError(message: String): Unit =
+    Console.err.println(AnsiColor.RED + message + AnsiColor.RESET)
+
+  private def printWarning(message: String): Unit =
+    Console.err.println(AnsiColor.YELLOW + message + AnsiColor.RESET)
+
+  private def render(mapSize: MapSize, geoJson: GeoJson, tilingScheme: TilingScheme): String = {
     val boundingBox = GeoJsonSpatialOps.boundingBox(geoJson)
     val viewport = Viewport.optimal(boundingBox, mapSize, tilingScheme)
     val tiles = tilingScheme.tileCover(viewport)
     new Svg(viewport).render(tiles, geoJson)
   }
 
-  private def saveAsPng(svgContent: String, path: Path): Unit =
+  class Conf(args: Array[String]) extends ScallopConf(args) {
+
+    banner(
+      """Usage: geojson-renderer [OPTION]... [input-file]
+        |geojson-renderer renders a GeoJSON file to SVG and PNG images.
+        |
+        |Options:
+        |""".stripMargin)
+
+    errorMessageHandler = { message =>
+
+      Console.err.println("Error: %s\n" format message)
+
+      builder.printHelp
+      sys.exit(1)
+    }
+
+    val dimensions = opt[String]("dimensions", descr = "The dimensions of the target file in pixels.", default = Some("1200x800")).map(s => MapSize(s))
+    val png = opt[Boolean]("png", descr = "Render the resulting svg into png.", default = Some(false))
+    val tileUrlTemplate = opt[String]("tile-url-template", descr =
+      "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing."
+      , default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png"))
+    val inputFile = trailArg[String](descr = "GeoJSON input file or - for standard input")
+
+    verify
+  }
+
+}
+
+class GeoJsonRendererError(val message: String) extends Exception(message)
+
+sealed trait GeoJsonInput {
+  val name: String
+
+  def in: InputStream
+
+  def matchingOutput: ImageOutput
+}
+
+case class FileInput(file: Path) extends GeoJsonInput {
+  override val name: String = file.toString
+
+  override def in: InputStream = Files.newInputStream(file)
+
+  override def matchingOutput: ImageOutput =
+    MirroredFileOutput(file)
+}
+
+case object StdInput extends GeoJsonInput {
+  override val name: String = "STDIN"
+
+  override def in: InputStream = System.in
+
+  override def matchingOutput: ImageOutput = StdOutput
+}
+
+sealed abstract class OutputFormat(val extension: String) {
+  def convert(svgContent: String): Array[Byte]
+}
+
+case object SVGFormat extends OutputFormat("svg") {
+  override def convert(svgContent: String): Array[Byte] = svgContent.getBytes(StandardCharsets.UTF_8)
+}
+
+case object PNGFormat extends OutputFormat("png") {
+  override def convert(svgContent: String): Array[Byte] = {
+    val out = new ByteArrayOutputStream()
     new PNGTranscoder().transcode(
       new TranscoderInput(new StringReader(svgContent)),
-      new TranscoderOutput(Files.newOutputStream(path))
+      new TranscoderOutput(out)
     )
+    out.toByteArray
+  }
+}
 
+sealed trait ImageOutput {
+  val name: String
+
+  def write(svgContent: String, format: OutputFormat): Unit
+}
+
+case class MirroredFileOutput(inputFile: Path) extends ImageOutput {
+  override val name: String = inputFile.toString
+
+  override def write(svgContent: String, format: OutputFormat): Unit = {
+    val outputFile = replaceExtension(inputFile, s".${format.extension}")
+    Files.write(outputFile, format.convert(svgContent))
+  }
+}
+
+case object StdOutput extends ImageOutput {
+  override val name: String = "STDOUT"
+
+  override def write(svgContent: String, format: OutputFormat): Unit =
+    System.out.write(format.convert(svgContent))
 }

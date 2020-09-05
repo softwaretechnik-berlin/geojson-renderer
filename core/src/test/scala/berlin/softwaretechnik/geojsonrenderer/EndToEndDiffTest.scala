@@ -44,11 +44,10 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     lazy val run: Unit = {
       Files.deleteIfExists(svgFile)
       Files.deleteIfExists(pngFile)
-      val exitStatus = Main.mainWithExitStatus(Array(
+      Main.run(new Main.Conf(Array(
         "--png",
         geoJsonFile.toString,
-      ))
-      assert(exitStatus === 0)
+      )))
     }
 
     test(s"$svgFile matches accepted XML") {

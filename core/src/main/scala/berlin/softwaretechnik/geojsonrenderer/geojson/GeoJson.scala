@@ -1,6 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer
 package geojson
 
+import java.io.InputStream
 import java.nio.file.{Files, Path}
 
 import ujson.Value.Value
@@ -80,6 +81,9 @@ object GeoJson {
 
   def load(file: Path): GeoJson =
     read(ujson.Readable.fromPath(file))
+
+  def load(inputStream: InputStream): GeoJson =
+    json.read[GeoJson](ujson.read(inputStream))
 
   def read(readable: ujson.Readable): GeoJson =
     json.read[GeoJson](readable)
