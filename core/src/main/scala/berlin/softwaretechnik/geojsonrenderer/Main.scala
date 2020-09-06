@@ -9,8 +9,9 @@ import berlin.softwaretechnik.geojsonrenderer.geojson._
 import berlin.softwaretechnik.geojsonrenderer.map._
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
-import org.rogach.scallop.ScallopConf
+import org.rogach.scallop.{ScallopConf, ValueConverter}
 
+import scala.collection.compat.immutable
 import scala.io.AnsiColor
 
 object Main {
@@ -31,7 +32,7 @@ object Main {
   def main(args: Array[String]): Unit = {
     val exitCode =
       try {
-        run(new Conf(args))
+        run(new Conf(immutable.ArraySeq.unsafeWrapArray(args)))
         0
       } catch {
         case err: GeoJsonRendererError =>
@@ -47,18 +48,7 @@ object Main {
 
   def run(conf: Conf): Unit = {
 
-    val input = {
-      val inputFileOpt: String = conf.inputFile()
-      val inputFile = Paths.get(inputFileOpt)
-
-      if (inputFileOpt == "-") {
-        StdInput
-      } else if (Files.exists(inputFile)) {
-        FileInput(inputFile)
-      } else {
-        throw new GeoJsonRendererError(s"Error: File '${inputFile.toString}' does not exist.")
-      }
-    }
+    val input = conf.inputFile()
 
     val geoJson: GeoJson =
       try GeoJson.load(input.in)
@@ -79,7 +69,7 @@ object Main {
     val tilingScheme = TilingScheme.template(conf.tileUrlTemplate())
 
     val svgContent = render(mapSize, geoJson, tilingScheme)
-    val outputFormats = if (conf.png()) Set(SVGFormat,PNGFormat) else Set(SVGFormat)
+    val outputFormats = if (conf.png()) Set(SVGFormat, PNGFormat) else Set(SVGFormat)
     val output = input.matchingOutput
 
     // Setting user agent to curl, so that batik can pull map tiles.
@@ -102,7 +92,7 @@ object Main {
     new Svg(viewport).render(tiles, geoJson)
   }
 
-  class Conf(args: Array[String]) extends ScallopConf(args) {
+  class Conf(args: Seq[String]) extends ScallopConf(args) {
 
     banner(
       """Usage: geojson-renderer [OPTION]... [input-file]
@@ -112,9 +102,7 @@ object Main {
         |""".stripMargin)
 
     errorMessageHandler = { message =>
-
-      Console.err.println("Error: %s\n" format message)
-
+      printError(s"Error: $message\n")
       builder.printHelp
       sys.exit(1)
     }
@@ -125,8 +113,15 @@ object Main {
       "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing."
       , default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png"))
     val inputFile = trailArg[String](descr = "GeoJSON input file or - for standard input")
+      .map(str => if (str == "-") StdInput else FileInput(Paths.get(str)))
 
-    verify
+    addValidation(inputFile() match {
+      case input: FileInput =>
+        if (Files.exists(input.file)) Right(()) else Left(s"File '${input.file}' does not exist.")
+      case _ => Right(())
+    })
+
+    verify()
   }
 
 }
