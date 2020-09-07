@@ -40,11 +40,13 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
   geoJsonFiles.foreach { geoJsonFile =>
     val svgFile = replaceExtension(geoJsonFile, ".svg")
     val pngFile = replaceExtension(geoJsonFile, ".png")
+    val embeddedSvgFile = replaceExtension(geoJsonFile, "-embedded.svg")
 
     lazy val run: Unit = {
       Files.deleteIfExists(svgFile)
       Files.deleteIfExists(pngFile)
       Main.run(new Main.Conf(Seq(geoJsonFile.toString)))
+      Main.run(new Main.Conf(Seq("-f", "svg-embedded", "-o", embeddedSvgFile.toString, geoJsonFile.toString)))
       Main.run(new Main.Conf(Seq("-f", "png", geoJsonFile.toString)))
     }
 
@@ -53,19 +55,24 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
       assertUnchanged(svgFile)
     }
 
+    test(s"$embeddedSvgFile matches accepted XML") {
+      run
+      assertUnchanged(embeddedSvgFile)
+    }
+
     test(s"$pngFile matches accepted binary") {
       run
       assertUnchanged(pngFile) // Ideally we would create a semantic image diff, but this is good enough for now
     }
   }
 
-  private def assertUnchanged(svgFile: Path): Assertion = {
-    assert(Files.exists(svgFile), s"Missing ${svgFile.toUri} after running")
+  private def assertUnchanged(file: Path): Assertion = {
+    assert(Files.exists(file), s"Missing ${file.toUri} after running")
 
-    val status = git.status().addPath(svgFile.toString).call()
+    val status = git.status().addPath(file.toString).call()
 
-    assert(status.getUntracked.isEmpty, s"There is not yet a reference version of ${svgFile.toUri} in the repository or index. Review the current version and add it to the index if it is acceptable.")
+    assert(status.getUntracked.isEmpty, s"There is not yet a reference version of ${file.toUri} in the repository or index. Review the current version and add it to the index if it is acceptable.")
 
-    assert(status.getModified.isEmpty, s"${svgFile.toUri} differs from the reference version in the ${if (status.getChanged.isEmpty) "repository" else "index"}. Review the current version and add it to the index if it is acceptable.")
+    assert(status.getModified.isEmpty, s"${file.toUri} differs from the reference version in the ${if (status.getChanged.isEmpty) "repository" else "index"}. Review the current version and add it to the index if it is acceptable.")
   }
 }
