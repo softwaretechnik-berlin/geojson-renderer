@@ -2,11 +2,16 @@ package berlin.softwaretechnik.geojsonrenderer
 
 import berlin.softwaretechnik.geojsonrenderer.Math._
 
-case class GeoBoundingBox(west: Double,
-                          south: Double,
-                          east: Double,
-                          north: Double) {
-  assert(-90 <= south && south <= north && north <= 90, s"Invalid or inconsistent latitudes: $this")
+case class GeoBoundingBox(
+    west: Double,
+    south: Double,
+    east: Double,
+    north: Double
+) {
+  assert(
+    -90 <= south && south <= north && north <= 90,
+    s"Invalid or inconsistent latitudes: $this"
+  )
   assert(-180 <= west && west <= 180, s"Invalid west longitude: $this")
   assert(-180 <= east && east <= 180, s"Invalid east longitude: $this")
 

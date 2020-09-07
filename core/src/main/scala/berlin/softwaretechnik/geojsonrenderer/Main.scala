@@ -56,16 +56,22 @@ object Main {
       try GeoJson.load(input.in)
       catch {
         case e: ujson.ParseException =>
-          throw new GeoJsonRendererError(s"Error: Could not parse '${input.name}': ${e.getMessage}.")
+          throw new GeoJsonRendererError(
+            s"Error: Could not parse '${input.name}': ${e.getMessage}."
+          )
         case e: upickle.core.AbortException =>
-          throw new GeoJsonRendererError(s"Error: Could not parse GeoJSON from '${input.name}': ${e.getMessage}.")
+          throw new GeoJsonRendererError(
+            s"Error: Could not parse GeoJSON from '${input.name}': ${e.getMessage}."
+          )
       }
 
     val mapSize: MapSize = conf.dimensions()
 
     if (!conf.tileUrlTemplate.isSupplied) {
-      printWarning(AnsiColor.YELLOW + "Warning: No tile-url-template defined. Falling back to OpenStreetMap tile server. Make sure you adhere" +
-        " to the usage policy: https://operations.osmfoundation.org/policies/tiles/." + AnsiColor.RESET)
+      printWarning(
+        AnsiColor.YELLOW + "Warning: No tile-url-template defined. Falling back to OpenStreetMap tile server. Make sure you adhere" +
+          " to the usage policy: https://operations.osmfoundation.org/policies/tiles/." + AnsiColor.RESET
+      )
     }
 
     val tilingScheme = TilingScheme.template(conf.tileUrlTemplate())
@@ -86,7 +92,11 @@ object Main {
   private def printWarning(message: String): Unit =
     Console.err.println(AnsiColor.YELLOW + message + AnsiColor.RESET)
 
-  private def render(mapSize: MapSize, geoJson: GeoJson, tilingScheme: TilingScheme): String = {
+  private def render(
+      mapSize: MapSize,
+      geoJson: GeoJson,
+      tilingScheme: TilingScheme
+  ): String = {
     val boundingBox = GeoJsonSpatialOps.boundingBox(geoJson)
     val viewport = Viewport.optimal(boundingBox, mapSize, tilingScheme)
     val tiles = tilingScheme.tileCover(viewport)
@@ -95,8 +105,7 @@ object Main {
 
   class Conf(args: Seq[String]) extends ScallopConf(args) {
 
-    banner(
-      """Usage: geojson-renderer [OPTION]... [input-file]
+    banner("""Usage: geojson-renderer [OPTION]... [input-file]
         |geojson-renderer renders a GeoJSON file to SVG and PNG images.
         |
         |Options:
@@ -108,20 +117,39 @@ object Main {
       throw new GeoJsonRendererError()
     }
 
-    val dimensions = opt[String]("dimensions", descr = "The dimensions of the target file in pixels.", default = Some("1200x800")).map(s => MapSize(s))
-    val output: ScallopOption[ImageOutput] = opt[String]("output", short = 'o', descr = "Image output file or - for standard output. Defaults to a file when the input is a file, or stdout when reading from stdin.")
-      .map(str => if (str == "-") StdOutput else FileOutput(Paths.get(str)))
-    val outputFormat: ScallopOption[OutputFormat] = opt[String]("output-format", short = 'f', descr = s"Defines the output image format (${OutputFormat.available.mkString(", ")})", default = Some(SVGFormat.toString), validate = str => OutputFormat.available.exists(_.toString == str))
-      .map(format => OutputFormat.available.find(_.toString == format).get)
-    val tileUrlTemplate = opt[String]("tile-url-template", descr =
-      "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing."
-      , default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png"))
-    val input = trailArg[String](descr = "GeoJSON input file or - for standard input")
-      .map(str => if (str == "-") StdInput else FileInput(Paths.get(str)))
+    val dimensions: ScallopOption[MapSize] = opt[String](
+      "dimensions",
+      descr = "The dimensions of the target file in pixels.",
+      default = Some("1200x800")
+    ).map(s => MapSize(s))
+    val output: ScallopOption[ImageOutput] = opt[String](
+      "output",
+      short = 'o',
+      descr =
+        "Image output file or - for standard output. Defaults to a file when the input is a file, or stdout when reading from stdin."
+    ).map(str => if (str == "-") StdOutput else FileOutput(Paths.get(str)))
+    val outputFormat: ScallopOption[OutputFormat] = opt[String](
+      "output-format",
+      short = 'f',
+      descr =
+        s"Defines the output image format (${OutputFormat.available.mkString(", ")})",
+      default = Some(SVGFormat.toString),
+      validate = str => OutputFormat.available.exists(_.toString == str)
+    ).map(format => OutputFormat.available.find(_.toString == format).get)
+    val tileUrlTemplate: ScallopOption[String] = opt[String](
+      "tile-url-template",
+      descr =
+        "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing.",
+      default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png")
+    )
+    val input: ScallopOption[GeoJsonInput] =
+      trailArg[String](descr = "GeoJSON input file or - for standard input")
+        .map(str => if (str == "-") StdInput else FileInput(Paths.get(str)))
 
     addValidation(input() match {
       case input: FileInput =>
-        if (Files.exists(input.file)) Right(()) else Left(s"File '${input.file}' does not exist.")
+        if (Files.exists(input.file)) Right(())
+        else Left(s"File '${input.file}' does not exist.")
       case _ => Right(())
     })
 
@@ -130,7 +158,8 @@ object Main {
 
 }
 
-class GeoJsonRendererError(val message: Option[String]) extends Exception(message.mkString) {
+class GeoJsonRendererError(val message: Option[String])
+    extends Exception(message.mkString) {
   def this(message: String) = this(Some(message))
 
   def this() = this(None)
@@ -172,7 +201,8 @@ object OutputFormat {
 }
 
 case object SVGFormat extends OutputFormat("svg") {
-  override def convert(svgContent: String): Array[Byte] = svgContent.getBytes(StandardCharsets.UTF_8)
+  override def convert(svgContent: String): Array[Byte] =
+    svgContent.getBytes(StandardCharsets.UTF_8)
 }
 
 case object PNGFormat extends OutputFormat("png") {

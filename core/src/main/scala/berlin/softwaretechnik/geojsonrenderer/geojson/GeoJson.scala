@@ -22,7 +22,8 @@ object FeatureCollection {
 }
 
 @upickle.implicits.key("Feature")
-case class Feature(geometry: Geometry, properties: Map[String, Value]) extends GeoJson
+case class Feature(geometry: Geometry, properties: Map[String, Value])
+    extends GeoJson
 
 object Feature {
   private[geojson] implicit val rw: ReadWriter[Feature] = macroRW
@@ -56,7 +57,8 @@ object LineString {
 }
 
 @upickle.implicits.key("MultiLineString")
-sealed case class MultiLineString(coordinates: Seq[Seq[GeoCoord]]) extends Geometry
+sealed case class MultiLineString(coordinates: Seq[Seq[GeoCoord]])
+    extends Geometry
 
 object MultiLineString {
   private[geojson] implicit val rw: ReadWriter[MultiLineString] = macroRW
@@ -70,7 +72,8 @@ object Polygon {
 }
 
 @upickle.implicits.key("MultiPolygon")
-sealed case class MultiPolygon(coordinates: Seq[Seq[Seq[GeoCoord]]]) extends Geometry
+sealed case class MultiPolygon(coordinates: Seq[Seq[Seq[GeoCoord]]])
+    extends Geometry
 
 object MultiPolygon {
   private[geojson] implicit val rw: ReadWriter[MultiPolygon] = macroRW

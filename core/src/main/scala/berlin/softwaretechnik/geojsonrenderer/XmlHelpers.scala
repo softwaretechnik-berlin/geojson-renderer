@@ -11,17 +11,22 @@ object XmlHelpers {
 
   private def normalizeWhitespace(beginLine: String, elem: Elem): Elem = {
     val withoutWhitespace = elem.child.filterNot(isWhitespace)
-    if (withoutWhitespace.exists(_.isInstanceOf[Elem])) elem.copy(
-      child = withoutWhitespace.flatMap { case elem: Elem => Seq(
-        Text(beginLine + "  "),
-        normalizeWhitespace(beginLine + "  ", elem)
-      )} :+ Text(beginLine)
-    ) else elem
+    if (withoutWhitespace.exists(_.isInstanceOf[Elem]))
+      elem.copy(
+        child = withoutWhitespace.flatMap {
+          case elem: Elem =>
+            Seq(
+              Text(beginLine + "  "),
+              normalizeWhitespace(beginLine + "  ", elem)
+            )
+        } :+ Text(beginLine)
+      )
+    else elem
   }
 
   private def isWhitespace: Node => Boolean = {
     case Text(Whitespace(_)) => true
-    case _ => false
+    case _                   => false
   }
 
 }

@@ -24,7 +24,7 @@ class Svg(viewport: Viewport) {
     )
 
   private def renderTile(tile: Tile): Elem =
-      <image xlink:href={tile.url}
+    <image xlink:href={tile.url}
              x={(tile.leftXPosition - viewport.box.left).toString}
              y={(tile.topYPosition - viewport.box.top).toString}
              width={s"${tile.size}px"}
@@ -35,8 +35,8 @@ class Svg(viewport: Viewport) {
 
   private def asFeatures(geoJson: GeoJson): Seq[Feature] =
     geoJson match {
-      case geometry: Geometry => Seq(Feature(geometry, Map.empty))
-      case feature: Feature => Seq(feature)
+      case geometry: Geometry          => Seq(Feature(geometry, Map.empty))
+      case feature: Feature            => Seq(feature)
       case FeatureCollection(features) => features
     }
 
@@ -57,12 +57,12 @@ class Svg(viewport: Viewport) {
 
   private def renderGeometry(geometry: Geometry): Seq[Elem] =
     geometry match {
-      case Point(geoCoord) => Seq(renderPoint(geoCoord))
-      case MultiPoint(geoCoords) => geoCoords.map(renderPoint)
-      case LineString(geoCoords) => Seq(renderLineString(geoCoords))
+      case Point(geoCoord)              => Seq(renderPoint(geoCoord))
+      case MultiPoint(geoCoords)        => geoCoords.map(renderPoint)
+      case LineString(geoCoords)        => Seq(renderLineString(geoCoords))
       case MultiLineString(lineStrings) => lineStrings.map(renderLineString)
-      case Polygon(coordinates) => Seq(renderPolygon(coordinates))
-      case MultiPolygon(polygons) => polygons.map(renderPolygon)
+      case Polygon(coordinates)         => Seq(renderPolygon(coordinates))
+      case MultiPolygon(polygons)       => polygons.map(renderPolygon)
     }
 
   private def renderPoint(gc: GeoCoord): Elem = {
@@ -71,10 +71,10 @@ class Svg(viewport: Viewport) {
   }
 
   private def renderLineString(geoCoords: Seq[GeoCoord]): Elem =
-      <polyline points={asSvgPoints(geoCoords)} fill="None"/>
+    <polyline points={asSvgPoints(geoCoords)} fill="None"/>
 
   private def renderPolygon(coordinates: Seq[Seq[GeoCoord]]): Elem =
-      <polygon points={asSvgPoints(coordinates(0))}/>
+    <polygon points={asSvgPoints(coordinates(0))}/>
 
   private def asSvgPoints(geoCoords: Seq[GeoCoord]): String =
     geoCoords
