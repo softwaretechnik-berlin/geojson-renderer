@@ -38,15 +38,13 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     assert(geoJsonFiles.nonEmpty)
   }
 
-  val formatters = new OutputFormatters(new TestCachingTileLoader)
-
   geoJsonFiles.foreach { geoJsonFile =>
     def testFormat(format: String, fileExtension: String): Unit = {
       val outputFile = replaceExtension(geoJsonFile, fileExtension)
       test(s"$outputFile matches expected $format format") {
         Files.deleteIfExists(outputFile)
 
-        Main.run(new Main.Conf(Seq("-f", format, "-o", outputFile.toString, geoJsonFile.toString), formatters))
+        Main.run(new Main.Conf(Seq("-f", format, "-o", outputFile.toString, geoJsonFile.toString), TestCachingTileLoader))
         assertUnchanged(outputFile)
       }
     }
@@ -68,7 +66,7 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     assert(status.getModified.isEmpty, s"${file.toUri} differs from the reference version in the ${if (status.getChanged.isEmpty) "repository" else "index"}. Review the current version and add it to the index if it is acceptable.")
   }
 
-  private class TestCachingTileLoader extends TileLoader {
+  private object TestCachingTileLoader extends TileLoader {
     private val inner = new JavaTileLoader
     private val cacheDir = Paths.get("core/src/test/resources/cached-tiles")
 

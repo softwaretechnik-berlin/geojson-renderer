@@ -89,7 +89,7 @@ object Main {
     val viewport = Viewport.optimal(boundingBox, mapSize, tilingScheme)
     val svg = new Svg(viewport, tilingScheme, geoJson)
 
-    output.write(svg, format)
+    output.write(svg, format, conf.tileLoader)
   }
 
   private def printError(message: String): Unit =
@@ -100,7 +100,7 @@ object Main {
 
   class Conf(
       args: Seq[String],
-      formatters: OutputFormatters = new OutputFormatters(new JavaTileLoader)
+      val tileLoader: TileLoader = new JavaTileLoader
   ) extends ScallopConf(args) {
 
     banner("""Usage: geojson-renderer [OPTION]... [input-file]
@@ -132,10 +132,10 @@ object Main {
       "output-format",
       short = 'f',
       descr =
-        s"Defines the output image format (${formatters.available.mkString(", ")})",
+        s"Defines the output image format (${OutputFormatter.available.mkString(", ")})",
       default = Some(SvgFormatter.toString),
-      validate = str => formatters.find(str).isDefined
-    ).map(format => formatters.find(format).get)
+      validate = str => OutputFormatter.find(str).isDefined
+    ).map(format => OutputFormatter.find(format).get)
     val tileUrlTemplate: ScallopOption[String] = opt[String](
       "tile-url-template",
       descr =
@@ -190,45 +190,43 @@ case object StdInput extends GeoJsonInput {
   override def matchingOutput: ImageOutput = StdOutput
 }
 
-class OutputFormatters(tileLoader: TileLoader) {
+abstract class OutputFormatter(val name: String, val extension: String) {
+  def format(svg: Svg, tileLoader: TileLoader): Array[Byte]
+
+  override def toString: String = name
+}
+
+object OutputFormatter {
   val available: Seq[OutputFormatter] =
     Seq(
       SvgFormatter,
-      new EmbeddedSvgFormatter(tileLoader),
-      new PngFormatter(tileLoader),
+      EmbeddedSvgFormatter,
+      PngFormatter,
       HtmlFormatter,
-      new EmbeddedHtmlFormatter(tileLoader)
+      EmbeddedHtmlFormatter
     )
 
   def find(name: String): Option[OutputFormatter] =
     available.find(_.name == name)
 }
 
-abstract class OutputFormatter(val name: String, val extension: String) {
-  def convert(svg: Svg): Array[Byte]
-
-  override def toString: String = name
-}
-
 object SvgFormatter extends OutputFormatter("svg", "svg") {
-  override def convert(svg: Svg): Array[Byte] =
+  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] =
     svg.renderToUtf8(DirectUrl)
 }
 
-class EmbeddedSvgFormatter(tileLoader: TileLoader)
-    extends OutputFormatter("svg-embedded", "svg") {
-  override def convert(svg: Svg): Array[Byte] =
+object EmbeddedSvgFormatter extends OutputFormatter("svg-embedded", "svg") {
+  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] =
     svg.renderToUtf8(new EmbeddedData(tileLoader))
 }
 
-class PngFormatter(tileLoader: TileLoader)
-    extends OutputFormatter("png", "png") {
-  override def convert(svg: Svg): Array[Byte] = {
+object PngFormatter extends OutputFormatter("png", "png") {
+  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] = {
     val out = new ByteArrayOutputStream()
     new PNGTranscoder().transcode(
       new TranscoderInput(
         new ByteArrayInputStream(
-          new EmbeddedSvgFormatter(tileLoader).convert(svg)
+          EmbeddedSvgFormatter.format(svg, tileLoader)
         )
       ),
       new TranscoderOutput(out)
@@ -240,7 +238,7 @@ class PngFormatter(tileLoader: TileLoader)
 object HtmlFormatter extends OutputFormatter("html", "html") {
   // An <svg> tag is necessary to allow browser interactivity,
   // necessary to download the referenced images.
-  override def convert(svg: Svg): Array[Byte] =
+  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] =
     embedInHtml(XML.loadString(svg.render(DirectUrl)))
 
   def embedInHtml(elem: Elem): Array[Byte] =
@@ -258,44 +256,55 @@ object HtmlFormatter extends OutputFormatter("html", "html") {
       .getBytes(StandardCharsets.UTF_8)
 }
 
-class EmbeddedHtmlFormatter(tileLoader: TileLoader)
-    extends OutputFormatter("html-embedded", "html") {
-  override def convert(svg: Svg): Array[Byte] =
+object EmbeddedHtmlFormatter extends OutputFormatter("html-embedded", "html") {
+  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] =
     HtmlFormatter.embedInHtml(<img
       width={svg.width.toString}
       height={svg.height.toString}
-      src={asDataUrl(svg)}/>)
+      src={asDataUrl(svg, tileLoader)}/>)
 
-  private def asDataUrl(svg: Svg): String =
+  private def asDataUrl(svg: Svg, tileLoader: TileLoader): String =
     s"data:image/svg+xml;base64,${Base64.getEncoder.encodeToString(svg.renderToUtf8(new EmbeddedData(tileLoader)))}"
 }
 
 sealed trait ImageOutput {
   val name: String
 
-  def write(svg: Svg, format: OutputFormatter): Unit
+  def write(svg: Svg, formatter: OutputFormatter, tileLoader: TileLoader): Unit
 }
 
 case class CompanionFileOutput(inputFile: Path) extends ImageOutput {
   override val name: String = inputFile.toString
 
-  override def write(svg: Svg, format: OutputFormatter): Unit = {
-    val outputFile = replaceExtension(inputFile, s".${format.extension}")
-    Files.write(outputFile, format.convert(svg))
+  override def write(
+      svg: Svg,
+      formatter: OutputFormatter,
+      tileLoader: TileLoader
+  ): Unit = {
+    val outputFile = replaceExtension(inputFile, s".${formatter.extension}")
+    Files.write(outputFile, formatter.format(svg, tileLoader))
   }
 }
 
 case class FileOutput(outputFile: Path) extends ImageOutput {
   override val name: String = outputFile.toString
 
-  override def write(svg: Svg, format: OutputFormatter): Unit = {
-    Files.write(outputFile, format.convert(svg))
+  override def write(
+      svg: Svg,
+      formatter: OutputFormatter,
+      tileLoader: TileLoader
+  ): Unit = {
+    Files.write(outputFile, formatter.format(svg, tileLoader))
   }
 }
 
 case object StdOutput extends ImageOutput {
   override val name: String = "STDOUT"
 
-  override def write(svg: Svg, format: OutputFormatter): Unit =
-    Console.out.write(format.convert(svg))
+  override def write(
+      svg: Svg,
+      formatter: OutputFormatter,
+      tileLoader: TileLoader
+  ): Unit =
+    Console.out.write(formatter.format(svg, tileLoader))
 }
