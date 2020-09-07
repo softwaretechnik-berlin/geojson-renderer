@@ -38,53 +38,24 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     assert(geoJsonFiles.nonEmpty)
   }
 
+  val formatters = new OutputFormatters(new TestCachingTileLoader)
+
   geoJsonFiles.foreach { geoJsonFile =>
-    val svgFile = replaceExtension(geoJsonFile, ".svg")
-    val pngFile = replaceExtension(geoJsonFile, ".png")
-    val embeddedSvgFile = replaceExtension(geoJsonFile, "-embedded.svg")
-    val htmlFile = replaceExtension(geoJsonFile, ".html")
-    val embeddedHtmlFile = replaceExtension(geoJsonFile, "-embedded.html")
+    def testFormat(format: String, fileExtension: String): Unit = {
+      val outputFile = replaceExtension(geoJsonFile, fileExtension)
+      test(s"$outputFile matches expected $format format") {
+        Files.deleteIfExists(outputFile)
 
-    val formatters = new OutputFormatters(new TestCachingTileLoader)
-
-    lazy val run: Unit = {
-      Files.deleteIfExists(svgFile)
-      Files.deleteIfExists(pngFile)
-      Files.deleteIfExists(embeddedSvgFile)
-      Files.deleteIfExists(htmlFile)
-      Files.deleteIfExists(embeddedHtmlFile)
-      
-      Main.run(new Main.Conf(Seq(geoJsonFile.toString), formatters))
-      Main.run(new Main.Conf(Seq("-f", "svg-embedded", "-o", embeddedSvgFile.toString, geoJsonFile.toString), formatters))
-      Main.run(new Main.Conf(Seq("-f", "png", geoJsonFile.toString), formatters))
-      Main.run(new Main.Conf(Seq("-f", "html", geoJsonFile.toString), formatters))
-      Main.run(new Main.Conf(Seq("-f", "html-embedded", "-o", embeddedHtmlFile.toString, geoJsonFile.toString), formatters))
+        Main.run(new Main.Conf(Seq("-f", format, "-o", outputFile.toString, geoJsonFile.toString), formatters))
+        assertUnchanged(outputFile)
+      }
     }
 
-    test(s"$svgFile matches accepted XML") {
-      run
-      assertUnchanged(svgFile)
-    }
-
-    test(s"$embeddedSvgFile matches accepted XML") {
-      run
-      assertUnchanged(embeddedSvgFile)
-    }
-
-    test(s"$pngFile matches accepted binary") {
-      run
-      assertUnchanged(pngFile) // Ideally we would create a semantic image diff, but this is good enough for now
-    }
-
-    test(s"$htmlFile matches accepted HTML") {
-      run
-      assertUnchanged(htmlFile)
-    }
-
-    test(s"$embeddedHtmlFile matches accepted HTML") {
-      run
-      assertUnchanged(embeddedHtmlFile)
-    }
+    testFormat("svg", ".svg")
+    testFormat("svg-embedded", "-embedded.svg")
+    testFormat("png", ".png")
+    testFormat("html", ".html")
+    testFormat("html-embedded", "-embedded.html")
   }
 
   private def assertUnchanged(file: Path): Assertion = {
