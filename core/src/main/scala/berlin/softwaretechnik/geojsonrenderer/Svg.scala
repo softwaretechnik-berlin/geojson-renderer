@@ -97,12 +97,22 @@ object DirectUrl extends TileImagePolicy {
   override def href(tile: Tile): String = tile.url
 }
 
-object EmbeddedData extends TileImagePolicy {
+class EmbeddedData(client: TileLoader) extends TileImagePolicy {
   override def href(tile: Tile): String =
-    s"data:image/png;base64,${Base64.getEncoder.encodeToString(doGet(new URL(tile.url)))}"
+    asDataUrl(client.get(tile))
 
+  private def asDataUrl(bytes: Array[Byte]): String =
+    s"data:image/png;base64,${Base64.getEncoder.encodeToString(bytes)}"
+}
+
+trait TileLoader {
+  def get(tile: Tile): Array[Byte]
+}
+
+class JavaTileLoader extends TileLoader {
   //TODO use a proper http client
-  private def doGet(url: URL): Array[Byte] = {
+  override def get(tile: Tile): Array[Byte] = {
+    val url = new URL(tile.url)
     val con = url.openConnection.asInstanceOf[HttpURLConnection]
     con.setRequestMethod("GET")
     con.setRequestProperty("User-Agent", "curl/7.66.0")

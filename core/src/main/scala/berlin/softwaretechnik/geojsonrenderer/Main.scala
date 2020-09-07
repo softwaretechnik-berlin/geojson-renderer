@@ -96,7 +96,10 @@ object Main {
   private def printWarning(message: String): Unit =
     Console.err.println(AnsiColor.YELLOW + message + AnsiColor.RESET)
 
-  class Conf(args: Seq[String]) extends ScallopConf(args) {
+  class Conf(
+      args: Seq[String],
+      formatters: OutputFormatters = new OutputFormatters(new JavaTileLoader)
+  ) extends ScallopConf(args) {
 
     banner("""Usage: geojson-renderer [OPTION]... [input-file]
         |geojson-renderer renders a GeoJSON file to SVG and PNG images.
@@ -121,14 +124,14 @@ object Main {
       descr =
         "Image output file or - for standard output. Defaults to a file when the input is a file, or stdout when reading from stdin."
     ).map(str => if (str == "-") StdOutput else FileOutput(Paths.get(str)))
-    val outputFormat: ScallopOption[OutputFormat] = opt[String](
+    val outputFormat: ScallopOption[OutputFormatter] = opt[String](
       "output-format",
       short = 'f',
       descr =
-        s"Defines the output image format (${OutputFormat.available.mkString(", ")})",
-      default = Some(SvgFormat.toString),
-      validate = str => OutputFormat.find(str).isDefined
-    ).map(format => OutputFormat.find(format).get)
+        s"Defines the output image format (${formatters.available.mkString(", ")})",
+      default = Some(SvgFormatter.toString),
+      validate = str => formatters.find(str).isDefined
+    ).map(format => formatters.find(format).get)
     val tileUrlTemplate: ScallopOption[String] = opt[String](
       "tile-url-template",
       descr =
@@ -183,33 +186,45 @@ case object StdInput extends GeoJsonInput {
   override def matchingOutput: ImageOutput = StdOutput
 }
 
-sealed abstract class OutputFormat(val name: String, val extension: String) {
+class OutputFormatters(tileLoader: TileLoader) {
+  val available =
+    Set(
+      SvgFormatter,
+      new EmbeddedSvgFormatter(tileLoader),
+      new PngFormatter(tileLoader)
+    )
+
+  def find(name: String): Option[OutputFormatter] =
+    available.find(_.name == name)
+}
+
+abstract class OutputFormatter(val name: String, val extension: String) {
   def convert(svg: Svg): Array[Byte]
 
   override def toString: String = name
 }
 
-object OutputFormat {
-  val available = Set(SvgFormat, EmbeddedSvgFormat, PngFormat)
-
-  def find(name: String): Option[OutputFormat] = available.find(_.name == name)
-}
-
-case object SvgFormat extends OutputFormat("svg", "svg") {
+object SvgFormatter extends OutputFormatter("svg", "svg") {
   override def convert(svg: Svg): Array[Byte] =
     svg.render(DirectUrl).getBytes(StandardCharsets.UTF_8)
 }
 
-case object EmbeddedSvgFormat extends OutputFormat("svg-embedded", "svg") {
+class EmbeddedSvgFormatter(tileLoader: TileLoader)
+    extends OutputFormatter("svg-embedded", "svg") {
   override def convert(svg: Svg): Array[Byte] =
-    svg.render(EmbeddedData).getBytes(StandardCharsets.UTF_8)
+    svg.render(new EmbeddedData(tileLoader)).getBytes(StandardCharsets.UTF_8)
 }
 
-case object PngFormat extends OutputFormat("png", "png") {
+class PngFormatter(tileLoader: TileLoader)
+    extends OutputFormatter("png", "png") {
   override def convert(svg: Svg): Array[Byte] = {
     val out = new ByteArrayOutputStream()
     new PNGTranscoder().transcode(
-      new TranscoderInput(new ByteArrayInputStream(SvgFormat.convert(svg))),
+      new TranscoderInput(
+        new ByteArrayInputStream(
+          new EmbeddedSvgFormatter(tileLoader).convert(svg)
+        )
+      ),
       new TranscoderOutput(out)
     )
     out.toByteArray
@@ -219,13 +234,13 @@ case object PngFormat extends OutputFormat("png", "png") {
 sealed trait ImageOutput {
   val name: String
 
-  def write(svg: Svg, format: OutputFormat): Unit
+  def write(svg: Svg, format: OutputFormatter): Unit
 }
 
 case class CompanionFileOutput(inputFile: Path) extends ImageOutput {
   override val name: String = inputFile.toString
 
-  override def write(svg: Svg, format: OutputFormat): Unit = {
+  override def write(svg: Svg, format: OutputFormatter): Unit = {
     val outputFile = replaceExtension(inputFile, s".${format.extension}")
     Files.write(outputFile, format.convert(svg))
   }
@@ -234,7 +249,7 @@ case class CompanionFileOutput(inputFile: Path) extends ImageOutput {
 case class FileOutput(outputFile: Path) extends ImageOutput {
   override val name: String = outputFile.toString
 
-  override def write(svg: Svg, format: OutputFormat): Unit = {
+  override def write(svg: Svg, format: OutputFormatter): Unit = {
     Files.write(outputFile, format.convert(svg))
   }
 }
@@ -242,6 +257,6 @@ case class FileOutput(outputFile: Path) extends ImageOutput {
 case object StdOutput extends ImageOutput {
   override val name: String = "STDOUT"
 
-  override def write(svg: Svg, format: OutputFormat): Unit =
+  override def write(svg: Svg, format: OutputFormatter): Unit =
     Console.out.write(format.convert(svg))
 }
