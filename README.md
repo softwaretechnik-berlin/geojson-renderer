@@ -173,7 +173,7 @@ mill core.reformat
   - Use the given dimensions as the maximum and cut the box to the boundary of
     the GeoJSON content.
   - Specify width or height in pixels.
-- [ ] Add a flag that allow specifying the output file path.
-- [ ] Allow reading input GeoJSON from stdin.
+- [x] Add a flag that allow specifying the output file path.
+- [x] Allow reading input GeoJSON from stdin.
 - [x] Make tile source configurable for command line util in a way that is
       convenient and not violating terms of service of the tile providers.
