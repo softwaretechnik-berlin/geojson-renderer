@@ -213,5 +213,5 @@ case object StdOutput extends ImageOutput {
   override val name: String = "STDOUT"
 
   override def write(svgContent: String, format: OutputFormat): Unit =
-    System.out.write(format.convert(svgContent))
+    Console.out.write(format.convert(svgContent))
 }
