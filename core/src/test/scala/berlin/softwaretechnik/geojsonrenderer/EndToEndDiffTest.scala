@@ -44,7 +44,7 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
       test(s"$outputFile matches expected $format format") {
         Files.deleteIfExists(outputFile)
 
-        Main.run(new Main.Conf(Seq("-f", format, "-o", outputFile.toString, geoJsonFile.toString), TestCachingTileLoader))
+        Main.run(new Main.Conf(Seq("-c", "core/src/test/resources/cached-tiles", "-f", format, "-o", outputFile.toString, geoJsonFile.toString)))
         assertUnchanged(outputFile)
       }
     }
@@ -64,21 +64,5 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     assert(status.getUntracked.isEmpty, s"There is not yet a reference version of ${file.toUri} in the repository or index. Review the current version and add it to the index if it is acceptable.")
 
     assert(status.getModified.isEmpty, s"${file.toUri} differs from the reference version in the ${if (status.getChanged.isEmpty) "repository" else "index"}. Review the current version and add it to the index if it is acceptable.")
-  }
-
-  private object TestCachingTileLoader extends TileLoader {
-    private val inner = new JavaTileLoader
-    private val cacheDir = Paths.get("core/src/test/resources/cached-tiles")
-
-    override def get(tile: Tile): Array[Byte] = {
-      val cacheFile = cacheDir.resolve(s"${tile.id.x}_${tile.id.y}_${tile.id.z}.png")
-      if (Files.exists(cacheFile)) {
-        Files.readAllBytes(cacheFile)
-      } else {
-        val bytes = inner.get(tile)
-        Files.write(cacheFile, bytes)
-        bytes
-      }
-    }
   }
 }

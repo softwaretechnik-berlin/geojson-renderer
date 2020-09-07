@@ -74,6 +74,8 @@ geojson-renderer renders a GeoJSON file to SVG and PNG images.
 
 Options:
 
+  -c, --cache-dir  <arg>           Enables caching and specifies the directory
+                                   used to cache tiles.
   -d, --dimensions  <arg>          The dimensions of the target file in pixels
                                    as <WIDTH>x<HEIGHT> (e.g. 800x600).
   -o, --output  <arg>              Image output file or - for standard output.
@@ -159,7 +161,6 @@ mill core.reformat
 - [ ] Fix SVG to PNG rendering to have proper high-res bitmaps.
 - [ ] Provide our own PNG rendering that uses batik only to render the GeoJSON
       graphics and do the overlay at the bitmap level
-- [ ] Provide caching for bitmap data
 - [ ] Add option to add scripting to SVG/HTML which adds inspection of
       properties etc.
 - [ ] Add meaningful classes and IDs to SVG
@@ -170,6 +171,7 @@ mill core.reformat
   - Use the given dimensions as the maximum and cut the box to the boundary of
     the GeoJSON content.
   - Specify width or height in pixels.
+- [x] Provide caching for bitmap data
 - [x] Add an option(s) to write SVG embedded into html
 - [x] Add an option to embed the bitmap data into the SVG rather than to link,
       so that we get a self-contained SVG file.

@@ -27,11 +27,15 @@
   </g>
   <g id="features">
     <g stroke="#555555" stroke-width="3" fill="#555555" fill-opacity="0.6">
-      <desc>Line crossing most of the world, but not the antimeridian unless the implementation is taking liberties</desc>
+      <desc>
+      Line crossing most of the world, but not the antimeridian unless the implementation is taking liberties
+    </desc>
       <polyline points="144.88888888888889,341.91933374607913 1055.1111111111113,185.36923224116083" fill="None"/>
     </g>
     <g stroke="none" stroke-width="3" fill="blue" fill-opacity="0.6">
-      <desc>Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6</desc>
+      <desc>
+      Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6
+    </desc>
       <polygon points="1055.1111111111113,458.08066625392087 144.88888888888889,458.08066625392087 144.88888888888889,614.6307677588392 1055.1111111111113,614.6307677588392 1055.1111111111113,458.08066625392087"/>
     </g>
   </g>

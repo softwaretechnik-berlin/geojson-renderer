@@ -87,9 +87,9 @@ object Main {
 
     val boundingBox = GeoJsonSpatialOps.boundingBox(geoJson)
     val viewport = Viewport.optimal(boundingBox, mapSize, tilingScheme)
-    val svg = new Svg(viewport, tilingScheme, geoJson)
+    val svg = new Svg(viewport, tilingScheme, geoJson, format.imagePolicy)
 
-    output.write(svg, format, conf.tileLoader)
+    output.write(svg, format)
   }
 
   private def printError(message: String): Unit =
@@ -100,7 +100,7 @@ object Main {
 
   class Conf(
       args: Seq[String],
-      val tileLoader: TileLoader = new JavaTileLoader
+      defaultTileLoader: TileLoader = new JavaTileLoader
   ) extends ScallopConf(args) {
 
     banner("""Usage: geojson-renderer [OPTION]... [input-file]
@@ -132,16 +132,21 @@ object Main {
       "output-format",
       short = 'f',
       descr =
-        s"Defines the output image format (${OutputFormatter.available.mkString(", ")})",
+        s"Defines the output image format (${OutputFormatter.names.mkString(", ")})",
       default = Some(SvgFormatter.toString),
       validate = str => OutputFormatter.find(str).isDefined
-    ).map(format => OutputFormatter.find(format).get)
+    ).map(format => OutputFormatter.find(format).get(tileLoader))
     val tileUrlTemplate: ScallopOption[String] = opt[String](
       "tile-url-template",
       descr =
         "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing.",
       default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png")
     )
+    val cacheDir: ScallopOption[Path] = opt[String](
+      "cache-dir",
+      'c',
+      "Enables caching and specifies the directory used to cache tiles."
+    ).map(dir => Paths.get(dir))
     val input: ScallopOption[GeoJsonInput] =
       trailArg[String](descr = "GeoJSON input file or - for standard input")
         .map(str => if (str == "-") StdInput else FileInput(Paths.get(str)))
@@ -153,7 +158,20 @@ object Main {
       case _ => Right(())
     })
 
+    addValidation(cacheDir.toOption match {
+      case Some(dir) if !Files.exists(dir) =>
+        Left(s"Cache directory '$dir' does not exist.")
+      case Some(dir) if !Files.isDirectory(dir) =>
+        Left(s"Cache directory '$dir' is invalid.")
+      case _ => Right(())
+    })
+
     verify()
+
+    val tileLoader: TileLoader =
+      cacheDir.toOption
+        .map(dir => new DirectoryCachingTileLoader(dir, defaultTileLoader))
+        .getOrElse(defaultTileLoader)
   }
 
 }
@@ -190,56 +208,60 @@ case object StdInput extends GeoJsonInput {
   override def matchingOutput: ImageOutput = StdOutput
 }
 
-abstract class OutputFormatter(val name: String, val extension: String) {
-  def format(svg: Svg, tileLoader: TileLoader): Array[Byte]
+abstract class OutputFormatter(
+    val name: String,
+    val extension: String,
+    val imagePolicy: TileImagePolicy
+) {
+  def format(svg: Svg): Array[Byte]
 
   override def toString: String = name
 }
 
 object OutputFormatter {
-  val available: Seq[OutputFormatter] =
+  val formatters: Seq[(String, TileLoader => OutputFormatter)] =
     Seq(
-      SvgFormatter,
-      EmbeddedSvgFormatter,
-      PngFormatter,
-      HtmlFormatter,
-      EmbeddedHtmlFormatter
+      "svg" -> (_ => SvgFormatter),
+      "svg-embedded" -> (tileLoader => new EmbeddedSvgFormatter(tileLoader)),
+      "png" -> (tileLoader => new PngFormatter(tileLoader)),
+      "html" -> (_ => HtmlFormatter),
+      "html-embedded" -> (tileLoader => new EmbeddedHtmlFormatter(tileLoader))
     )
 
-  def find(name: String): Option[OutputFormatter] =
-    available.find(_.name == name)
+  def names: Seq[String] = formatters.map(_._1)
+
+  def find(name: String): Option[TileLoader => OutputFormatter] =
+    formatters.collectFirst { case (`name`, formatter) => formatter }
 }
 
-object SvgFormatter extends OutputFormatter("svg", "svg") {
-  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] =
-    svg.renderToUtf8(DirectUrl)
+object SvgFormatter extends OutputFormatter("svg", "svg", DirectUrl) {
+  override def format(svg: Svg): Array[Byte] =
+    svg.renderToUtf8()
 }
 
-object EmbeddedSvgFormatter extends OutputFormatter("svg-embedded", "svg") {
-  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] =
-    svg.renderToUtf8(new EmbeddedData(tileLoader))
+class EmbeddedSvgFormatter(tileLoader: TileLoader)
+    extends OutputFormatter("svg-embedded", "svg", new EmbeddedData(tileLoader)) {
+  override def format(svg: Svg): Array[Byte] =
+    svg.renderToUtf8()
 }
 
-object PngFormatter extends OutputFormatter("png", "png") {
-  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] = {
+class PngFormatter(tileLoader: TileLoader)
+    extends OutputFormatter("png", "png", new EmbeddedData(tileLoader)) {
+  override def format(svg: Svg): Array[Byte] = {
     val out = new ByteArrayOutputStream()
     new PNGTranscoder().transcode(
-      new TranscoderInput(
-        new ByteArrayInputStream(
-          EmbeddedSvgFormatter.format(svg, tileLoader)
-        )
-      ),
+      new TranscoderInput(new ByteArrayInputStream(svg.renderToUtf8())),
       new TranscoderOutput(out)
     )
     out.toByteArray
   }
 }
 
-object HtmlFormatter extends OutputFormatter("html", "html") {
+object HtmlFormatter extends OutputFormatter("html", "html", DirectUrl) {
   // An <svg> tag is necessary to allow browser interactivity,
   // necessary to download the referenced images.
-  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] =
-    embedInHtml(XML.loadString(svg.render(DirectUrl)))
+  override def format(svg: Svg): Array[Byte] =
+    embedInHtml(XML.loadString(svg.render()))
 
   def embedInHtml(elem: Elem): Array[Byte] =
     XmlHelpers
@@ -256,21 +278,26 @@ object HtmlFormatter extends OutputFormatter("html", "html") {
       .getBytes(StandardCharsets.UTF_8)
 }
 
-object EmbeddedHtmlFormatter extends OutputFormatter("html-embedded", "html") {
-  override def format(svg: Svg, tileLoader: TileLoader): Array[Byte] =
+class EmbeddedHtmlFormatter(tileLoader: TileLoader)
+    extends OutputFormatter(
+      "html-embedded",
+      "html",
+      new EmbeddedData(tileLoader)
+    ) {
+  override def format(svg: Svg): Array[Byte] =
     HtmlFormatter.embedInHtml(<img
       width={svg.width.toString}
       height={svg.height.toString}
-      src={asDataUrl(svg, tileLoader)}/>)
+      src={asDataUrl(svg)}/>)
 
-  private def asDataUrl(svg: Svg, tileLoader: TileLoader): String =
-    s"data:image/svg+xml;base64,${Base64.getEncoder.encodeToString(svg.renderToUtf8(new EmbeddedData(tileLoader)))}"
+  private def asDataUrl(svg: Svg): String =
+    s"data:image/svg+xml;base64,${Base64.getEncoder.encodeToString(svg.renderToUtf8())}"
 }
 
 sealed trait ImageOutput {
   val name: String
 
-  def write(svg: Svg, formatter: OutputFormatter, tileLoader: TileLoader): Unit
+  def write(svg: Svg, formatter: OutputFormatter): Unit
 }
 
 case class CompanionFileOutput(inputFile: Path) extends ImageOutput {
@@ -278,11 +305,10 @@ case class CompanionFileOutput(inputFile: Path) extends ImageOutput {
 
   override def write(
       svg: Svg,
-      formatter: OutputFormatter,
-      tileLoader: TileLoader
+      formatter: OutputFormatter
   ): Unit = {
     val outputFile = replaceExtension(inputFile, s".${formatter.extension}")
-    Files.write(outputFile, formatter.format(svg, tileLoader))
+    Files.write(outputFile, formatter.format(svg))
   }
 }
 
@@ -291,10 +317,9 @@ case class FileOutput(outputFile: Path) extends ImageOutput {
 
   override def write(
       svg: Svg,
-      formatter: OutputFormatter,
-      tileLoader: TileLoader
+      formatter: OutputFormatter
   ): Unit = {
-    Files.write(outputFile, formatter.format(svg, tileLoader))
+    Files.write(outputFile, formatter.format(svg))
   }
 }
 
@@ -303,8 +328,7 @@ case object StdOutput extends ImageOutput {
 
   override def write(
       svg: Svg,
-      formatter: OutputFormatter,
-      tileLoader: TileLoader
+      formatter: OutputFormatter
   ): Unit =
-    Console.out.write(formatter.format(svg, tileLoader))
+    Console.out.write(formatter.format(svg))
 }

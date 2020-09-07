@@ -2,6 +2,7 @@ package berlin.softwaretechnik.geojsonrenderer
 
 import java.net.{HttpURLConnection, URL}
 import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Path}
 import java.util.Base64
 
 import berlin.softwaretechnik.geojsonrenderer.geojson._
@@ -9,13 +10,18 @@ import berlin.softwaretechnik.geojsonrenderer.map._
 
 import scala.xml._
 
-class Svg(viewport: Viewport, tilingScheme: TilingScheme, geoJson: GeoJson) {
+class Svg(
+    viewport: Viewport,
+    tilingScheme: TilingScheme,
+    geoJson: GeoJson,
+    imagePolicy: TileImagePolicy
+) {
 
   val tiles: Seq[Tile] = tilingScheme.tileCover(viewport)
   val width: Int = viewport.box.size.width
   val height: Int = viewport.box.size.height
 
-  def render(imagePolicy: TileImagePolicy): String =
+  def render(): String =
     XmlHelpers.prettyPrint(
       <svg width={width.toString}
            height={height.toString}
@@ -23,7 +29,7 @@ class Svg(viewport: Viewport, tilingScheme: TilingScheme, geoJson: GeoJson) {
            xmlns="http://www.w3.org/2000/svg"
            xmlns:xlink="http://www.w3.org/1999/xlink">
         <g id="tiles">
-          {tiles.map(renderTile(_, imagePolicy))}
+          {tiles.map(renderTile)}
         </g>
         <g id="features">
           {renderGeoJson(geoJson)}
@@ -31,10 +37,10 @@ class Svg(viewport: Viewport, tilingScheme: TilingScheme, geoJson: GeoJson) {
       </svg>
     )
 
-  def renderToUtf8(imagePolicy: TileImagePolicy): Array[Byte] =
-    render(imagePolicy).getBytes(StandardCharsets.UTF_8)
+  def renderToUtf8(): Array[Byte] =
+    render().getBytes(StandardCharsets.UTF_8)
 
-  private def renderTile(tile: Tile, imagePolicy: TileImagePolicy): Elem =
+  private def renderTile(tile: Tile): Elem =
     <image xlink:href={imagePolicy.href(tile)}
              x={(tile.leftXPosition - viewport.box.left).toString}
              y={(tile.topYPosition - viewport.box.top).toString}
@@ -54,15 +60,16 @@ class Svg(viewport: Viewport, tilingScheme: TilingScheme, geoJson: GeoJson) {
   private def renderFeature(feature: Feature): Seq[Node] = {
     val style: GeoJsonStyle = GeoJsonStyle(feature.properties)
     <g
-       stroke={style.stroke.getOrElse("#555555")}
-       stroke-opacity={style.strokeOpacity.map(_.toString).orNull}
-       stroke-width={style.strokeWidth.getOrElse(3).toString}
-       fill={style.fill.getOrElse("#555555")}
-       fill-opacity={style.fillOpacity.getOrElse(0.6).toString}
-    >
-      {style.title.map(t => <title>{t}</title>).orNull}
-      {style.description.map(t => <desc>{t}</desc>).orNull}
-      {renderGeometry(feature.geometry)}
+    stroke={style.stroke.getOrElse("#555555")}
+    stroke-opacity={style.strokeOpacity.map(_.toString).orNull}
+    stroke-width={style.strokeWidth.getOrElse(3).toString}
+    fill={style.fill.getOrElse("#555555")}
+    fill-opacity={style.fillOpacity.getOrElse(0.6).toString}>
+      {style.title.map(t => <title>
+      {t}
+    </title>).orNull}{style.description.map(t => <desc>
+      {t}
+    </desc>).orNull}{renderGeometry(feature.geometry)}
     </g>
   }
 
@@ -113,6 +120,21 @@ class EmbeddedData(client: TileLoader) extends TileImagePolicy {
 
 trait TileLoader {
   def get(tile: Tile): Array[Byte]
+}
+
+class DirectoryCachingTileLoader(cacheDir: Path, inner: TileLoader)
+    extends TileLoader {
+  override def get(tile: Tile): Array[Byte] = {
+    val cacheFile =
+      cacheDir.resolve(s"${tile.id.x}_${tile.id.y}_${tile.id.z}.png")
+    if (Files.exists(cacheFile)) {
+      Files.readAllBytes(cacheFile)
+    } else {
+      val bytes = inner.get(tile)
+      Files.write(cacheFile, bytes)
+      bytes
+    }
+  }
 }
 
 class JavaTileLoader extends TileLoader {
