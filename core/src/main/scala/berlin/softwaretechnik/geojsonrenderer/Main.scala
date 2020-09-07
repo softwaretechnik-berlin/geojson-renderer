@@ -9,7 +9,7 @@ import berlin.softwaretechnik.geojsonrenderer.geojson._
 import berlin.softwaretechnik.geojsonrenderer.map._
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
-import org.rogach.scallop.{ScallopConf, ValueConverter}
+import org.rogach.scallop.ScallopConf
 
 import scala.collection.compat.immutable
 import scala.io.AnsiColor
@@ -69,14 +69,14 @@ object Main {
     val tilingScheme = TilingScheme.template(conf.tileUrlTemplate())
 
     val svgContent = render(mapSize, geoJson, tilingScheme)
-    val outputFormats = if (conf.png()) Set(SVGFormat, PNGFormat) else Set(SVGFormat)
+    val outputFormat = if (conf.png()) PNGFormat else SVGFormat
     val output = input.matchingOutput
 
     // Setting user agent to curl, so that batik can pull map tiles.
     System.setProperty("http.agent", "curl/7.66.0")
-    outputFormats.foreach { format =>
-      output.write(svgContent, format)
-    }
+    // Avoid starting a window
+    System.setProperty("java.awt.headless", "true")
+    output.write(svgContent, outputFormat)
   }
 
   private def printError(message: String): Unit =
