@@ -133,7 +133,7 @@ object Main {
       short = 'f',
       descr =
         s"Defines the output image format (${OutputFormatter.names.mkString(", ")})",
-      default = Some(SvgFormatter.toString),
+      default = Some(OutputFormatter.svgFormatterName),
       validate = str => OutputFormatter.find(str).isDefined
     ).map(format => OutputFormatter.find(format).get(tileLoader))
     val tileUrlTemplate: ScallopOption[String] = opt[String](
@@ -209,19 +209,18 @@ case object StdInput extends GeoJsonInput {
 }
 
 abstract class OutputFormatter(
-    val name: String,
     val extension: String,
     val imagePolicy: TileImagePolicy
 ) {
   def format(svg: Svg): Array[Byte]
-
-  override def toString: String = name
 }
 
 object OutputFormatter {
+  val svgFormatterName = "svg"
+
   val formatters: Seq[(String, TileLoader => OutputFormatter)] =
     Seq(
-      "svg" -> (_ => SvgFormatter),
+      svgFormatterName -> (_ => SvgFormatter),
       "svg-embedded" -> (tileLoader => new EmbeddedSvgFormatter(tileLoader)),
       "png" -> (tileLoader => new PngFormatter(tileLoader)),
       "html" -> (_ => HtmlFormatter),
@@ -234,19 +233,19 @@ object OutputFormatter {
     formatters.collectFirst { case (`name`, formatter) => formatter }
 }
 
-object SvgFormatter extends OutputFormatter("svg", "svg", DirectUrl) {
+object SvgFormatter extends OutputFormatter("svg", DirectUrl) {
   override def format(svg: Svg): Array[Byte] =
     svg.renderToUtf8()
 }
 
 class EmbeddedSvgFormatter(tileLoader: TileLoader)
-    extends OutputFormatter("svg-embedded", "svg", new EmbeddedData(tileLoader)) {
+    extends OutputFormatter("svg", new EmbeddedData(tileLoader)) {
   override def format(svg: Svg): Array[Byte] =
     svg.renderToUtf8()
 }
 
 class PngFormatter(tileLoader: TileLoader)
-    extends OutputFormatter("png", "png", new EmbeddedData(tileLoader)) {
+    extends OutputFormatter("png", new EmbeddedData(tileLoader)) {
   override def format(svg: Svg): Array[Byte] = {
     val out = new ByteArrayOutputStream()
     new PNGTranscoder().transcode(
@@ -257,7 +256,7 @@ class PngFormatter(tileLoader: TileLoader)
   }
 }
 
-object HtmlFormatter extends OutputFormatter("html", "html", DirectUrl) {
+object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
   // An <svg> tag is necessary to allow browser interactivity,
   // necessary to download the referenced images.
   override def format(svg: Svg): Array[Byte] =
@@ -280,7 +279,6 @@ object HtmlFormatter extends OutputFormatter("html", "html", DirectUrl) {
 
 class EmbeddedHtmlFormatter(tileLoader: TileLoader)
     extends OutputFormatter(
-      "html-embedded",
       "html",
       new EmbeddedData(tileLoader)
     ) {
