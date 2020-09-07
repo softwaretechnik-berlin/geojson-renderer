@@ -1,13 +1,17 @@
 package berlin.softwaretechnik.geojsonrenderer
 
+import java.net.{HttpURLConnection, URL}
+import java.util.Base64
+
 import berlin.softwaretechnik.geojsonrenderer.geojson._
 import berlin.softwaretechnik.geojsonrenderer.map._
 
 import scala.xml._
 
-class Svg(viewport: Viewport) {
+class Svg(viewport: Viewport, tilingScheme: TilingScheme, geoJson: GeoJson) {
 
-  def render(tiles: Seq[Tile], geoJson: GeoJson): String =
+  def render(imagePolicy: TileImagePolicy): String = {
+    val tiles = tilingScheme.tileCover(viewport)
     XmlHelpers.prettyPrint(
       <svg width={viewport.box.size.width.toString}
            height={viewport.box.size.height.toString}
@@ -15,16 +19,17 @@ class Svg(viewport: Viewport) {
            xmlns="http://www.w3.org/2000/svg"
            xmlns:xlink="http://www.w3.org/1999/xlink">
         <g id="tiles">
-          {tiles.map(renderTile)}
+          {tiles.map(renderTile(_, imagePolicy))}
         </g>
         <g id="features">
           {renderGeoJson(geoJson)}
         </g>
       </svg>
     )
+  }
 
-  private def renderTile(tile: Tile): Elem =
-    <image xlink:href={tile.url}
+  private def renderTile(tile: Tile, imagePolicy: TileImagePolicy): Elem =
+    <image xlink:href={imagePolicy.href(tile)}
              x={(tile.leftXPosition - viewport.box.left).toString}
              y={(tile.topYPosition - viewport.box.top).toString}
              width={s"${tile.size}px"}
@@ -74,7 +79,7 @@ class Svg(viewport: Viewport) {
     <polyline points={asSvgPoints(geoCoords)} fill="None"/>
 
   private def renderPolygon(coordinates: Seq[Seq[GeoCoord]]): Elem =
-    <polygon points={asSvgPoints(coordinates(0))}/>
+    <polygon points={asSvgPoints(coordinates.head)}/>
 
   private def asSvgPoints(geoCoords: Seq[GeoCoord]): String =
     geoCoords
@@ -82,4 +87,30 @@ class Svg(viewport: Viewport) {
       .map(pos => s"${pos.x},${pos.y}")
       .mkString(" ")
 
+}
+
+trait TileImagePolicy {
+  def href(tile: Tile): String
+}
+
+object DirectUrl extends TileImagePolicy {
+  override def href(tile: Tile): String = tile.url
+}
+
+object EmbeddedData extends TileImagePolicy {
+  override def href(tile: Tile): String =
+    s"data:image/png;base64,${Base64.getEncoder.encodeToString(doGet(new URL(tile.url)))}"
+
+  //TODO use a proper http client
+  private def doGet(url: URL): Array[Byte] = {
+    val con = url.openConnection.asInstanceOf[HttpURLConnection]
+    con.setRequestMethod("GET")
+    con.setRequestProperty("User-Agent", "curl/7.66.0")
+    val in = con.getInputStream
+    val bytes =
+      LazyList.continually(in.read).takeWhile(_ != -1).map(_.toByte).toArray
+    in.close()
+    con.disconnect()
+    bytes
+  }
 }

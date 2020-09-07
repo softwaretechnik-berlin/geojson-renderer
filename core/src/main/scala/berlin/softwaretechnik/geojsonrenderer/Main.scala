@@ -1,6 +1,6 @@
 package berlin.softwaretechnik.geojsonrenderer
 
-import java.io.{ByteArrayOutputStream, InputStream, StringReader}
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
 
@@ -74,16 +74,20 @@ object Main {
       )
     }
 
-    val tilingScheme = TilingScheme.template(conf.tileUrlTemplate())
-
-    val svgContent = render(mapSize, geoJson, tilingScheme)
-    val output = conf.output.getOrElse(input.matchingOutput)
-
     // Setting user agent to curl, so that batik can pull map tiles.
     System.setProperty("http.agent", "curl/7.66.0")
     // Avoid starting a window
     System.setProperty("java.awt.headless", "true")
-    output.write(svgContent, conf.outputFormat())
+
+    val output = conf.output.getOrElse(input.matchingOutput)
+    val format = conf.outputFormat()
+    val tilingScheme = TilingScheme.template(conf.tileUrlTemplate())
+
+    val boundingBox = GeoJsonSpatialOps.boundingBox(geoJson)
+    val viewport = Viewport.optimal(boundingBox, mapSize, tilingScheme)
+    val svg = new Svg(viewport, tilingScheme, geoJson)
+
+    output.write(svg, format)
   }
 
   private def printError(message: String): Unit =
@@ -91,17 +95,6 @@ object Main {
 
   private def printWarning(message: String): Unit =
     Console.err.println(AnsiColor.YELLOW + message + AnsiColor.RESET)
-
-  private def render(
-      mapSize: MapSize,
-      geoJson: GeoJson,
-      tilingScheme: TilingScheme
-  ): String = {
-    val boundingBox = GeoJsonSpatialOps.boundingBox(geoJson)
-    val viewport = Viewport.optimal(boundingBox, mapSize, tilingScheme)
-    val tiles = tilingScheme.tileCover(viewport)
-    new Svg(viewport).render(tiles, geoJson)
-  }
 
   class Conf(args: Seq[String]) extends ScallopConf(args) {
 
@@ -133,9 +126,9 @@ object Main {
       short = 'f',
       descr =
         s"Defines the output image format (${OutputFormat.available.mkString(", ")})",
-      default = Some(SVGFormat.toString),
-      validate = str => OutputFormat.available.exists(_.toString == str)
-    ).map(format => OutputFormat.available.find(_.toString == format).get)
+      default = Some(SvgFormat.toString),
+      validate = str => OutputFormat.find(str).isDefined
+    ).map(format => OutputFormat.find(format).get)
     val tileUrlTemplate: ScallopOption[String] = opt[String](
       "tile-url-template",
       descr =
@@ -190,26 +183,33 @@ case object StdInput extends GeoJsonInput {
   override def matchingOutput: ImageOutput = StdOutput
 }
 
-sealed abstract class OutputFormat(val extension: String) {
-  def convert(svgContent: String): Array[Byte]
+sealed abstract class OutputFormat(val name: String, val extension: String) {
+  def convert(svg: Svg): Array[Byte]
 
-  override def toString: String = extension
+  override def toString: String = name
 }
 
 object OutputFormat {
-  val available = Set(SVGFormat, PNGFormat)
+  val available = Set(SvgFormat, EmbeddedSvgFormat, PngFormat)
+
+  def find(name: String): Option[OutputFormat] = available.find(_.name == name)
 }
 
-case object SVGFormat extends OutputFormat("svg") {
-  override def convert(svgContent: String): Array[Byte] =
-    svgContent.getBytes(StandardCharsets.UTF_8)
+case object SvgFormat extends OutputFormat("svg", "svg") {
+  override def convert(svg: Svg): Array[Byte] =
+    svg.render(DirectUrl).getBytes(StandardCharsets.UTF_8)
 }
 
-case object PNGFormat extends OutputFormat("png") {
-  override def convert(svgContent: String): Array[Byte] = {
+case object EmbeddedSvgFormat extends OutputFormat("svg-embedded", "svg") {
+  override def convert(svg: Svg): Array[Byte] =
+    svg.render(EmbeddedData).getBytes(StandardCharsets.UTF_8)
+}
+
+case object PngFormat extends OutputFormat("png", "png") {
+  override def convert(svg: Svg): Array[Byte] = {
     val out = new ByteArrayOutputStream()
     new PNGTranscoder().transcode(
-      new TranscoderInput(new StringReader(svgContent)),
+      new TranscoderInput(new ByteArrayInputStream(SvgFormat.convert(svg))),
       new TranscoderOutput(out)
     )
     out.toByteArray
@@ -219,29 +219,29 @@ case object PNGFormat extends OutputFormat("png") {
 sealed trait ImageOutput {
   val name: String
 
-  def write(svgContent: String, format: OutputFormat): Unit
+  def write(svg: Svg, format: OutputFormat): Unit
 }
 
 case class CompanionFileOutput(inputFile: Path) extends ImageOutput {
   override val name: String = inputFile.toString
 
-  override def write(svgContent: String, format: OutputFormat): Unit = {
+  override def write(svg: Svg, format: OutputFormat): Unit = {
     val outputFile = replaceExtension(inputFile, s".${format.extension}")
-    Files.write(outputFile, format.convert(svgContent))
+    Files.write(outputFile, format.convert(svg))
   }
 }
 
 case class FileOutput(outputFile: Path) extends ImageOutput {
   override val name: String = outputFile.toString
 
-  override def write(svgContent: String, format: OutputFormat): Unit = {
-    Files.write(outputFile, format.convert(svgContent))
+  override def write(svg: Svg, format: OutputFormat): Unit = {
+    Files.write(outputFile, format.convert(svg))
   }
 }
 
 case object StdOutput extends ImageOutput {
   override val name: String = "STDOUT"
 
-  override def write(svgContent: String, format: OutputFormat): Unit =
-    Console.out.write(format.convert(svgContent))
+  override def write(svg: Svg, format: OutputFormat): Unit =
+    Console.out.write(format.convert(svg))
 }
