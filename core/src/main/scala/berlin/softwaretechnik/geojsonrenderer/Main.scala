@@ -50,7 +50,7 @@ object Main {
 
   def run(conf: Conf): Unit = {
 
-    val input = conf.inputFile()
+    val input = conf.input()
 
     val geoJson: GeoJson =
       try GeoJson.load(input.in)
@@ -71,7 +71,7 @@ object Main {
     val tilingScheme = TilingScheme.template(conf.tileUrlTemplate())
 
     val svgContent = render(mapSize, geoJson, tilingScheme)
-    val output = input.matchingOutput
+    val output = conf.output.getOrElse(input.matchingOutput)
 
     // Setting user agent to curl, so that batik can pull map tiles.
     System.setProperty("http.agent", "curl/7.66.0")
@@ -109,15 +109,17 @@ object Main {
     }
 
     val dimensions = opt[String]("dimensions", descr = "The dimensions of the target file in pixels.", default = Some("1200x800")).map(s => MapSize(s))
+    val output: ScallopOption[ImageOutput] = opt[String]("output", short = 'o', descr = "Image output file or - for standard output. Defaults to a file when the input is a file, or stdout when reading from stdin.")
+      .map(str => if (str == "-") StdOutput else FileOutput(Paths.get(str)))
     val outputFormat: ScallopOption[OutputFormat] = opt[String]("output-format", short = 'f', descr = s"Defines the output image format (${OutputFormat.available.mkString(", ")})", default = Some(SVGFormat.toString), validate = str => OutputFormat.available.exists(_.toString == str))
       .map(format => OutputFormat.available.find(_.toString == format).get)
     val tileUrlTemplate = opt[String]("tile-url-template", descr =
       "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing."
       , default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png"))
-    val inputFile = trailArg[String](descr = "GeoJSON input file or - for standard input")
+    val input = trailArg[String](descr = "GeoJSON input file or - for standard input")
       .map(str => if (str == "-") StdInput else FileInput(Paths.get(str)))
 
-    addValidation(inputFile() match {
+    addValidation(input() match {
       case input: FileInput =>
         if (Files.exists(input.file)) Right(()) else Left(s"File '${input.file}' does not exist.")
       case _ => Right(())
@@ -130,6 +132,7 @@ object Main {
 
 class GeoJsonRendererError(val message: Option[String]) extends Exception(message.mkString) {
   def this(message: String) = this(Some(message))
+
   def this() = this(None)
 }
 
@@ -147,7 +150,7 @@ case class FileInput(file: Path) extends GeoJsonInput {
   override def in: InputStream = Files.newInputStream(file)
 
   override def matchingOutput: ImageOutput =
-    MirroredFileOutput(file)
+    CompanionFileOutput(file)
 }
 
 case object StdInput extends GeoJsonInput {
@@ -189,11 +192,19 @@ sealed trait ImageOutput {
   def write(svgContent: String, format: OutputFormat): Unit
 }
 
-case class MirroredFileOutput(inputFile: Path) extends ImageOutput {
+case class CompanionFileOutput(inputFile: Path) extends ImageOutput {
   override val name: String = inputFile.toString
 
   override def write(svgContent: String, format: OutputFormat): Unit = {
     val outputFile = replaceExtension(inputFile, s".${format.extension}")
+    Files.write(outputFile, format.convert(svgContent))
+  }
+}
+
+case class FileOutput(outputFile: Path) extends ImageOutput {
+  override val name: String = outputFile.toString
+
+  override def write(svgContent: String, format: OutputFormat): Unit = {
     Files.write(outputFile, format.convert(svgContent))
   }
 }

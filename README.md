@@ -70,19 +70,22 @@ j berlin.softwaretechnik:geojson-renderer_2.13:0.0.4 --help
 
 ```
 Usage: geojson-renderer [OPTION]... [input-file]
-geojson-renderer renders a geojson file to svg and optionally to png.
+geojson-renderer renders a GeoJSON file to SVG and PNG images.
 
 Options:
 
   -d, --dimensions  <arg>          The dimensions of the target file in pixels.
-  -p, --png                        Render the resulting svg into png.
+  -o, --output  <arg>              Image output file or - for standard output.
+                                   Defaults to a file when the input is a file,
+                                   or stdout when reading from stdin.
+  -f, --output-format  <arg>       Defines the output image format (svg, png)
   -t, --tile-url-template  <arg>   Template for tile URLs, placeholders are
                                    {tile} for tile coordinate, {a-c} and {1-4}
                                    for load balancing.
   -h, --help                       Show help message
 
  trailing arguments:
-  input-file (required)   Geojson input file.
+  input (required)   GeoJSON input file or - for standard input
 ```
 
 ## How it Works
