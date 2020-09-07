@@ -45,7 +45,7 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
       Files.deleteIfExists(svgFile)
       Files.deleteIfExists(pngFile)
       Main.run(new Main.Conf(Seq(geoJsonFile.toString)))
-      Main.run(new Main.Conf(Seq("--png", geoJsonFile.toString)))
+      Main.run(new Main.Conf(Seq("-f", "png", geoJsonFile.toString)))
     }
 
     test(s"$svgFile matches accepted XML") {

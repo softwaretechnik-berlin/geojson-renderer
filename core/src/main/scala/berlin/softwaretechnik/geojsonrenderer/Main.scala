@@ -9,7 +9,7 @@ import berlin.softwaretechnik.geojsonrenderer.geojson._
 import berlin.softwaretechnik.geojsonrenderer.map._
 import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
-import org.rogach.scallop.ScallopConf
+import org.rogach.scallop.{ScallopConf, ScallopOption}
 
 import scala.collection.compat.immutable
 import scala.io.AnsiColor
@@ -69,14 +69,13 @@ object Main {
     val tilingScheme = TilingScheme.template(conf.tileUrlTemplate())
 
     val svgContent = render(mapSize, geoJson, tilingScheme)
-    val outputFormat = if (conf.png()) PNGFormat else SVGFormat
     val output = input.matchingOutput
 
     // Setting user agent to curl, so that batik can pull map tiles.
     System.setProperty("http.agent", "curl/7.66.0")
     // Avoid starting a window
     System.setProperty("java.awt.headless", "true")
-    output.write(svgContent, outputFormat)
+    output.write(svgContent, conf.outputFormat())
   }
 
   private def printError(message: String): Unit =
@@ -108,7 +107,8 @@ object Main {
     }
 
     val dimensions = opt[String]("dimensions", descr = "The dimensions of the target file in pixels.", default = Some("1200x800")).map(s => MapSize(s))
-    val png = opt[Boolean]("png", descr = "Render the resulting svg into png.", default = Some(false))
+    val outputFormat: ScallopOption[OutputFormat] = opt[String]("output-format", short = 'f', descr = s"Defines the output image format (${OutputFormat.available.mkString(", ")})", default = Some(SVGFormat.toString), validate = str => OutputFormat.available.exists(_.toString == str))
+      .map(format => OutputFormat.available.find(_.toString == format).get)
     val tileUrlTemplate = opt[String]("tile-url-template", descr =
       "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing."
       , default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png"))
@@ -155,6 +155,12 @@ case object StdInput extends GeoJsonInput {
 
 sealed abstract class OutputFormat(val extension: String) {
   def convert(svgContent: String): Array[Byte]
+
+  override def toString: String = extension
+}
+
+object OutputFormat {
+  val available = Set(SVGFormat, PNGFormat)
 }
 
 case object SVGFormat extends OutputFormat("svg") {
