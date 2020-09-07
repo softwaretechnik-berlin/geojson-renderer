@@ -3,6 +3,7 @@ package berlin.softwaretechnik.geojsonrenderer
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
+import java.util.Base64
 
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
 import berlin.softwaretechnik.geojsonrenderer.geojson._
@@ -13,6 +14,7 @@ import org.rogach.scallop.{ScallopConf, ScallopOption}
 
 import scala.collection.compat.immutable
 import scala.io.AnsiColor
+import scala.xml.{Elem, XML}
 
 object Main {
 
@@ -116,7 +118,8 @@ object Main {
     val dimensions: ScallopOption[MapSize] = opt[String](
       "dimensions",
       short = 'd',
-      descr = "The dimensions of the target file in pixels as <WIDTH>x<HEIGHT> (e.g. 800x600).",
+      descr =
+        "The dimensions of the target file in pixels as <WIDTH>x<HEIGHT> (e.g. 800x600).",
       default = Some("1200x800")
     ).map(s => MapSize(s))
     val output: ScallopOption[ImageOutput] = opt[String](
@@ -188,11 +191,13 @@ case object StdInput extends GeoJsonInput {
 }
 
 class OutputFormatters(tileLoader: TileLoader) {
-  val available: Set[OutputFormatter] =
-    Set(
+  val available: Seq[OutputFormatter] =
+    Seq(
       SvgFormatter,
       new EmbeddedSvgFormatter(tileLoader),
-      new PngFormatter(tileLoader)
+      new PngFormatter(tileLoader),
+      HtmlFormatter,
+      new EmbeddedHtmlFormatter(tileLoader)
     )
 
   def find(name: String): Option[OutputFormatter] =
@@ -207,13 +212,13 @@ abstract class OutputFormatter(val name: String, val extension: String) {
 
 object SvgFormatter extends OutputFormatter("svg", "svg") {
   override def convert(svg: Svg): Array[Byte] =
-    svg.render(DirectUrl).getBytes(StandardCharsets.UTF_8)
+    svg.renderToUtf8(DirectUrl)
 }
 
 class EmbeddedSvgFormatter(tileLoader: TileLoader)
     extends OutputFormatter("svg-embedded", "svg") {
   override def convert(svg: Svg): Array[Byte] =
-    svg.render(new EmbeddedData(tileLoader)).getBytes(StandardCharsets.UTF_8)
+    svg.renderToUtf8(new EmbeddedData(tileLoader))
 }
 
 class PngFormatter(tileLoader: TileLoader)
@@ -230,6 +235,39 @@ class PngFormatter(tileLoader: TileLoader)
     )
     out.toByteArray
   }
+}
+
+object HtmlFormatter extends OutputFormatter("html", "html") {
+  // An <svg> tag is necessary to allow browser interactivity,
+  // necessary to download the referenced images.
+  override def convert(svg: Svg): Array[Byte] =
+    embedInHtml(XML.loadString(svg.render(DirectUrl)))
+
+  def embedInHtml(elem: Elem): Array[Byte] =
+    XmlHelpers
+      .prettyPrint(
+        <html>
+          <head>
+            <title>geojson-renderer</title>
+          </head>
+          <body>
+            {elem}
+          </body>
+        </html>
+      )
+      .getBytes(StandardCharsets.UTF_8)
+}
+
+class EmbeddedHtmlFormatter(tileLoader: TileLoader)
+    extends OutputFormatter("html-embedded", "html") {
+  override def convert(svg: Svg): Array[Byte] =
+    HtmlFormatter.embedInHtml(<img
+      width={svg.width.toString}
+      height={svg.height.toString}
+      src={asDataUrl(svg)}/>)
+
+  private def asDataUrl(svg: Svg): String =
+    s"data:image/svg+xml;base64,${Base64.getEncoder.encodeToString(svg.renderToUtf8(new EmbeddedData(tileLoader)))}"
 }
 
 sealed trait ImageOutput {

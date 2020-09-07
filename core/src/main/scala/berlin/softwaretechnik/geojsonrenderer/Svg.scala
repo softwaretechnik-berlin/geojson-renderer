@@ -1,6 +1,7 @@
 package berlin.softwaretechnik.geojsonrenderer
 
 import java.net.{HttpURLConnection, URL}
+import java.nio.charset.StandardCharsets
 import java.util.Base64
 
 import berlin.softwaretechnik.geojsonrenderer.geojson._
@@ -10,11 +11,14 @@ import scala.xml._
 
 class Svg(viewport: Viewport, tilingScheme: TilingScheme, geoJson: GeoJson) {
 
-  def render(imagePolicy: TileImagePolicy): String = {
-    val tiles = tilingScheme.tileCover(viewport)
+  val tiles: Seq[Tile] = tilingScheme.tileCover(viewport)
+  val width: Int = viewport.box.size.width
+  val height: Int = viewport.box.size.height
+
+  def render(imagePolicy: TileImagePolicy): String =
     XmlHelpers.prettyPrint(
-      <svg width={viewport.box.size.width.toString}
-           height={viewport.box.size.height.toString}
+      <svg width={width.toString}
+           height={height.toString}
            version="1.1"
            xmlns="http://www.w3.org/2000/svg"
            xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -26,7 +30,9 @@ class Svg(viewport: Viewport, tilingScheme: TilingScheme, geoJson: GeoJson) {
         </g>
       </svg>
     )
-  }
+
+  def renderToUtf8(imagePolicy: TileImagePolicy): Array[Byte] =
+    render(imagePolicy).getBytes(StandardCharsets.UTF_8)
 
   private def renderTile(tile: Tile, imagePolicy: TileImagePolicy): Elem =
     <image xlink:href={imagePolicy.href(tile)}

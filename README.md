@@ -74,12 +74,13 @@ geojson-renderer renders a GeoJSON file to SVG and PNG images.
 
 Options:
 
-  -d, --dimensions  <arg>          The dimensions of the target file in pixels.
+  -d, --dimensions  <arg>          The dimensions of the target file in pixels
+                                   as <WIDTH>x<HEIGHT> (e.g. 800x600).
   -o, --output  <arg>              Image output file or - for standard output.
                                    Defaults to a file when the input is a file,
                                    or stdout when reading from stdin.
   -f, --output-format  <arg>       Defines the output image format (svg,
-                                   svg-embedded, png)
+                                   svg-embedded, png, html, html-embedded)
   -t, --tile-url-template  <arg>   Template for tile URLs, placeholders are
                                    {tile} for tile coordinate, {a-c} and {1-4}
                                    for load balancing.
@@ -159,17 +160,17 @@ mill core.reformat
 - [ ] Provide our own PNG rendering that uses batik only to render the GeoJSON
       graphics and do the overlay at the bitmap level
 - [ ] Provide caching for bitmap data
-- [ ] Add an option(s) to write SVG embedded into html
 - [ ] Add option to add scripting to SVG/HTML which adds inspection of
       properties etc.
 - [ ] Add meaningful classes and IDs to SVG
 - [ ] Support "GeoJSON" files with multiple feature collections.
-- [ ] Add different dimension strategies. Currently we determine a bounding box
-      that contains the whole GeoJSON and maintains the aspect ration of the
+- [ ] Add different dimension strategies. Currently, we determine a bounding box
+      that contains the whole GeoJSON and maintains the aspect ratio of the
       given dimensions. Other strategies could be:
   - Use the given dimensions as the maximum and cut the box to the boundary of
     the GeoJSON content.
   - Specify width or height in pixels.
+- [x] Add an option(s) to write SVG embedded into html
 - [x] Add an option to embed the bitmap data into the SVG rather than to link,
       so that we get a self-contained SVG file.
 - [x] Add a flag that allow specifying the output file path.
