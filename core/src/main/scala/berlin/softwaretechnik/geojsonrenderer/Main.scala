@@ -115,7 +115,8 @@ object Main {
 
     val dimensions: ScallopOption[MapSize] = opt[String](
       "dimensions",
-      descr = "The dimensions of the target file in pixels.",
+      short = 'd',
+      descr = "The dimensions of the target file in pixels as <WIDTH>x<HEIGHT> (e.g. 800x600).",
       default = Some("1200x800")
     ).map(s => MapSize(s))
     val output: ScallopOption[ImageOutput] = opt[String](
@@ -187,7 +188,7 @@ case object StdInput extends GeoJsonInput {
 }
 
 class OutputFormatters(tileLoader: TileLoader) {
-  val available =
+  val available: Set[OutputFormatter] =
     Set(
       SvgFormatter,
       new EmbeddedSvgFormatter(tileLoader),
