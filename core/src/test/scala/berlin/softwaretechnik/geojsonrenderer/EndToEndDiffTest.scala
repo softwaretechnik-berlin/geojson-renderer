@@ -3,6 +3,7 @@ package berlin.softwaretechnik.geojsonrenderer
 import java.nio.file.{Files, Path, Paths}
 
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
+import berlin.softwaretechnik.geojsonrenderer.map.Tile
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import org.scalatest.funsuite.AnyFunSuite
@@ -42,12 +43,14 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     val pngFile = replaceExtension(geoJsonFile, ".png")
     val embeddedSvgFile = replaceExtension(geoJsonFile, "-embedded.svg")
 
+    val formatters = new OutputFormatters(new TestCachingTileLoader)
+
     lazy val run: Unit = {
       Files.deleteIfExists(svgFile)
       Files.deleteIfExists(pngFile)
-      Main.run(new Main.Conf(Seq(geoJsonFile.toString)))
-      Main.run(new Main.Conf(Seq("-f", "svg-embedded", "-o", embeddedSvgFile.toString, geoJsonFile.toString)))
-      Main.run(new Main.Conf(Seq("-f", "png", geoJsonFile.toString)))
+      Main.run(new Main.Conf(Seq(geoJsonFile.toString), formatters))
+      Main.run(new Main.Conf(Seq("-f", "svg-embedded", "-o", embeddedSvgFile.toString, geoJsonFile.toString), formatters))
+      Main.run(new Main.Conf(Seq("-f", "png", geoJsonFile.toString), formatters))
     }
 
     test(s"$svgFile matches accepted XML") {
@@ -74,5 +77,21 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     assert(status.getUntracked.isEmpty, s"There is not yet a reference version of ${file.toUri} in the repository or index. Review the current version and add it to the index if it is acceptable.")
 
     assert(status.getModified.isEmpty, s"${file.toUri} differs from the reference version in the ${if (status.getChanged.isEmpty) "repository" else "index"}. Review the current version and add it to the index if it is acceptable.")
+  }
+
+  private class TestCachingTileLoader extends TileLoader {
+    private val inner = new JavaTileLoader
+    private val cacheDir = Paths.get("core/src/test/resources/cached-tiles")
+
+    override def get(tile: Tile): Array[Byte] = {
+      val cacheFile = cacheDir.resolve(s"${tile.id.x}_${tile.id.y}_${tile.id.z}.png")
+      if (Files.exists(cacheFile)) {
+        Files.readAllBytes(cacheFile)
+      } else {
+        val bytes = inner.get(tile)
+        Files.write(cacheFile, bytes)
+        bytes
+      }
+    }
   }
 }
