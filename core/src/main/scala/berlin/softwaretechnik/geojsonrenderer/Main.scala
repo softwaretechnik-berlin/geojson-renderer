@@ -36,7 +36,9 @@ object Main {
         0
       } catch {
         case err: GeoJsonRendererError =>
-          printError(AnsiColor.RED + err.message + AnsiColor.RESET)
+          err.message.foreach { msg =>
+            printError(AnsiColor.RED + msg + AnsiColor.RESET)
+          }
           1
         case e: Exception =>
           printError(AnsiColor.RED + e.getMessage + AnsiColor.RESET)
@@ -103,7 +105,7 @@ object Main {
     errorMessageHandler = { message =>
       printError(s"Error: $message\n")
       builder.printHelp
-      sys.exit(1)
+      throw new GeoJsonRendererError()
     }
 
     val dimensions = opt[String]("dimensions", descr = "The dimensions of the target file in pixels.", default = Some("1200x800")).map(s => MapSize(s))
@@ -126,7 +128,10 @@ object Main {
 
 }
 
-class GeoJsonRendererError(val message: String) extends Exception(message)
+class GeoJsonRendererError(val message: Option[String]) extends Exception(message.mkString) {
+  def this(message: String) = this(Some(message))
+  def this() = this(None)
+}
 
 sealed trait GeoJsonInput {
   val name: String
