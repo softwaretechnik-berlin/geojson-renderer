@@ -135,11 +135,9 @@ mill mill.scalalib.GenIdea/idea
 ### Testing
 
 There is a comprehensive integration test suite that uses live data to validate
-the tool. Because of that, some tests might fail from time to time as map tiles
-get updated.
-
-We will address this at some point, by either not using tiles in the test or by
-providing stable test tiles.
+the tool. The data is cached in the `core/src/test/resources/cached-tiles/`
+directory. Therefore, deleting the directory's content would effectively clean
+the cache.
 
 The tests can be run using:
 
@@ -157,8 +155,6 @@ mill core.reformat
 
 ### Backlog
 
-- [ ] Add an option to embed the bitmap data into the SVG rather than to link,
-      so that we get a self-contained SVG file.
 - [ ] Fix SVG to PNG rendering to have proper high-res bitmaps.
 - [ ] Provide our own PNG rendering that uses batik only to render the GeoJSON
       graphics and do the overlay at the bitmap level
@@ -174,6 +170,8 @@ mill core.reformat
   - Use the given dimensions as the maximum and cut the box to the boundary of
     the GeoJSON content.
   - Specify width or height in pixels.
+- [x] Add an option to embed the bitmap data into the SVG rather than to link,
+      so that we get a self-contained SVG file.
 - [x] Add a flag that allow specifying the output file path.
 - [x] Allow reading input GeoJSON from stdin.
 - [x] Make tile source configurable for command line util in a way that is
