@@ -42,15 +42,23 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     val svgFile = replaceExtension(geoJsonFile, ".svg")
     val pngFile = replaceExtension(geoJsonFile, ".png")
     val embeddedSvgFile = replaceExtension(geoJsonFile, "-embedded.svg")
+    val htmlFile = replaceExtension(geoJsonFile, ".html")
+    val embeddedHtmlFile = replaceExtension(geoJsonFile, "-embedded.html")
 
     val formatters = new OutputFormatters(new TestCachingTileLoader)
 
     lazy val run: Unit = {
       Files.deleteIfExists(svgFile)
       Files.deleteIfExists(pngFile)
+      Files.deleteIfExists(embeddedSvgFile)
+      Files.deleteIfExists(htmlFile)
+      Files.deleteIfExists(embeddedHtmlFile)
+      
       Main.run(new Main.Conf(Seq(geoJsonFile.toString), formatters))
       Main.run(new Main.Conf(Seq("-f", "svg-embedded", "-o", embeddedSvgFile.toString, geoJsonFile.toString), formatters))
       Main.run(new Main.Conf(Seq("-f", "png", geoJsonFile.toString), formatters))
+      Main.run(new Main.Conf(Seq("-f", "html", geoJsonFile.toString), formatters))
+      Main.run(new Main.Conf(Seq("-f", "html-embedded", "-o", embeddedHtmlFile.toString, geoJsonFile.toString), formatters))
     }
 
     test(s"$svgFile matches accepted XML") {
@@ -66,6 +74,16 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     test(s"$pngFile matches accepted binary") {
       run
       assertUnchanged(pngFile) // Ideally we would create a semantic image diff, but this is good enough for now
+    }
+
+    test(s"$htmlFile matches accepted HTML") {
+      run
+      assertUnchanged(htmlFile)
+    }
+
+    test(s"$embeddedHtmlFile matches accepted HTML") {
+      run
+      assertUnchanged(embeddedHtmlFile)
     }
   }
 

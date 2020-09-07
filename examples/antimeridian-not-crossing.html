@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <title>geojson-renderer</title>
+  </head>
+  <body>
+    <svg version="1.1" height="800" width="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <g id="tiles">
+        <image height="256px" width="256px" y="-112" x="-168" xlink:href="http://b.tile.openstreetmap.org/2/3/0.png"/>
+        <image height="256px" width="256px" y="144" x="-168" xlink:href="http://a.tile.openstreetmap.org/2/3/1.png"/>
+        <image height="256px" width="256px" y="400" x="-168" xlink:href="http://b.tile.openstreetmap.org/2/3/2.png"/>
+        <image height="256px" width="256px" y="656" x="-168" xlink:href="http://c.tile.openstreetmap.org/2/3/3.png"/>
+        <image height="256px" width="256px" y="-112" x="88" xlink:href="http://a.tile.openstreetmap.org/2/0/0.png"/>
+        <image height="256px" width="256px" y="144" x="88" xlink:href="http://b.tile.openstreetmap.org/2/0/1.png"/>
+        <image height="256px" width="256px" y="400" x="88" xlink:href="http://c.tile.openstreetmap.org/2/0/2.png"/>
+        <image height="256px" width="256px" y="656" x="88" xlink:href="http://a.tile.openstreetmap.org/2/0/3.png"/>
+        <image height="256px" width="256px" y="-112" x="344" xlink:href="http://b.tile.openstreetmap.org/2/1/0.png"/>
+        <image height="256px" width="256px" y="144" x="344" xlink:href="http://c.tile.openstreetmap.org/2/1/1.png"/>
+        <image height="256px" width="256px" y="400" x="344" xlink:href="http://a.tile.openstreetmap.org/2/1/2.png"/>
+        <image height="256px" width="256px" y="656" x="344" xlink:href="http://b.tile.openstreetmap.org/2/1/3.png"/>
+        <image height="256px" width="256px" y="-112" x="600" xlink:href="http://c.tile.openstreetmap.org/2/2/0.png"/>
+        <image height="256px" width="256px" y="144" x="600" xlink:href="http://a.tile.openstreetmap.org/2/2/1.png"/>
+        <image height="256px" width="256px" y="400" x="600" xlink:href="http://b.tile.openstreetmap.org/2/2/2.png"/>
+        <image height="256px" width="256px" y="656" x="600" xlink:href="http://c.tile.openstreetmap.org/2/2/3.png"/>
+        <image height="256px" width="256px" y="-112" x="856" xlink:href="http://a.tile.openstreetmap.org/2/3/0.png"/>
+        <image height="256px" width="256px" y="144" x="856" xlink:href="http://b.tile.openstreetmap.org/2/3/1.png"/>
+        <image height="256px" width="256px" y="400" x="856" xlink:href="http://c.tile.openstreetmap.org/2/3/2.png"/>
+        <image height="256px" width="256px" y="656" x="856" xlink:href="http://a.tile.openstreetmap.org/2/3/3.png"/>
+        <image height="256px" width="256px" y="-112" x="1112" xlink:href="http://b.tile.openstreetmap.org/2/0/0.png"/>
+        <image height="256px" width="256px" y="144" x="1112" xlink:href="http://c.tile.openstreetmap.org/2/0/1.png"/>
+        <image height="256px" width="256px" y="400" x="1112" xlink:href="http://a.tile.openstreetmap.org/2/0/2.png"/>
+        <image height="256px" width="256px" y="656" x="1112" xlink:href="http://b.tile.openstreetmap.org/2/0/3.png"/>
+      </g>
+      <g id="features">
+        <g fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555">
+          <desc>Line crossing most of the world, but not the antimeridian unless the implementation is taking liberties</desc>
+          <polyline fill="None" points="144.88888888888889,341.91933374607913 1055.1111111111113,185.36923224116083"/>
+        </g>
+        <g fill-opacity="0.6" fill="blue" stroke-width="3" stroke="none">
+          <desc>Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6</desc>
+          <polygon points="1055.1111111111113,458.08066625392087 144.88888888888889,458.08066625392087 144.88888888888889,614.6307677588392 1055.1111111111113,614.6307677588392 1055.1111111111113,458.08066625392087"/>
+        </g>
+      </g>
+    </svg>
+  </body>
+</html>
