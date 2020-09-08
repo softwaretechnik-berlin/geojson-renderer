@@ -98,15 +98,25 @@ Options:
 tiles in the background, so that the features are displayed on top of the map
 view.
 
-Currently, the tiles are included using SVG image tags containing URLs pointing
-to the actual tile. That means the tiles are downloaded when visualizing the
-output SVG.
+The visualisation of the features takes the `properties` object into account and
+supports the following properties inspired by the 
+[simplestyle spec](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0):
 
-The `-p` flag allows rendering the output as a PNG file instead. This will lead
-to the downloading of tiles. Underneath,
-[Apache Batik](https://xmlgraphics.apache.org/batik/) is used.
+* `description` - rendered into an SVG `<desc>`-element for the feature.
+* `fill` - fill colour (#RRGGBB).
+* `fillOpacity` - fill opacity (0..1).
+* `stroke` - stroke colour (#RRGGBB).
+* `strokeOpacity` - stroke opacity (0..1).
+* `strokeWidth` - width in pixels. 
+* `title` - rendered into an SVG `<title>` element for the feature. 
+* `id` - id for the generated SVG element.
+* `class` - CSS class for the generated SVG element.
 
-Optionally, the tile source can be configured by providing a template URL where
+Depending on the output-format setting tiles get rendered as an SVG <image>-tag
+that either contains HTTP URLs pointing to tile server, that is they are not
+downloaded until the SVG is shown, or they are embedded as data URLs
+
+The tile source can be configured by providing a template URL where
 the following parameters are supported:
 
 - `{tile}`: the coordinate of the tile as `{z}/{x}/{Y}`.
@@ -158,12 +168,13 @@ mill core.reformat
 
 ### Backlog
 
+ 
+- [ ] Make caching work with different tile sources (potentially just use an http cache)
 - [ ] Fix SVG to PNG rendering to have proper high-res bitmaps.
 - [ ] Provide our own PNG rendering that uses batik only to render the GeoJSON
       graphics and do the overlay at the bitmap level
 - [ ] Add option to add scripting to SVG/HTML which adds inspection of
       properties etc.
-- [ ] Add meaningful classes and IDs to SVG
 - [ ] Support "GeoJSON" files with multiple feature collections.
 - [ ] Add different dimension strategies. Currently, we determine a bounding box
       that contains the whole GeoJSON and maintains the aspect ratio of the
@@ -171,6 +182,7 @@ mill core.reformat
   - Use the given dimensions as the maximum and cut the box to the boundary of
     the GeoJSON content.
   - Specify width or height in pixels.
+- [x] Add meaningful classes and IDs to SVG
 - [x] Provide caching for bitmap data
 - [x] Add an option(s) to write SVG embedded into html
 - [x] Add an option to embed the bitmap data into the SVG rather than to link,

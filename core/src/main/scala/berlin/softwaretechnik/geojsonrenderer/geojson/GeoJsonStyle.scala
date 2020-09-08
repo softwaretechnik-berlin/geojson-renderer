@@ -15,6 +15,8 @@ case class GeoJsonStyle(properties: Map[String, Value]) {
   def strokeOpacity: Option[Double] = number("stroke-opacity")
   def strokeWidth: Option[Double] = number("stroke-width")
   def title: Option[String] = string("title")
+  def id: Option[String] = string("id")
+  def clazz: Option[String] = string("class")
 
   private def number(key: String): Option[Double] =
     properties.get(key).flatMap(_.numOpt)

@@ -33,7 +33,7 @@
       <polyline points="372.44444444444434,171.5605560715885 372.44444444444434,217.70512215877443 417.9555555555562,217.70512215877443" fill="None"/>
       <polyline points="372.44444444444434,583.4865781333729 372.44444444444434,629.0 417.9555555555562,629.0" fill="None"/>
     </g>
-    <g stroke="green" stroke-width="0.5" fill="red" fill-opacity="0.6">
+    <g id="red-feature" class="coloured-feature" stroke="green" stroke-width="0.5" fill="red" fill-opacity="0.6">
       <circle cx="827.5555555555566" cy="401.15507090549636" r="3"/>
     </g>
   </g>

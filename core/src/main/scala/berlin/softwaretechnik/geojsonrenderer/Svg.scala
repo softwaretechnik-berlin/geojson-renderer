@@ -60,6 +60,8 @@ class Svg(
   private def renderFeature(feature: Feature): Seq[Node] = {
     val style: GeoJsonStyle = GeoJsonStyle(feature.properties)
     <g
+    id={style.id.orNull}
+    class={style.clazz.orNull}
     stroke={style.stroke.getOrElse("#555555")}
     stroke-opacity={style.strokeOpacity.map(_.toString).orNull}
     stroke-width={style.strokeWidth.getOrElse(3).toString}

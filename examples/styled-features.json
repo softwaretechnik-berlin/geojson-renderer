@@ -43,7 +43,9 @@
       "properties": {
         "stroke": "green",
         "stroke-width": 0.5,
-        "fill": "red"
+        "fill": "red",
+        "id": "red-feature",
+        "class": "coloured-feature"
       },
       "geometry": {
         "type": "Point",
