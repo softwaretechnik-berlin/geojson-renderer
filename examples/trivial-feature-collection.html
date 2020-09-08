@@ -4,7 +4,7 @@
   </head>
   <body>
     <svg version="1.1" height="800" width="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g id="tiles">
+      <g class="geojson-tiles">
         <image height="256px" width="256px" y="-139" x="-26" xlink:href="http://c.tile.openstreetmap.org/6/30/29.png"/>
         <image height="256px" width="256px" y="117" x="-26" xlink:href="http://a.tile.openstreetmap.org/6/30/30.png"/>
         <image height="256px" width="256px" y="373" x="-26" xlink:href="http://b.tile.openstreetmap.org/6/30/31.png"/>
@@ -26,14 +26,30 @@
         <image height="256px" width="256px" y="373" x="998" xlink:href="http://c.tile.openstreetmap.org/6/34/31.png"/>
         <image height="256px" width="256px" y="629" x="998" xlink:href="http://a.tile.openstreetmap.org/6/34/32.png"/>
       </g>
-      <g id="features">
-        <g fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555">
+      <g class="geojson-features">
+        <g data-properties="{}" fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555" class="geojson-feature">
           <polyline fill="None" points="486.0,171.5605560715885 486.0,629.0 713.5555555555566,629.0"/>
         </g>
-        <g fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555">
+        <g data-properties="{}" fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555" class="geojson-feature">
           <circle r="3" cy="401.15507090549636" cx="713.5555555555566"/>
         </g>
       </g>
     </svg>
+    <script>
+            (function () {
+  const toArray = (htmlCollection) =>
+    (htmlCollection);
+
+  const features = Array.prototype.slice.call(
+    document.getElementsByClassName("geojson-feature")
+  );
+
+  features.forEach((feature) =>
+    feature.addEventListener("click", () => {
+      console.log(JSON.parse(feature.getAttribute("data-properties")));
+    })
+  );
+})();
+          </script>
   </body>
 </html>

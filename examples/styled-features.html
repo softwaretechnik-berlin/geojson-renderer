@@ -4,7 +4,7 @@
   </head>
   <body>
     <svg version="1.1" height="800" width="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g id="tiles">
+      <g class="geojson-tiles">
         <image height="256px" width="256px" y="-139" x="-168" xlink:href="http://b.tile.openstreetmap.org/6/29/29.png"/>
         <image height="256px" width="256px" y="117" x="-168" xlink:href="http://c.tile.openstreetmap.org/6/29/30.png"/>
         <image height="256px" width="256px" y="373" x="-168" xlink:href="http://a.tile.openstreetmap.org/6/29/31.png"/>
@@ -30,18 +30,34 @@
         <image height="256px" width="256px" y="373" x="1112" xlink:href="http://c.tile.openstreetmap.org/6/34/31.png"/>
         <image height="256px" width="256px" y="629" x="1112" xlink:href="http://a.tile.openstreetmap.org/6/34/32.png"/>
       </g>
-      <g id="features">
-        <g fill-opacity="0.6" fill="#555555" stroke-width="10.0" stroke="blue">
+      <g class="geojson-features">
+        <g data-properties="{&quot;stroke&quot;:&quot;blue&quot;,&quot;stroke-width&quot;:10}" fill-opacity="0.6" fill="#555555" stroke-width="10.0" stroke="blue" class="geojson-feature">
           <polyline fill="None" points="600.0,171.5605560715885 600.0,629.0 827.5555555555566,629.0"/>
         </g>
-        <g fill-opacity="0.6" fill="#555555" stroke-width="1.0" stroke="purple">
+        <g data-properties="{&quot;stroke&quot;:&quot;purple&quot;,&quot;stroke-width&quot;:1}" fill-opacity="0.6" fill="#555555" stroke-width="1.0" stroke="purple" class="geojson-feature">
           <polyline fill="None" points="372.44444444444434,171.5605560715885 372.44444444444434,217.70512215877443 417.9555555555562,217.70512215877443"/>
           <polyline fill="None" points="372.44444444444434,583.4865781333729 372.44444444444434,629.0 417.9555555555562,629.0"/>
         </g>
-        <g fill-opacity="0.6" fill="red" stroke-width="0.5" stroke="green" class="coloured-feature" id="red-feature">
+        <g data-properties="{&quot;stroke&quot;:&quot;green&quot;,&quot;id&quot;:&quot;red-feature&quot;,&quot;fill&quot;:&quot;red&quot;,&quot;class&quot;:&quot;coloured-feature&quot;,&quot;stroke-width&quot;:0.5}" fill-opacity="0.6" fill="red" stroke-width="0.5" stroke="green" class="geojson-feature coloured-feature" id="red-feature">
           <circle r="3" cy="401.15507090549636" cx="827.5555555555566"/>
         </g>
       </g>
     </svg>
+    <script>
+            (function () {
+  const toArray = (htmlCollection) =>
+    (htmlCollection);
+
+  const features = Array.prototype.slice.call(
+    document.getElementsByClassName("geojson-feature")
+  );
+
+  features.forEach((feature) =>
+    feature.addEventListener("click", () => {
+      console.log(JSON.parse(feature.getAttribute("data-properties")));
+    })
+  );
+})();
+          </script>
   </body>
 </html>

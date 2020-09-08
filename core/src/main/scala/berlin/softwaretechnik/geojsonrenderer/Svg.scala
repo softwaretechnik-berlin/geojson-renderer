@@ -28,10 +28,10 @@ class Svg(
            version="1.1"
            xmlns="http://www.w3.org/2000/svg"
            xmlns:xlink="http://www.w3.org/1999/xlink">
-        <g id="tiles">
+        <g class="geojson-tiles">
           {tiles.map(renderTile)}
         </g>
-        <g id="features">
+        <g class="geojson-features">
           {renderGeoJson(geoJson)}
         </g>
       </svg>
@@ -61,12 +61,14 @@ class Svg(
     val style: GeoJsonStyle = GeoJsonStyle(feature.properties)
     <g
     id={style.id.orNull}
-    class={style.clazz.orNull}
+    class={"geojson-feature" + style.clazz.map(" " + _).mkString}
     stroke={style.stroke.getOrElse("#555555")}
     stroke-opacity={style.strokeOpacity.map(_.toString).orNull}
     stroke-width={style.strokeWidth.getOrElse(3).toString}
     fill={style.fill.getOrElse("#555555")}
-    fill-opacity={style.fillOpacity.getOrElse(0.6).toString}>
+    fill-opacity={style.fillOpacity.getOrElse(0.6).toString}
+    data-properties={upickle.default.writeJs(feature.properties).render()}
+    >
       {style.title.map(t => <title>
       {t}
     </title>).orNull}{style.description.map(t => <desc>

@@ -4,7 +4,7 @@
   </head>
   <body>
     <svg version="1.1" height="800" width="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g id="tiles">
+      <g class="geojson-tiles">
         <image height="256px" width="256px" y="-112" x="-168" xlink:href="http://b.tile.openstreetmap.org/2/3/0.png"/>
         <image height="256px" width="256px" y="144" x="-168" xlink:href="http://a.tile.openstreetmap.org/2/3/1.png"/>
         <image height="256px" width="256px" y="400" x="-168" xlink:href="http://b.tile.openstreetmap.org/2/3/2.png"/>
@@ -30,14 +30,14 @@
         <image height="256px" width="256px" y="400" x="1112" xlink:href="http://a.tile.openstreetmap.org/2/0/2.png"/>
         <image height="256px" width="256px" y="656" x="1112" xlink:href="http://b.tile.openstreetmap.org/2/0/3.png"/>
       </g>
-      <g id="features">
-        <g fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555">
+      <g class="geojson-features">
+        <g data-properties="{&quot;description&quot;:&quot;Line crossing most of the world, but not the antimeridian unless the implementation is taking liberties&quot;}" fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555" class="geojson-feature">
           <desc>
       Line crossing most of the world, but not the antimeridian unless the implementation is taking liberties
     </desc>
           <polyline fill="None" points="144.88888888888889,341.91933374607913 1055.1111111111113,185.36923224116083"/>
         </g>
-        <g fill-opacity="0.6" fill="blue" stroke-width="3" stroke="none">
+        <g data-properties="{&quot;stroke&quot;:&quot;none&quot;,&quot;fill&quot;:&quot;blue&quot;,&quot;description&quot;:&quot;Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6&quot;}" fill-opacity="0.6" fill="blue" stroke-width="3" stroke="none" class="geojson-feature">
           <desc>
       Filled rectangle spanning most of the way around the world, but not crossing the antimeridian per the right-hand rule in https://tools.ietf.org/html/rfc7946#section-3.1.6
     </desc>
@@ -45,5 +45,21 @@
         </g>
       </g>
     </svg>
+    <script>
+            (function () {
+  const toArray = (htmlCollection) =>
+    (htmlCollection);
+
+  const features = Array.prototype.slice.call(
+    document.getElementsByClassName("geojson-feature")
+  );
+
+  features.forEach((feature) =>
+    feature.addEventListener("click", () => {
+      console.log(JSON.parse(feature.getAttribute("data-properties")));
+    })
+  );
+})();
+          </script>
   </body>
 </html>

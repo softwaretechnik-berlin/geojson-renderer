@@ -1,5 +1,5 @@
 <svg width="1200" height="800" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-  <g id="tiles">
+  <g class="geojson-tiles">
     <image xlink:href="http://c.tile.openstreetmap.org/6/30/29.png" x="-26" y="-139" width="256px" height="256px"/>
     <image xlink:href="http://a.tile.openstreetmap.org/6/30/30.png" x="-26" y="117" width="256px" height="256px"/>
     <image xlink:href="http://b.tile.openstreetmap.org/6/30/31.png" x="-26" y="373" width="256px" height="256px"/>
@@ -21,8 +21,8 @@
     <image xlink:href="http://c.tile.openstreetmap.org/6/34/31.png" x="998" y="373" width="256px" height="256px"/>
     <image xlink:href="http://a.tile.openstreetmap.org/6/34/32.png" x="998" y="629" width="256px" height="256px"/>
   </g>
-  <g id="features">
-    <g stroke="#555555" stroke-width="3" fill="#555555" fill-opacity="0.6">
+  <g class="geojson-features">
+    <g class="geojson-feature" stroke="#555555" stroke-width="3" fill="#555555" fill-opacity="0.6" data-properties="{}">
       <polyline points="486.0,171.5605560715885 486.0,629.0 713.5555555555566,629.0" fill="None"/>
     </g>
   </g>

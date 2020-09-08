@@ -4,7 +4,7 @@
   </head>
   <body>
     <svg version="1.1" height="800" width="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g id="tiles">
+      <g class="geojson-tiles">
         <image height="256px" width="256px" y="-187" x="-64" xlink:href="http://b.tile.openstreetmap.org/16/35202/21493.png"/>
         <image height="256px" width="256px" y="69" x="-64" xlink:href="http://c.tile.openstreetmap.org/16/35202/21494.png"/>
         <image height="256px" width="256px" y="325" x="-64" xlink:href="http://a.tile.openstreetmap.org/16/35202/21495.png"/>
@@ -26,8 +26,8 @@
         <image height="256px" width="256px" y="325" x="960" xlink:href="http://b.tile.openstreetmap.org/16/35206/21495.png"/>
         <image height="256px" width="256px" y="581" x="960" xlink:href="http://c.tile.openstreetmap.org/16/35206/21496.png"/>
       </g>
-      <g id="features">
-        <g fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="green">
+      <g class="geojson-features">
+        <g data-properties="{&quot;source&quot;:&quot;handcrafted&quot;,&quot;id&quot;:42,&quot;title&quot;:&quot;Berlin Walk&quot;,&quot;description&quot;:&quot;Represents GPS data collected during a hypothetical walk through Berlin.&quot;,&quot;stroke&quot;:&quot;green&quot;}" fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="green" class="geojson-feature">
           <title>
       Berlin Walk
     </title>
@@ -38,5 +38,21 @@
         </g>
       </g>
     </svg>
+    <script>
+            (function () {
+  const toArray = (htmlCollection) =>
+    (htmlCollection);
+
+  const features = Array.prototype.slice.call(
+    document.getElementsByClassName("geojson-feature")
+  );
+
+  features.forEach((feature) =>
+    feature.addEventListener("click", () => {
+      console.log(JSON.parse(feature.getAttribute("data-properties")));
+    })
+  );
+})();
+          </script>
   </body>
 </html>

@@ -2,7 +2,7 @@ package berlin.softwaretechnik.geojsonrenderer
 package geojson
 
 import java.io.InputStream
-import java.nio.file.{Files, Path}
+import java.nio.file.Path
 
 import ujson.Value.Value
 

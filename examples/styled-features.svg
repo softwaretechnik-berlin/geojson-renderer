@@ -1,5 +1,5 @@
 <svg width="1200" height="800" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-  <g id="tiles">
+  <g class="geojson-tiles">
     <image xlink:href="http://b.tile.openstreetmap.org/6/29/29.png" x="-168" y="-139" width="256px" height="256px"/>
     <image xlink:href="http://c.tile.openstreetmap.org/6/29/30.png" x="-168" y="117" width="256px" height="256px"/>
     <image xlink:href="http://a.tile.openstreetmap.org/6/29/31.png" x="-168" y="373" width="256px" height="256px"/>
@@ -25,15 +25,15 @@
     <image xlink:href="http://c.tile.openstreetmap.org/6/34/31.png" x="1112" y="373" width="256px" height="256px"/>
     <image xlink:href="http://a.tile.openstreetmap.org/6/34/32.png" x="1112" y="629" width="256px" height="256px"/>
   </g>
-  <g id="features">
-    <g stroke="blue" stroke-width="10.0" fill="#555555" fill-opacity="0.6">
+  <g class="geojson-features">
+    <g class="geojson-feature" stroke="blue" stroke-width="10.0" fill="#555555" fill-opacity="0.6" data-properties="{&quot;stroke&quot;:&quot;blue&quot;,&quot;stroke-width&quot;:10}">
       <polyline points="600.0,171.5605560715885 600.0,629.0 827.5555555555566,629.0" fill="None"/>
     </g>
-    <g stroke="purple" stroke-width="1.0" fill="#555555" fill-opacity="0.6">
+    <g class="geojson-feature" stroke="purple" stroke-width="1.0" fill="#555555" fill-opacity="0.6" data-properties="{&quot;stroke&quot;:&quot;purple&quot;,&quot;stroke-width&quot;:1}">
       <polyline points="372.44444444444434,171.5605560715885 372.44444444444434,217.70512215877443 417.9555555555562,217.70512215877443" fill="None"/>
       <polyline points="372.44444444444434,583.4865781333729 372.44444444444434,629.0 417.9555555555562,629.0" fill="None"/>
     </g>
-    <g id="red-feature" class="coloured-feature" stroke="green" stroke-width="0.5" fill="red" fill-opacity="0.6">
+    <g id="red-feature" class="geojson-feature coloured-feature" stroke="green" stroke-width="0.5" fill="red" fill-opacity="0.6" data-properties="{&quot;stroke&quot;:&quot;green&quot;,&quot;id&quot;:&quot;red-feature&quot;,&quot;fill&quot;:&quot;red&quot;,&quot;class&quot;:&quot;coloured-feature&quot;,&quot;stroke-width&quot;:0.5}">
       <circle cx="827.5555555555566" cy="401.15507090549636" r="3"/>
     </g>
   </g>

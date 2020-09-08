@@ -3,7 +3,6 @@ package berlin.softwaretechnik.geojsonrenderer
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
-import java.util.Base64
 
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
 import berlin.softwaretechnik.geojsonrenderer.geojson._
@@ -270,7 +269,26 @@ object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
             <title>geojson-renderer</title>
           </head>
           <body>
-            {elem}
+            {elem}<script>
+            {
+          scala.xml.Unparsed(
+            """(function () {
+                |  const toArray = (htmlCollection) =>
+                |    (htmlCollection);
+                |
+                |  const features = Array.prototype.slice.call(
+                |    document.getElementsByClassName("geojson-feature")
+                |  );
+                |
+                |  features.forEach((feature) =>
+                |    feature.addEventListener("click", () => {
+                |      console.log(JSON.parse(feature.getAttribute("data-properties")));
+                |    })
+                |  );
+                |})();""".stripMargin
+          )
+        }
+          </script>
           </body>
         </html>
       )
@@ -283,13 +301,7 @@ class EmbeddedHtmlFormatter(tileLoader: TileLoader)
       new EmbeddedData(tileLoader)
     ) {
   override def format(svg: Svg): Array[Byte] =
-    HtmlFormatter.embedInHtml(<img
-      width={svg.width.toString}
-      height={svg.height.toString}
-      src={asDataUrl(svg)}/>)
-
-  private def asDataUrl(svg: Svg): String =
-    s"data:image/svg+xml;base64,${Base64.getEncoder.encodeToString(svg.renderToUtf8())}"
+    HtmlFormatter.format(svg)
 }
 
 sealed trait ImageOutput {

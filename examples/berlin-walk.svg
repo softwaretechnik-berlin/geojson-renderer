@@ -1,5 +1,5 @@
 <svg width="1200" height="800" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-  <g id="tiles">
+  <g class="geojson-tiles">
     <image xlink:href="http://b.tile.openstreetmap.org/16/35202/21493.png" x="-64" y="-187" width="256px" height="256px"/>
     <image xlink:href="http://c.tile.openstreetmap.org/16/35202/21494.png" x="-64" y="69" width="256px" height="256px"/>
     <image xlink:href="http://a.tile.openstreetmap.org/16/35202/21495.png" x="-64" y="325" width="256px" height="256px"/>
@@ -21,8 +21,8 @@
     <image xlink:href="http://b.tile.openstreetmap.org/16/35206/21495.png" x="960" y="325" width="256px" height="256px"/>
     <image xlink:href="http://c.tile.openstreetmap.org/16/35206/21496.png" x="960" y="581" width="256px" height="256px"/>
   </g>
-  <g id="features">
-    <g stroke="green" stroke-width="3" fill="#555555" fill-opacity="0.6">
+  <g class="geojson-features">
+    <g class="geojson-feature" stroke="green" stroke-width="3" fill="#555555" fill-opacity="0.6" data-properties="{&quot;source&quot;:&quot;handcrafted&quot;,&quot;id&quot;:42,&quot;title&quot;:&quot;Berlin Walk&quot;,&quot;description&quot;:&quot;Represents GPS data collected during a hypothetical walk through Berlin.&quot;,&quot;stroke&quot;:&quot;green&quot;}">
       <title>
       Berlin Walk
     </title>

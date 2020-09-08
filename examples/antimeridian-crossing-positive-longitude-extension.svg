@@ -1,5 +1,5 @@
 <svg width="1200" height="800" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-  <g id="tiles">
+  <g class="geojson-tiles">
     <image xlink:href="http://b.tile.openstreetmap.org/3/5/2.png" x="-168" y="-203" width="256px" height="256px"/>
     <image xlink:href="http://a.tile.openstreetmap.org/3/5/3.png" x="-168" y="53" width="256px" height="256px"/>
     <image xlink:href="http://b.tile.openstreetmap.org/3/5/4.png" x="-168" y="309" width="256px" height="256px"/>
@@ -25,14 +25,14 @@
     <image xlink:href="http://a.tile.openstreetmap.org/3/2/4.png" x="1112" y="309" width="256px" height="256px"/>
     <image xlink:href="http://b.tile.openstreetmap.org/3/2/5.png" x="1112" y="565" width="256px" height="256px"/>
   </g>
-  <g id="features">
-    <g stroke="#555555" stroke-width="3" fill="#555555" fill-opacity="0.6">
+  <g class="geojson-features">
+    <g class="geojson-feature" stroke="#555555" stroke-width="3" fill="#555555" fill-opacity="0.6" data-properties="{&quot;description&quot;:&quot;Line crossing the antimeridian, represented as LineString with coordinates that exceed 180 degrees of longitude&quot;}">
       <desc>
       Line crossing the antimeridian, represented as LineString with coordinates that exceed 180 degrees of longitude
     </desc>
       <polyline points="486.22222222222223,60.33011505373372 713.7777777777778,60.33011505373372" fill="None"/>
     </g>
-    <g stroke="none" stroke-width="3" fill="blue" fill-opacity="0.6">
+    <g class="geojson-feature" stroke="none" stroke-width="3" fill="blue" fill-opacity="0.6" data-properties="{&quot;stroke&quot;:&quot;none&quot;,&quot;fill&quot;:&quot;blue&quot;,&quot;description&quot;:&quot;Filled rectangle straddling the antimeridian, represented as Polygon with coordinates that exceed 180 degrees of longitude&quot;}">
       <desc>
       Filled rectangle straddling the antimeridian, represented as Polygon with coordinates that exceed 180 degrees of longitude
     </desc>

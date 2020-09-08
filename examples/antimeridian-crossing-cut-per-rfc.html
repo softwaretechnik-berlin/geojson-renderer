@@ -4,7 +4,7 @@
   </head>
   <body>
     <svg version="1.1" height="800" width="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g id="tiles">
+      <g class="geojson-tiles">
         <image height="256px" width="256px" y="-203" x="-168" xlink:href="http://b.tile.openstreetmap.org/3/5/2.png"/>
         <image height="256px" width="256px" y="53" x="-168" xlink:href="http://a.tile.openstreetmap.org/3/5/3.png"/>
         <image height="256px" width="256px" y="309" x="-168" xlink:href="http://b.tile.openstreetmap.org/3/5/4.png"/>
@@ -30,15 +30,15 @@
         <image height="256px" width="256px" y="309" x="1112" xlink:href="http://a.tile.openstreetmap.org/3/2/4.png"/>
         <image height="256px" width="256px" y="565" x="1112" xlink:href="http://b.tile.openstreetmap.org/3/2/5.png"/>
       </g>
-      <g id="features">
-        <g fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555">
+      <g class="geojson-features">
+        <g data-properties="{&quot;description&quot;:&quot;Line crossing the antimeridian, represented as MultiLineString cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9&quot;}" fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="#555555" class="geojson-feature">
           <desc>
       Line crossing the antimeridian, represented as MultiLineString cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9
     </desc>
           <polyline fill="None" points="486.22222222222223,60.33011505373372 600.0,60.33011505373372"/>
           <polyline fill="None" points="600.0,60.33011505373372 713.7777777777778,60.33011505373372"/>
         </g>
-        <g fill-opacity="0.6" fill="blue" stroke-width="3" stroke="none">
+        <g data-properties="{&quot;stroke&quot;:&quot;none&quot;,&quot;fill&quot;:&quot;blue&quot;,&quot;description&quot;:&quot;Filled rectangle straddling the antimeridian, represented as MultiPolygon cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9&quot;}" fill-opacity="0.6" fill="blue" stroke-width="3" stroke="none" class="geojson-feature">
           <desc>
       Filled rectangle straddling the antimeridian, represented as MultiPolygon cut at antimeridian per https://tools.ietf.org/html/rfc7946#section-3.1.9
     </desc>
@@ -47,5 +47,21 @@
         </g>
       </g>
     </svg>
+    <script>
+            (function () {
+  const toArray = (htmlCollection) =>
+    (htmlCollection);
+
+  const features = Array.prototype.slice.call(
+    document.getElementsByClassName("geojson-feature")
+  );
+
+  features.forEach((feature) =>
+    feature.addEventListener("click", () => {
+      console.log(JSON.parse(feature.getAttribute("data-properties")));
+    })
+  );
+})();
+          </script>
   </body>
 </html>
