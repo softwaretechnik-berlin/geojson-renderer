@@ -56,7 +56,7 @@ See `jlauncher`'s page for more details on installing it.
 Then `geojson-renderer` can be executed like so:
 
 ```bash
-j berlin.softwaretechnik:geojson-renderer_2.13:0.0.4 --dimensions 600x200 example.geojson
+j berlin.softwaretechnik:geojson-renderer_2.13:0.1.0 --dimensions 600x200 example.geojson
 ```
 
 If the input file is valid, an SVG file will be written next to it with the
@@ -65,7 +65,7 @@ relevant file extension.
 To learn more about the options, a `--help` flag is available:
 
 ```bash
-j berlin.softwaretechnik:geojson-renderer_2.13:0.0.4 --help
+j berlin.softwaretechnik:geojson-renderer_2.13:0.1.0 --help
 ```
 
 ```

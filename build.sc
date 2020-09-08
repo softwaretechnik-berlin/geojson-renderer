@@ -8,7 +8,7 @@ import mill.scalalib.scalafmt.ScalafmtModule
 object core extends SbtModule with PublishModule with ScalafmtModule {
   def scalaVersion = "2.13.1"
 
-  def publishVersion = "0.0.4"
+  def publishVersion = "0.1.0"
 
   def pomSettings = PomSettings(
     description = "A command line tool to render geojson file on top of map tiles.",
