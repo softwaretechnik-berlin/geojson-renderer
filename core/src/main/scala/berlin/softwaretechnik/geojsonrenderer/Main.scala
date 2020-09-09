@@ -266,13 +266,62 @@ object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
       .prettyPrint(
         <html>
           <head>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"/>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"/>
+
+            <style>
+              {scala.xml.Unparsed(
+              """
+                |#properties-view {
+                |  position: absolute;
+                |  margin: 10px;
+                |  padding: 5px;
+                |  box-sizing: border-box;
+                |  transition: all .4s ease-in-out;
+                |  -moz-transition: all .4s ease-in-out;
+                |  -webkit-transition: all .4s ease-in-out;
+                |  background-color:#E7E2DD;
+                |}
+                |
+                |.hidden {
+                |  visibility: hidden;
+                |  opacity: 0;
+                |}
+                |
+                |.active {
+                |  opacity: 1;
+
+                |  visibility: visible
+                |}
+                |
+                |.button-blue {
+                |  background-color: #1D71B8;
+                |  border-color: #1D71B8;
+                |}
+                |
+                |""".stripMargin)}
+            </style>
             <title>geojson-renderer</title>
           </head>
           <body>
-            {elem}<script>
-            {
-          scala.xml.Unparsed(
-            """(function () {
+            <div id="properties-view" class="hidden">
+              <div id="feature-header"></div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Property</th> <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody id="properties-table">
+                </tbody>
+              </table>
+              <button class="button button-blue" id="close-button">Close</button>
+            </div>
+            {elem}
+            <script>
+            {scala.xml.Unparsed(
+              """(function () {
                 |  const toArray = (htmlCollection) =>
                 |    (htmlCollection);
                 |
@@ -280,14 +329,40 @@ object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
                 |    document.getElementsByClassName("geojson-feature")
                 |  );
                 |
+                |  document.getElementById("close-button").addEventListener("click", () => {
+                |   var propertiesView = document.getElementById("properties-view")
+                |   propertiesView.classList.remove("active")
+                |   propertiesView.classList.add("hidden")
+                |  }
+                |  );
+                |
                 |  features.forEach((feature) =>
                 |    feature.addEventListener("click", () => {
-                |      console.log(JSON.parse(feature.getAttribute("data-properties")));
+                |      var properties = JSON.parse(feature.getAttribute("data-properties"));
+                |      console.log(properties);
+                |      var propertiesView = document.getElementById("properties-view");
+                |      var propertiesContent = document.getElementById("properties-table");
+                |      propertiesContent.innerHTML = Object.entries(properties).map((entry) =>
+                |       "<tr><td>" + entry[0] + "</td><td>" + entry[1] + "</td></tr>"
+                |      ).join("\n");
+                |      var featureHeader = document.getElementById("feature-header");
+                |
+                |      var title = ""
+                |      if (properties.title) {
+                |        title = "<h1>"+properties.title+"</h1>\n"
+                |      } else if (properties.name) {
+                |       title = "<h1>"+properties.name+"</h1>\n"
+                |    }
+                |
+                |      featureHeader.innerHTML = title
+                |
+                |      propertiesView.classList.add("active")
+                |      propertiesView.classList.remove("hidden")
+                |
                 |    })
                 |  );
                 |})();""".stripMargin
-          )
-        }
+            )}
           </script>
           </body>
         </html>

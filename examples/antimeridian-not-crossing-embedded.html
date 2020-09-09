@@ -1,8 +1,56 @@
 <html>
   <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"/>
+    <style>
+              
+#properties-view {
+  position: absolute;
+  margin: 10px;
+  padding: 5px;
+  box-sizing: border-box;
+  transition: all .4s ease-in-out;
+  -moz-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  background-color:#E7E2DD;
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.active {
+  opacity: 1;
+
+  visibility: visible
+}
+
+.button-blue {
+  background-color: #1D71B8;
+  border-color: #1D71B8;
+}
+
+
+            </style>
     <title>geojson-renderer</title>
   </head>
   <body>
+    <div id="properties-view" class="hidden">
+      <div id="feature-header"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody id="properties-table">
+                </tbody>
+      </table>
+      <button class="button button-blue" id="close-button">Close</button>
+    </div>
     <svg version="1.1" height="800" width="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <g class="geojson-tiles">
         <image height="256px" width="256px" y="-112" x="-168" xlink:href="data:image/png;base64,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"/>
@@ -54,9 +102,36 @@
     document.getElementsByClassName("geojson-feature")
   );
 
+  document.getElementById("close-button").addEventListener("click", () => {
+   var propertiesView = document.getElementById("properties-view")
+   propertiesView.classList.remove("active")
+   propertiesView.classList.add("hidden")
+  }
+  );
+
   features.forEach((feature) =>
     feature.addEventListener("click", () => {
-      console.log(JSON.parse(feature.getAttribute("data-properties")));
+      var properties = JSON.parse(feature.getAttribute("data-properties"));
+      console.log(properties);
+      var propertiesView = document.getElementById("properties-view");
+      var propertiesContent = document.getElementById("properties-table");
+      propertiesContent.innerHTML = Object.entries(properties).map((entry) =>
+       "<tr><td>" + entry[0] + "</td><td>" + entry[1] + "</td></tr>"
+      ).join("\n");
+      var featureHeader = document.getElementById("feature-header");
+
+      var title = ""
+      if (properties.title) {
+        title = "<h1>"+properties.title+"</h1>\n"
+      } else if (properties.name) {
+       title = "<h1>"+properties.name+"</h1>\n"
+    }
+
+      featureHeader.innerHTML = title
+
+      propertiesView.classList.add("active")
+      propertiesView.classList.remove("hidden")
+
     })
   );
 })();
