@@ -19,7 +19,7 @@
     <style>
       .properties-view {
         position: absolute;
-        margin: 10px;
+        margin: 12px;
         padding: 12px;
         box-sizing: border-box;
         transition: all 0.4s ease-in-out;
@@ -35,9 +35,9 @@
         right: -10px;
         margin: 0;
         padding: 0;
-        height: 30px;
-        width: 30px;
-        line-height: 0;
+        height: 28px;
+        width: 28px;
+        border-radius: 14px;
       }
 
       .properties-view table {
@@ -68,7 +68,7 @@
       }
 
       .button-blue:hover,
-      :focus {
+      .button-blue:focus {
         background-color: #ea5b0c;
         border-color: #ea5b0c;
       }
@@ -123,7 +123,7 @@
                 ${tableRows}
               </tbody>
             </table>
-            <button class="button button-blue button-close">X</button>
+            <button class="button button-blue button-close"></button>
           `;
 
             propertiesView
