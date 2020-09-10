@@ -23,19 +23,12 @@
         padding: 5px;
         box-sizing: border-box;
         transition: all 0.4s ease-in-out;
-        -moz-transition: all 0.4s ease-in-out;
-        -webkit-transition: all 0.4s ease-in-out;
         background-color: #e7e2dd;
+        opacity: 0.9;
       }
 
       .hidden {
-        visibility: hidden;
-        opacity: 0;
-      }
-
-      .active {
-        opacity: 1;
-        visibility: visible;
+        display: none;
       }
 
       .button-blue {
@@ -70,8 +63,7 @@
         document
           .getElementById("close-button")
           .addEventListener("click", () => {
-            var propertiesView = document.getElementById("properties-view");
-            propertiesView.classList.remove("active");
+            const propertiesView = document.getElementById("properties-view");
             propertiesView.classList.add("hidden");
           });
 
@@ -106,7 +98,6 @@
           if (!feature) {
             document.getElementById("geojson-selected-feature").innerHTML = "";
             const propertiesView = document.getElementById("properties-view");
-            propertiesView.classList.remove("active");
             propertiesView.classList.add("hidden");
             return;
           }
