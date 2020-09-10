@@ -299,7 +299,6 @@ object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
                 |  background-color: #1D71B8;
                 |  border-color: #1D71B8;
                 |}
-                |
                 |""".stripMargin)}
             </style>
             <title>geojson-renderer</title>
@@ -322,46 +321,76 @@ object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
             <script>
             {scala.xml.Unparsed(
               """(function () {
-                |  const toArray = (htmlCollection) =>
-                |    (htmlCollection);
-                |
-                |  const features = Array.prototype.slice.call(
-                |    document.getElementsByClassName("geojson-feature")
-                |  );
-                |
-                |  document.getElementById("close-button").addEventListener("click", () => {
-                |   var propertiesView = document.getElementById("properties-view")
-                |   propertiesView.classList.remove("active")
-                |   propertiesView.classList.add("hidden")
-                |  }
-                |  );
-                |
-                |  features.forEach((feature) =>
-                |    feature.addEventListener("click", () => {
-                |      var properties = JSON.parse(feature.getAttribute("data-properties"));
-                |      console.log(properties);
-                |      var propertiesView = document.getElementById("properties-view");
-                |      var propertiesContent = document.getElementById("properties-table");
-                |      propertiesContent.innerHTML = Object.entries(properties).map((entry) =>
-                |       "<tr><td>" + entry[0] + "</td><td>" + entry[1] + "</td></tr>"
-                |      ).join("\n");
-                |      var featureHeader = document.getElementById("feature-header");
-                |
-                |      var title = ""
-                |      if (properties.title) {
-                |        title = "<h1>"+properties.title+"</h1>\n"
-                |      } else if (properties.name) {
-                |       title = "<h1>"+properties.name+"</h1>\n"
-                |    }
-                |
-                |      featureHeader.innerHTML = title
-                |
-                |      propertiesView.classList.add("active")
-                |      propertiesView.classList.remove("hidden")
-                |
-                |    })
-                |  );
-                |})();""".stripMargin
+    const toArray = (htmlCollection) =>
+        (htmlCollection);
+
+    const features = Array.prototype.slice.call(
+        document.getElementsByClassName("geojson-feature")
+    );
+
+    document.getElementById("close-button").addEventListener("click", () => {
+            var propertiesView = document.getElementById("properties-view")
+            propertiesView.classList.remove("active")
+            propertiesView.classList.add("hidden")
+        }
+    );
+
+    document.addEventListener("click", (event) => {
+        console.log("CLICK")
+
+        const currentlySelectedFeature = features.find(feature => feature.classList.contains("selected"))
+        currentlySelectedFeature && currentlySelectedFeature.classList.remove("selected")
+
+        const touchedUponFeatures = document.elementsFromPoint(event.x, event.y)
+            .map((element) => element.parentElement)
+            .filter((element) => element && element.classList.contains("geojson-feature"))
+            .filter((element) => element.parentElement !== document.getElementById("geojson-selected-feature"))
+
+        console.log(touchedUponFeatures)
+
+        const selectedIndex = touchedUponFeatures.indexOf(currentlySelectedFeature)
+
+        const newSelectionIndex = (selectedIndex + 1) % touchedUponFeatures.length
+
+        const feature = touchedUponFeatures[newSelectionIndex]
+
+        if (!feature) {
+          document.getElementById("geojson-selected-feature").innerHTML = ""
+          const propertiesView = document.getElementById("properties-view");
+        propertiesView.classList.remove("active")
+        propertiesView.classList.add("hidden")
+          return;
+        }
+
+        feature.classList.add("selected")
+
+        document.getElementById("geojson-selected-feature").innerHTML = ""
+        var clone = feature.cloneNode(true);
+        clone.style.stroke="#EA5B0C"
+        clone.style.fillOpacity="0"
+        document.getElementById("geojson-selected-feature").appendChild(clone)
+
+
+        const properties = JSON.parse(feature.getAttribute("data-properties"));
+        console.log(properties);
+        const propertiesView = document.getElementById("properties-view");
+        const propertiesContent = document.getElementById("properties-table");
+        propertiesContent.innerHTML = Object.entries(properties).map((entry) =>
+            "<tr><td>" + entry[0] + "</td><td>" + entry[1] + "</td></tr>"
+        ).join("\n");
+        var featureHeader = document.getElementById("feature-header");
+
+        var title = ""
+        if (properties.title) {
+            title = "<h1>" + properties.title + "</h1>\n"
+        } else if (properties.name) {
+            title = "<h1>" + properties.name + "</h1>\n"
+        }
+        featureHeader.innerHTML = title
+        propertiesView.classList.add("active")
+        propertiesView.classList.remove("hidden")
+    });
+})();""".stripMargin
             )}
           </script>
           </body>

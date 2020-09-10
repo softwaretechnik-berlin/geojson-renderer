@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "features": [{
+    "type": "Feature",
+    "properties": {
+      "shape": "Rectangle 1",
+      "name": "Unnamed Layer",
+      "category": "default",
+      "fill": "#1D71B8"
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [13.354951, 52.513374],
+          [13.359542, 52.513374],
+          [13.359542, 52.515986],
+          [13.354951, 52.515986],
+          [13.354951, 52.513374]
+        ]
+      ]
+    },
+    "id": "c38ea97e-622c-4d72-a171-77143a330154"
+  }, {
+    "type": "Feature",
+    "properties": {
+      "shape": "Rectangle 2",
+      "name": "Unnamed Layer",
+      "category": "default",
+      "fill": "#1D71B8"
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [13.357764, 52.514445],
+          [13.362827, 52.514445],
+          [13.362827, 52.517631],
+          [13.357764, 52.517631],
+          [13.357764, 52.514445]
+        ]
+      ]
+    },
+    "id": "c59ea207-3b94-4a8e-8dbd-971e143dfcee"
+  }, {
+    "type": "Feature",
+    "properties": {
+      "shape": "Line",
+      "name": "Unnamed Layer",
+      "category": "default"
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [13.352271, 52.517161],
+        [13.358236, 52.516443],
+        [13.360939, 52.514967],
+        [13.361904, 52.5134]
+      ]
+    },
+    "id": "65d5d29e-08f7-4676-b33d-60b091af7722"
+  }]
+}

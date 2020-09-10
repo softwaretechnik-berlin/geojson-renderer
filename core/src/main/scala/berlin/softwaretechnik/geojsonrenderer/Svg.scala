@@ -34,6 +34,7 @@ class Svg(
         <g class="geojson-features">
           {renderGeoJson(geoJson)}
         </g>
+        <g id="geojson-selected-feature"></g>
       </svg>
     )
 
