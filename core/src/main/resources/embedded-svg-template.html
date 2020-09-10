@@ -17,7 +17,7 @@
     />
 
     <style>
-      #properties-view {
+      .properties-view {
         position: absolute;
         margin: 10px;
         padding: 12px;
@@ -27,7 +27,7 @@
         opacity: 0.9;
       }
 
-      #properties-view td,
+      .properties-view td,
       th {
         padding-top: 0;
         padding-bottom: 0.6rem;
@@ -52,30 +52,42 @@
     </style>
   </head>
   <body>
-    <div id="properties-view" class="hidden"></div>
+    <div class="geojson-visualization">
+      <div class="properties-view hidden"></div>
 
-    {%= svg %}
+      {%= svg %}
+    </div>
 
     <script>
       (function () {
-        const selectedFeatureContainer = document.getElementById(
-          "geojson-selected-feature"
-        );
-        const propertiesView = document.getElementById("properties-view");
-        const features = Array.prototype.slice.call(
-          document.getElementsByClassName("geojson-feature")
-        );
+        for (const vis of document.getElementsByClassName(
+          "geojson-visualization"
+        )) {
+          console.log(vis);
+          const propertiesView = vis.getElementsByClassName(
+            "properties-view"
+          )[0];
 
-        const hideProperties = () => {
-          propertiesView.classList.add("hidden");
-        };
+          const svg = vis.getElementsByTagName("svg")[0];
+          const features = Array.prototype.slice.call(
+            svg.getElementsByClassName("geojson-feature")
+          );
+          const selectedFeatureContainer = svg.getElementsByClassName(
+            "geojson-selected-feature"
+          )[0];
 
-        const showProperties = (properties) => {
-          const tableRows = Object.entries(properties)
-            .map((entry) => `<tr><td>${entry[0]}</td><td>${entry[1]}</td></tr>`)
-            .join("\n");
+          const hideProperties = () => {
+            propertiesView.classList.add("hidden");
+          };
 
-          propertiesView.innerHTML = `
+          const showProperties = (properties) => {
+            const tableRows = Object.entries(properties)
+              .map(
+                (entry) => `<tr><td>${entry[0]}</td><td>${entry[1]}</td></tr>`
+              )
+              .join("\n");
+
+            propertiesView.innerHTML = `
             <h1>${properties.title ? properties.title : properties.name}</h1>
             <table>
               <thead>
@@ -91,58 +103,61 @@
             <button class="button button-blue button-close">Close</button>
           `;
 
-          propertiesView
-            .getElementsByClassName("button-close")[0]
-            .addEventListener("click", hideProperties);
+            propertiesView
+              .getElementsByClassName("button-close")[0]
+              .addEventListener("click", hideProperties);
 
-          propertiesView.classList.remove("hidden");
-        };
+            propertiesView.classList.remove("hidden");
+          };
 
-        const setSelectedFeature = (feature) => {
-          selectedFeatureContainer.innerHTML = "";
-          if (feature) {
-            const featureCopy = feature.cloneNode(true);
-            featureCopy.classList.add("selected-copy");
-            selectedFeatureContainer.appendChild(featureCopy);
-          }
-        };
+          const setSelectedFeature = (feature) => {
+            selectedFeatureContainer.innerHTML = "";
+            if (feature) {
+              const featureCopy = feature.cloneNode(true);
+              featureCopy.classList.add("selected-copy");
+              selectedFeatureContainer.appendChild(featureCopy);
+            }
+          };
 
-        document.addEventListener("click", (event) => {
-          const currentlySelectedFeature = features.find((feature) =>
-            feature.classList.contains("selected")
-          );
-          if (currentlySelectedFeature) {
-            currentlySelectedFeature.classList.remove("selected");
-          }
+          svg.addEventListener("click", (event) => {
+            const currentlySelectedFeature = features.find((feature) =>
+              feature.classList.contains("selected")
+            );
+            if (currentlySelectedFeature) {
+              currentlySelectedFeature.classList.remove("selected");
+            }
 
-          const touchedUponFeatures = document
-            .elementsFromPoint(event.x, event.y)
-            .map((element) => element.parentElement)
-            .filter(
-              (element) =>
-                element &&
-                element.classList.contains("geojson-feature") &&
-                element.parentElement !== selectedFeatureContainer
+            const touchedUponFeatures = document
+              .elementsFromPoint(event.x, event.y)
+              .map((element) => element.parentElement)
+              .filter(
+                (element) =>
+                  element &&
+                  element.classList.contains("geojson-feature") &&
+                  element.parentElement !== selectedFeatureContainer
+              );
+
+            const selectedIndex = touchedUponFeatures.indexOf(
+              currentlySelectedFeature
             );
 
-          const selectedIndex = touchedUponFeatures.indexOf(
-            currentlySelectedFeature
-          );
+            const newSelectionIndex =
+              (selectedIndex + 1) % touchedUponFeatures.length;
 
-          const newSelectionIndex =
-            (selectedIndex + 1) % touchedUponFeatures.length;
+            const feature = touchedUponFeatures[newSelectionIndex];
 
-          const feature = touchedUponFeatures[newSelectionIndex];
-
-          if (feature) {
-            setSelectedFeature(feature);
-            feature.classList.add("selected");
-            showProperties(JSON.parse(feature.getAttribute("data-properties")));
-          } else {
-            setSelectedFeature(undefined);
-            hideProperties();
-          }
-        });
+            if (feature) {
+              setSelectedFeature(feature);
+              feature.classList.add("selected");
+              showProperties(
+                JSON.parse(feature.getAttribute("data-properties"))
+              );
+            } else {
+              setSelectedFeature(undefined);
+              hideProperties();
+            }
+          });
+        }
       })();
     </script>
   </body>
