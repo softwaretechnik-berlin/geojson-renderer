@@ -169,6 +169,13 @@ mill core.reformat
 ### Backlog
 
  
+- [ ] Add properties view for HTML and potentially SVG target format, so that user
+      can click features and see properties from the geojson file.
+        - [ ] Add the feature. **Work in Progress**
+        - [ ] Clean-up the solution.
+        - [ ] Add an option whether to include viewer.
+- [ ] Add feature list to HTML format, so that user can click in a textual list
+      to highlight feature in map and see its properties.             
 - [ ] Make caching work with different tile sources (potentially just use an http cache)
 - [ ] Fix SVG to PNG rendering to have proper high-res bitmaps.
 - [ ] Provide our own PNG rendering that uses batik only to render the GeoJSON
