@@ -25,6 +25,22 @@
         transition: all 0.4s ease-in-out;
         background-color: #e7e2dd;
         opacity: 0.9;
+        color: #29235c;
+      }
+
+      .properties-view .button-close {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        margin: 0;
+        padding: 0;
+        height: 30px;
+        width: 30px;
+        line-height: 0;
+      }
+
+      .properties-view table {
+        margin-bottom: 0;
       }
 
       .properties-view td,
@@ -48,6 +64,12 @@
       .button-blue {
         background-color: #1d71b8;
         border-color: #1d71b8;
+      }
+
+      .button-blue:hover,
+      :focus {
+        background-color: #ea5b0c;
+        border-color: #ea5b0c;
       }
     </style>
   </head>
@@ -100,7 +122,7 @@
                 ${tableRows}
               </tbody>
             </table>
-            <button class="button button-blue button-close">Close</button>
+            <button class="button button-blue button-close">X</button>
           `;
 
             propertiesView
