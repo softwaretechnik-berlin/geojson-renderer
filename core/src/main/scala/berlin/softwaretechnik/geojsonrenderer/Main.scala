@@ -130,8 +130,7 @@ object Main {
       OutputFormatter.names,
       "output-format",
       short = 'f',
-      descr =
-        s"Defines the output image format (${OutputFormatter.names.mkString(", ")})",
+      descr = s"Defines the output image format.",
       default = Some(OutputFormatter.svgFormatterName)
     ).map(format => OutputFormatter.find(format).get(tileLoader, embedImages()))
     val embedImages: ScallopOption[TileImagePolicy] = toggle(

@@ -84,8 +84,8 @@ Options:
   -o, --output  <arg>              Image output file or - for standard output.
                                    Defaults to a file when the input is a file,
                                    or stdout when reading from stdin.
-  -f, --output-format  <arg>       Defines the output image format (svg, png,
-                                   html) Choices: svg, png, html
+  -f, --output-format  <arg>       Defines the output image format. Choices:
+                                   svg, png, html
   -t, --tile-url-template  <arg>   Template for tile URLs, placeholders are
                                    {tile} for tile coordinate, {a-c} and {1-4}
                                    for load balancing.
