@@ -20,11 +20,17 @@
       #properties-view {
         position: absolute;
         margin: 10px;
-        padding: 5px;
+        padding: 12px;
         box-sizing: border-box;
         transition: all 0.4s ease-in-out;
         background-color: #e7e2dd;
         opacity: 0.9;
+      }
+
+      #properties-view td,
+      th {
+        padding-top: 0;
+        padding-bottom: 0.6rem;
       }
 
       .hidden {
@@ -32,6 +38,10 @@
       }
 
       .geojson-feature.selected {
+        display: none;
+      }
+
+      .geojson-feature.selected-copy {
         stroke: #ea5b0c;
       }
 
@@ -42,19 +52,7 @@
     </style>
   </head>
   <body>
-    <div id="properties-view" class="hidden">
-      <div id="feature-header"></div>
-      <table>
-        <thead>
-          <tr>
-            <th>Property</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody id="properties-table"></tbody>
-      </table>
-      <button class="button button-blue" id="close-button">Close</button>
-    </div>
+    <div id="properties-view" class="hidden"></div>
 
     {%= svg %}
 
@@ -68,11 +66,46 @@
           document.getElementsByClassName("geojson-feature")
         );
 
-        document
-          .getElementById("close-button")
-          .addEventListener("click", () => {
-            propertiesView.classList.add("hidden");
-          });
+        const hideProperties = () => {
+          propertiesView.classList.add("hidden");
+        };
+
+        const showProperties = (properties) => {
+          const tableRows = Object.entries(properties)
+            .map((entry) => `<tr><td>${entry[0]}</td><td>${entry[1]}</td></tr>`)
+            .join("\n");
+
+          propertiesView.innerHTML = `
+            <h1>${properties.title ? properties.title : properties.name}</h1>
+            <table>
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableRows}
+              </tbody>
+            </table>
+            <button class="button button-blue button-close">Close</button>
+          `;
+
+          propertiesView
+            .getElementsByClassName("button-close")[0]
+            .addEventListener("click", hideProperties);
+
+          propertiesView.classList.remove("hidden");
+        };
+
+        const setSelectedFeature = (feature) => {
+          selectedFeatureContainer.innerHTML = "";
+          if (feature) {
+            const featureCopy = feature.cloneNode(true);
+            featureCopy.classList.add("selected-copy");
+            selectedFeatureContainer.appendChild(featureCopy);
+          }
+        };
 
         document.addEventListener("click", (event) => {
           const currentlySelectedFeature = features.find((feature) =>
@@ -101,30 +134,14 @@
 
           const feature = touchedUponFeatures[newSelectionIndex];
 
-          if (!feature) {
-            selectedFeatureContainer.innerHTML = "";
-            propertiesView.classList.add("hidden");
-            return;
+          if (feature) {
+            setSelectedFeature(feature);
+            feature.classList.add("selected");
+            showProperties(JSON.parse(feature.getAttribute("data-properties")));
+          } else {
+            setSelectedFeature(undefined);
+            hideProperties();
           }
-
-          feature.classList.add("selected");
-          selectedFeatureContainer.innerHTML = "";
-          selectedFeatureContainer.appendChild(feature.cloneNode(true));
-
-          const properties = JSON.parse(
-            feature.getAttribute("data-properties")
-          );
-          const propertiesContent = document.getElementById("properties-table");
-          propertiesContent.innerHTML = Object.entries(properties)
-            .map((entry) => `<tr><td>${entry[0]}</td><td>${entry[1]}</td></tr>`)
-            .join("\n");
-          const featureHeader = document.getElementById("feature-header");
-
-          const title = `<h1>${
-            properties.title ? properties.title : properties.name
-          }</h1>`;
-          featureHeader.innerHTML = title;
-          propertiesView.classList.remove("hidden");
         });
       })();
     </script>
