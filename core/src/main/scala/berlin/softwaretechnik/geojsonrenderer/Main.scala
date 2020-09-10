@@ -13,7 +13,6 @@ import org.rogach.scallop.{ScallopConf, ScallopOption}
 
 import scala.collection.compat.immutable
 import scala.io.AnsiColor
-import scala.xml.{Elem, XML}
 
 object Main {
 
@@ -256,146 +255,17 @@ class PngFormatter(tileLoader: TileLoader)
 }
 
 object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
-  // An <svg> tag is necessary to allow browser interactivity,
-  // necessary to download the referenced images.
-  override def format(svg: Svg): Array[Byte] =
-    embedInHtml(XML.loadString(svg.render()))
-
-  def embedInHtml(elem: Elem): Array[Byte] =
-    XmlHelpers
-      .prettyPrint(
-        <html>
-          <head>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"/>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"/>
-
-            <style>
-              {scala.xml.Unparsed(
-              """
-                |#properties-view {
-                |  position: absolute;
-                |  margin: 10px;
-                |  padding: 5px;
-                |  box-sizing: border-box;
-                |  transition: all .4s ease-in-out;
-                |  -moz-transition: all .4s ease-in-out;
-                |  -webkit-transition: all .4s ease-in-out;
-                |  background-color:#E7E2DD;
-                |}
-                |
-                |.hidden {
-                |  visibility: hidden;
-                |  opacity: 0;
-                |}
-                |
-                |.active {
-                |  opacity: 1;
-
-                |  visibility: visible
-                |}
-                |
-                |.button-blue {
-                |  background-color: #1D71B8;
-                |  border-color: #1D71B8;
-                |}
-                |""".stripMargin)}
-            </style>
-            <title>geojson-renderer</title>
-          </head>
-          <body>
-            <div id="properties-view" class="hidden">
-              <div id="feature-header"></div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Property</th> <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody id="properties-table">
-                </tbody>
-              </table>
-              <button class="button button-blue" id="close-button">Close</button>
-            </div>
-            {elem}
-            <script>
-            {scala.xml.Unparsed(
-              """(function () {
-    const toArray = (htmlCollection) =>
-        (htmlCollection);
-
-    const features = Array.prototype.slice.call(
-        document.getElementsByClassName("geojson-feature")
-    );
-
-    document.getElementById("close-button").addEventListener("click", () => {
-            var propertiesView = document.getElementById("properties-view")
-            propertiesView.classList.remove("active")
-            propertiesView.classList.add("hidden")
-        }
-    );
-
-    document.addEventListener("click", (event) => {
-        console.log("CLICK")
-
-        const currentlySelectedFeature = features.find(feature => feature.classList.contains("selected"))
-        currentlySelectedFeature && currentlySelectedFeature.classList.remove("selected")
-
-        const touchedUponFeatures = document.elementsFromPoint(event.x, event.y)
-            .map((element) => element.parentElement)
-            .filter((element) => element && element.classList.contains("geojson-feature"))
-            .filter((element) => element.parentElement !== document.getElementById("geojson-selected-feature"))
-
-        console.log(touchedUponFeatures)
-
-        const selectedIndex = touchedUponFeatures.indexOf(currentlySelectedFeature)
-
-        const newSelectionIndex = (selectedIndex + 1) % touchedUponFeatures.length
-
-        const feature = touchedUponFeatures[newSelectionIndex]
-
-        if (!feature) {
-          document.getElementById("geojson-selected-feature").innerHTML = ""
-          const propertiesView = document.getElementById("properties-view");
-        propertiesView.classList.remove("active")
-        propertiesView.classList.add("hidden")
-          return;
-        }
-
-        feature.classList.add("selected")
-
-        document.getElementById("geojson-selected-feature").innerHTML = ""
-        var clone = feature.cloneNode(true);
-        clone.style.stroke="#EA5B0C"
-        clone.style.fillOpacity="0"
-        document.getElementById("geojson-selected-feature").appendChild(clone)
-
-
-        const properties = JSON.parse(feature.getAttribute("data-properties"));
-        console.log(properties);
-        const propertiesView = document.getElementById("properties-view");
-        const propertiesContent = document.getElementById("properties-table");
-        propertiesContent.innerHTML = Object.entries(properties).map((entry) =>
-            "<tr><td>" + entry[0] + "</td><td>" + entry[1] + "</td></tr>"
-        ).join("\n");
-        var featureHeader = document.getElementById("feature-header");
-
-        var title = ""
-        if (properties.title) {
-            title = "<h1>" + properties.title + "</h1>\n"
-        } else if (properties.name) {
-            title = "<h1>" + properties.name + "</h1>\n"
-        }
-        featureHeader.innerHTML = title
-        propertiesView.classList.add("active")
-        propertiesView.classList.remove("hidden")
-    });
-})();""".stripMargin
-            )}
-          </script>
-          </body>
-        </html>
+  private val htmlTemplate = new String(
+    Files.readAllBytes(
+      Paths.get(
+        getClass.getClassLoader.getResource("embedded-svg-template.html").toURI
       )
+    )
+  )
+
+  override def format(svg: Svg): Array[Byte] =
+    htmlTemplate
+      .replace("{%= svg %}", svg.render())
       .getBytes(StandardCharsets.UTF_8)
 }
 
