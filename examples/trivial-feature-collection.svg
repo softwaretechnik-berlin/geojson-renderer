@@ -29,5 +29,5 @@
       <circle cx="713.5555555555566" cy="401.15507090549636" r="3"/>
     </g>
   </g>
-  <g id="geojson-selected-feature"></g>
+  <g class="geojson-selected-feature"></g>
 </svg>

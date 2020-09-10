@@ -1,163 +1,232 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"/>
-    <style>
-              
-#properties-view {
-  position: absolute;
-  margin: 10px;
-  padding: 5px;
-  box-sizing: border-box;
-  transition: all .4s ease-in-out;
-  -moz-transition: all .4s ease-in-out;
-  -webkit-transition: all .4s ease-in-out;
-  background-color:#E7E2DD;
-}
-
-.hidden {
-  visibility: hidden;
-  opacity: 0;
-}
-
-.active {
-  opacity: 1;
-
-  visibility: visible
-}
-
-.button-blue {
-  background-color: #1D71B8;
-  border-color: #1D71B8;
-}
-
-            </style>
     <title>geojson-renderer</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css"
+    />
+
+    <style>
+      .properties-view {
+        position: absolute;
+        margin: 12px;
+        padding: 12px;
+        box-sizing: border-box;
+        transition: all 0.4s ease-in-out;
+        background-color: #e7e2dd;
+        opacity: 0.9;
+        color: #29235c;
+      }
+
+      .properties-view .button-close {
+        user-select: none;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        margin: 0;
+        padding: 0;
+        height: 28px;
+        width: 28px;
+        border-radius: 14px;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAgMTAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGxpbmUgeDE9IjEiIHkxPSI5IiB4Mj0iOSIgeTI9IjEiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMyIvPgo8bGluZSB4MT0iMSIgeTE9IjEiIHgyPSI5IiB5Mj0iOSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIi8+Cjwvc3ZnPg==);
+        background-size: 12px;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      .properties-view .button-close svg {
+        height: 28px;
+        width: 28px;
+      }
+
+      .properties-view table {
+        margin-bottom: 0;
+      }
+
+      .properties-view td,
+      th {
+        padding-top: 0;
+        padding-bottom: 0.6rem;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .geojson-feature.selected {
+        display: none;
+      }
+
+      .geojson-feature.selected-copy {
+        stroke: #ea5b0c;
+      }
+
+      .button-blue {
+        background-color: #1d71b8;
+        border-color: #1d71b8;
+      }
+
+      .button-blue:hover,
+      .button-blue:focus {
+        background-color: #ea5b0c;
+        border-color: #ea5b0c;
+      }
+    </style>
   </head>
   <body>
-    <div id="properties-view" class="hidden">
-      <div id="feature-header"></div>
-      <table>
-        <thead>
-          <tr>
-            <th>Property</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody id="properties-table">
-                </tbody>
-      </table>
-      <button class="button button-blue" id="close-button">Close</button>
-    </div>
-    <svg version="1.1" height="800" width="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g class="geojson-tiles">
-        <image height="256px" width="256px" y="-187" x="-64" xlink:href="http://b.tile.openstreetmap.org/16/35202/21493.png"/>
-        <image height="256px" width="256px" y="69" x="-64" xlink:href="http://c.tile.openstreetmap.org/16/35202/21494.png"/>
-        <image height="256px" width="256px" y="325" x="-64" xlink:href="http://a.tile.openstreetmap.org/16/35202/21495.png"/>
-        <image height="256px" width="256px" y="581" x="-64" xlink:href="http://b.tile.openstreetmap.org/16/35202/21496.png"/>
-        <image height="256px" width="256px" y="-187" x="192" xlink:href="http://c.tile.openstreetmap.org/16/35203/21493.png"/>
-        <image height="256px" width="256px" y="69" x="192" xlink:href="http://a.tile.openstreetmap.org/16/35203/21494.png"/>
-        <image height="256px" width="256px" y="325" x="192" xlink:href="http://b.tile.openstreetmap.org/16/35203/21495.png"/>
-        <image height="256px" width="256px" y="581" x="192" xlink:href="http://c.tile.openstreetmap.org/16/35203/21496.png"/>
-        <image height="256px" width="256px" y="-187" x="448" xlink:href="http://a.tile.openstreetmap.org/16/35204/21493.png"/>
-        <image height="256px" width="256px" y="69" x="448" xlink:href="http://b.tile.openstreetmap.org/16/35204/21494.png"/>
-        <image height="256px" width="256px" y="325" x="448" xlink:href="http://c.tile.openstreetmap.org/16/35204/21495.png"/>
-        <image height="256px" width="256px" y="581" x="448" xlink:href="http://a.tile.openstreetmap.org/16/35204/21496.png"/>
-        <image height="256px" width="256px" y="-187" x="704" xlink:href="http://b.tile.openstreetmap.org/16/35205/21493.png"/>
-        <image height="256px" width="256px" y="69" x="704" xlink:href="http://c.tile.openstreetmap.org/16/35205/21494.png"/>
-        <image height="256px" width="256px" y="325" x="704" xlink:href="http://a.tile.openstreetmap.org/16/35205/21495.png"/>
-        <image height="256px" width="256px" y="581" x="704" xlink:href="http://b.tile.openstreetmap.org/16/35205/21496.png"/>
-        <image height="256px" width="256px" y="-187" x="960" xlink:href="http://c.tile.openstreetmap.org/16/35206/21493.png"/>
-        <image height="256px" width="256px" y="69" x="960" xlink:href="http://a.tile.openstreetmap.org/16/35206/21494.png"/>
-        <image height="256px" width="256px" y="325" x="960" xlink:href="http://b.tile.openstreetmap.org/16/35206/21495.png"/>
-        <image height="256px" width="256px" y="581" x="960" xlink:href="http://c.tile.openstreetmap.org/16/35206/21496.png"/>
-      </g>
-      <g class="geojson-features">
-        <g data-properties="{&quot;source&quot;:&quot;handcrafted&quot;,&quot;id&quot;:42,&quot;title&quot;:&quot;Berlin Walk&quot;,&quot;description&quot;:&quot;Represents GPS data collected during a hypothetical walk through Berlin.&quot;,&quot;stroke&quot;:&quot;green&quot;}" fill-opacity="0.6" fill="#555555" stroke-width="3" stroke="green" class="geojson-feature">
-          <title>
+    <div class="geojson-visualization">
+      <div class="properties-view hidden"></div>
+
+      <svg width="1200" height="800" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <g class="geojson-tiles">
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35202/21493.png" x="-64" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35202/21494.png" x="-64" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35202/21495.png" x="-64" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35202/21496.png" x="-64" y="581" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35203/21493.png" x="192" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35203/21494.png" x="192" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35203/21495.png" x="192" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35203/21496.png" x="192" y="581" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35204/21493.png" x="448" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35204/21494.png" x="448" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35204/21495.png" x="448" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35204/21496.png" x="448" y="581" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35205/21493.png" x="704" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35205/21494.png" x="704" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35205/21495.png" x="704" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35205/21496.png" x="704" y="581" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35206/21493.png" x="960" y="-187" width="256px" height="256px"/>
+    <image xlink:href="http://a.tile.openstreetmap.org/16/35206/21494.png" x="960" y="69" width="256px" height="256px"/>
+    <image xlink:href="http://b.tile.openstreetmap.org/16/35206/21495.png" x="960" y="325" width="256px" height="256px"/>
+    <image xlink:href="http://c.tile.openstreetmap.org/16/35206/21496.png" x="960" y="581" width="256px" height="256px"/>
+  </g>
+  <g class="geojson-features">
+    <g class="geojson-feature" stroke="green" stroke-width="3" fill="#555555" fill-opacity="0.6" data-properties="{&quot;source&quot;:&quot;handcrafted&quot;,&quot;id&quot;:42,&quot;title&quot;:&quot;Berlin Walk&quot;,&quot;description&quot;:&quot;Represents GPS data collected during a hypothetical walk through Berlin.&quot;,&quot;stroke&quot;:&quot;green&quot;}">
+      <title>
       Berlin Walk
     </title>
-          <desc>
+      <desc>
       Represents GPS data collected during a hypothetical walk through Berlin.
     </desc>
-          <polyline fill="None" points="883.8508088905364,744.4575860798359 860.5491199996322,729.1440897034481 809.2854044456035,729.1440897034481 716.0786488894373,721.4873153837398 641.5132444445044,752.1143081365153 576.2685155551881,583.6623986084014 562.2875022236258,476.4613385098055 511.0237866677344,269.7067925045267 445.77905777841806,116.54708650894463 366.5533155556768,47.62294440995902 315.2895999997854,62.93954243697226"/>
-        </g>
-      </g>
-      <g id="geojson-selected-feature"/>
-    </svg>
+      <polyline points="883.8508088905364,744.4575860798359 860.5491199996322,729.1440897034481 809.2854044456035,729.1440897034481 716.0786488894373,721.4873153837398 641.5132444445044,752.1143081365153 576.2685155551881,583.6623986084014 562.2875022236258,476.4613385098055 511.0237866677344,269.7067925045267 445.77905777841806,116.54708650894463 366.5533155556768,47.62294440995902 315.2895999997854,62.93954243697226" fill="None"/>
+    </g>
+  </g>
+  <g class="geojson-selected-feature"></g>
+</svg>
+
+    </div>
+
     <script>
-            (function () {
-    const toArray = (htmlCollection) =>
-        (htmlCollection);
+      (function () {
+        for (const vis of document.getElementsByClassName(
+          "geojson-visualization"
+        )) {
+          console.log(vis);
+          const propertiesView = vis.getElementsByClassName(
+            "properties-view"
+          )[0];
 
-    const features = Array.prototype.slice.call(
-        document.getElementsByClassName("geojson-feature")
-    );
+          const svg = vis.getElementsByTagName("svg")[0];
+          const features = Array.prototype.slice.call(
+            svg.getElementsByClassName("geojson-feature")
+          );
+          const selectedFeatureContainer = svg.getElementsByClassName(
+            "geojson-selected-feature"
+          )[0];
 
-    document.getElementById("close-button").addEventListener("click", () => {
-            var propertiesView = document.getElementById("properties-view")
-            propertiesView.classList.remove("active")
-            propertiesView.classList.add("hidden")
+          const hideProperties = () => {
+            propertiesView.classList.add("hidden");
+          };
+
+          const showProperties = (properties) => {
+            const tableRows = Object.entries(properties)
+              .map(
+                (entry) => `<tr><td>${entry[0]}</td><td>${entry[1]}</td></tr>`
+              )
+              .join("\n");
+
+            propertiesView.innerHTML = `
+            <h1>${properties.title ? properties.title : properties.name}</h1>
+            <table>
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableRows}
+              </tbody>
+            </table>
+            <button class="button button-blue button-close"></button>
+          `;
+
+            propertiesView
+              .getElementsByClassName("button-close")[0]
+              .addEventListener("click", hideProperties);
+
+            propertiesView.classList.remove("hidden");
+          };
+
+          const setSelectedFeature = (feature) => {
+            selectedFeatureContainer.innerHTML = "";
+            if (feature) {
+              const featureCopy = feature.cloneNode(true);
+              featureCopy.classList.add("selected-copy");
+              selectedFeatureContainer.appendChild(featureCopy);
+            }
+          };
+
+          svg.addEventListener("click", (event) => {
+            const currentlySelectedFeature = features.find((feature) =>
+              feature.classList.contains("selected")
+            );
+            if (currentlySelectedFeature) {
+              currentlySelectedFeature.classList.remove("selected");
+            }
+
+            const touchedUponFeatures = document
+              .elementsFromPoint(event.x, event.y)
+              .map((element) => element.parentElement)
+              .filter(
+                (element) =>
+                  element &&
+                  element.classList.contains("geojson-feature") &&
+                  element.parentElement !== selectedFeatureContainer
+              );
+
+            const selectedIndex = touchedUponFeatures.indexOf(
+              currentlySelectedFeature
+            );
+
+            const newSelectionIndex =
+              (selectedIndex + 1) % touchedUponFeatures.length;
+
+            const feature = touchedUponFeatures[newSelectionIndex];
+
+            if (feature) {
+              setSelectedFeature(feature);
+              feature.classList.add("selected");
+              showProperties(
+                JSON.parse(feature.getAttribute("data-properties"))
+              );
+            } else {
+              setSelectedFeature(undefined);
+              hideProperties();
+            }
+          });
         }
-    );
-
-    document.addEventListener("click", (event) => {
-        console.log("CLICK")
-
-        const currentlySelectedFeature = features.find(feature => feature.classList.contains("selected"))
-        currentlySelectedFeature && currentlySelectedFeature.classList.remove("selected")
-
-        const touchedUponFeatures = document.elementsFromPoint(event.x, event.y)
-            .map((element) => element.parentElement)
-            .filter((element) => element && element.classList.contains("geojson-feature"))
-            .filter((element) => element.parentElement !== document.getElementById("geojson-selected-feature"))
-
-        console.log(touchedUponFeatures)
-
-        const selectedIndex = touchedUponFeatures.indexOf(currentlySelectedFeature)
-
-        const newSelectionIndex = (selectedIndex + 1) % touchedUponFeatures.length
-
-        const feature = touchedUponFeatures[newSelectionIndex]
-
-        if (!feature) {
-          document.getElementById("geojson-selected-feature").innerHTML = ""
-          const propertiesView = document.getElementById("properties-view");
-        propertiesView.classList.remove("active")
-        propertiesView.classList.add("hidden")
-          return;
-        }
-
-        feature.classList.add("selected")
-
-        document.getElementById("geojson-selected-feature").innerHTML = ""
-        var clone = feature.cloneNode(true);
-        clone.style.stroke="#EA5B0C"
-        clone.style.fillOpacity="0"
-        document.getElementById("geojson-selected-feature").appendChild(clone)
-
-
-        const properties = JSON.parse(feature.getAttribute("data-properties"));
-        console.log(properties);
-        const propertiesView = document.getElementById("properties-view");
-        const propertiesContent = document.getElementById("properties-table");
-        propertiesContent.innerHTML = Object.entries(properties).map((entry) =>
-            "<tr><td>" + entry[0] + "</td><td>" + entry[1] + "</td></tr>"
-        ).join("\n");
-        var featureHeader = document.getElementById("feature-header");
-
-        var title = ""
-        if (properties.title) {
-            title = "<h1>" + properties.title + "</h1>\n"
-        } else if (properties.name) {
-            title = "<h1>" + properties.name + "</h1>\n"
-        }
-        featureHeader.innerHTML = title
-        propertiesView.classList.add("active")
-        propertiesView.classList.remove("hidden")
-    });
-})();
-          </script>
+      })();
+    </script>
   </body>
 </html>

@@ -126,14 +126,21 @@ object Main {
       descr =
         "Image output file or - for standard output. Defaults to a file when the input is a file, or stdout when reading from stdin."
     ).map(str => if (str == "-") StdOutput else FileOutput(Paths.get(str)))
-    val outputFormat: ScallopOption[OutputFormatter] = opt[String](
+    val outputFormat: ScallopOption[OutputFormatter] = choice(
+      OutputFormatter.names,
       "output-format",
       short = 'f',
       descr =
         s"Defines the output image format (${OutputFormatter.names.mkString(", ")})",
-      default = Some(OutputFormatter.svgFormatterName),
-      validate = str => OutputFormatter.find(str).isDefined
-    ).map(format => OutputFormatter.find(format).get(tileLoader))
+      default = Some(OutputFormatter.svgFormatterName)
+    ).map(format => OutputFormatter.find(format).get(tileLoader, embedImages()))
+    val embedImages: ScallopOption[TileImagePolicy] = toggle(
+      "embed-images",
+      short = 'e',
+      descrYes = "Embed tile images instead of just referencing their URLs.",
+      default = Some(false),
+      prefix = "no-"
+    ).map(b => if (b) new EmbeddedData(tileLoader) else DirectUrl)
     val tileUrlTemplate: ScallopOption[String] = opt[String](
       "tile-url-template",
       descr =
@@ -216,34 +223,33 @@ abstract class OutputFormatter(
 object OutputFormatter {
   val svgFormatterName = "svg"
 
-  val formatters: Seq[(String, TileLoader => OutputFormatter)] =
+  val formatters
+      : Seq[(String, (TileLoader, TileImagePolicy) => OutputFormatter)] =
     Seq(
-      svgFormatterName -> (_ => SvgFormatter),
-      "svg-embedded" -> (tileLoader => new EmbeddedSvgFormatter(tileLoader)),
-      "png" -> (tileLoader => new PngFormatter(tileLoader)),
-      "html" -> (_ => HtmlFormatter),
-      "html-embedded" -> (tileLoader => new EmbeddedHtmlFormatter(tileLoader))
+      svgFormatterName ->
+        ((_, imagePolicy) => new SvgFormatter(imagePolicy)),
+      "png" ->
+        ((tileLoader, _) => new PngFormatter(new EmbeddedData(tileLoader))),
+      "html" ->
+        ((_, imagePolicy) => new HtmlFormatter(imagePolicy))
     )
 
   def names: Seq[String] = formatters.map(_._1)
 
-  def find(name: String): Option[TileLoader => OutputFormatter] =
+  def find(
+      name: String
+  ): Option[(TileLoader, TileImagePolicy) => OutputFormatter] =
     formatters.collectFirst { case (`name`, formatter) => formatter }
 }
 
-object SvgFormatter extends OutputFormatter("svg", DirectUrl) {
+class SvgFormatter(imagePolicy: TileImagePolicy)
+    extends OutputFormatter("svg", imagePolicy) {
   override def format(svg: Svg): Array[Byte] =
     svg.renderToUtf8()
 }
 
-class EmbeddedSvgFormatter(tileLoader: TileLoader)
-    extends OutputFormatter("svg", new EmbeddedData(tileLoader)) {
-  override def format(svg: Svg): Array[Byte] =
-    svg.renderToUtf8()
-}
-
-class PngFormatter(tileLoader: TileLoader)
-    extends OutputFormatter("png", new EmbeddedData(tileLoader)) {
+class PngFormatter(imagePolicy: TileImagePolicy)
+    extends OutputFormatter("png", imagePolicy) {
   override def format(svg: Svg): Array[Byte] = {
     val out = new ByteArrayOutputStream()
     new PNGTranscoder().transcode(
@@ -254,7 +260,8 @@ class PngFormatter(tileLoader: TileLoader)
   }
 }
 
-object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
+class HtmlFormatter(imagePolicy: TileImagePolicy)
+    extends OutputFormatter("html", imagePolicy) {
   private val htmlTemplate = new String(
     Files.readAllBytes(
       Paths.get(
@@ -267,15 +274,6 @@ object HtmlFormatter extends OutputFormatter("html", DirectUrl) {
     htmlTemplate
       .replace("{%= svg %}", svg.render())
       .getBytes(StandardCharsets.UTF_8)
-}
-
-class EmbeddedHtmlFormatter(tileLoader: TileLoader)
-    extends OutputFormatter(
-      "html",
-      new EmbeddedData(tileLoader)
-    ) {
-  override def format(svg: Svg): Array[Byte] =
-    HtmlFormatter.format(svg)
 }
 
 sealed trait ImageOutput {

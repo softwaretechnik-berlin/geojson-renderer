@@ -3,7 +3,6 @@ package berlin.softwaretechnik.geojsonrenderer
 import java.nio.file.{Files, Path, Paths}
 
 import berlin.softwaretechnik.geojsonrenderer.MissingJdkMethods.replaceExtension
-import berlin.softwaretechnik.geojsonrenderer.map.Tile
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import org.scalatest.funsuite.AnyFunSuite
@@ -39,21 +38,22 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
   }
 
   geoJsonFiles.foreach { geoJsonFile =>
-    def testFormat(format: String, fileExtension: String): Unit = {
+    def testFormat(format: String, fileExtension: String, embed: Boolean = false): Unit = {
       val outputFile = replaceExtension(geoJsonFile, fileExtension)
       test(s"$outputFile matches expected $format format") {
         Files.deleteIfExists(outputFile)
 
-        Main.run(new Main.Conf(Seq("-c", "core/src/test/resources/cached-tiles", "-f", format, "-o", outputFile.toString, geoJsonFile.toString)))
+        val args = (if (embed) Seq("-e") else Seq()) ++ Seq("-c", "core/src/test/resources/cached-tiles", "-f", format, "-o", outputFile.toString, geoJsonFile.toString)
+        Main.run(new Main.Conf(args))
         assertUnchanged(outputFile)
       }
     }
 
     testFormat("svg", ".svg")
-    testFormat("svg-embedded", "-embedded.svg")
+    testFormat("svg", "-embedded.svg", embed = true)
     testFormat("png", ".png")
     testFormat("html", ".html")
-    testFormat("html-embedded", "-embedded.html")
+    testFormat("html", "-embedded.html", embed = true)
   }
 
   private def assertUnchanged(file: Path): Assertion = {
