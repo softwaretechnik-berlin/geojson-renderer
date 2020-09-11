@@ -27,7 +27,7 @@ For example, the following
       [13.3827, 52.5136],
       [13.3813, 52.5156],
       [13.3796, 52.5165],
-      [13.3785, 52.5163]
+      [13.3785, 52.5163]              
     ]
   },
   "properties": {
@@ -129,7 +129,14 @@ the following parameters are supported:
 There are several tile services based on OpenStreetMap, see
 [list](https://wiki.openstreetmap.org/wiki/Tile_servers). Also, there are
 services based on proprietary maps, such as the
-[HERE Map Tile API](https://developer.here.com/documentation/map-tile/dev_guide/topics/introduction.html).
+[HERE Map Tile API](https://developer.here.com/documentation/map-tile/dev_guide/topics/introduction.html),
+which can be used like so (Note, you'll need to replace `{app_id}` and `{app_code}` with 
+your HERE credentials):
+
+~~~
+--tile-url-template "https://{1-4}.base.maps.api.here.com/maptile/2.1/maptile/newest/normal.day/{tile}/256/png8?app_id={app_id}&app_code={app_code}&ppi=320"
+~~~
+
 The use of tile servers is not generally free, so please adhere to the relevant
 policies.
 
