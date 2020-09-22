@@ -37,6 +37,7 @@ object core extends SbtModule with PublishModule with ScalafmtModule {
     val jsonManifest = ujson.write(
       ujson.Obj(
         "mainClass" -> ujson.Str(mainClass().get),
+        "executableName" -> ujson.Str("geojson-renderer"),
         "dependencies" ->
           resolution.dependencies.map(x =>
             ujson.Obj(
