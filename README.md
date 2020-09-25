@@ -51,12 +51,17 @@ install it, run:
 gem install jlauncher
 ```
 
-See `jlauncher`'s page for more details on installing it.
-
-Then `geojson-renderer` can be executed like so:
+Then `geojson-renderer` can be installed like this:
 
 ```bash
-j berlin.softwaretechnik:geojson-renderer_2.13:0.2.1 --dimensions 600.2.1 example.geojson
+jlauncher install berlin.softwaretechnik:geojson-renderer_2.13:0.2.1
+```
+
+Now `geojson-renderer` can be invoked like this to render an example
+to a 600x200 pixel viewport:
+  
+```bash
+ geojson-renderer --dimensions 600x200 example.geojson
 ```
 
 If the input file is valid, an SVG file will be written next to it with the
@@ -65,7 +70,7 @@ relevant file extension.
 To learn more about the options, a `--help` flag is available:
 
 ```bash
-j berlin.softwaretechnik:geojson-renderer_2.13:0.2.1 --help
+geojson-renderer --help
 ```
 
 ```
