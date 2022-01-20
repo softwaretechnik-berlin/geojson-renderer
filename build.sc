@@ -8,7 +8,7 @@ import mill.scalalib.scalafmt.ScalafmtModule
 object core extends SbtModule with PublishModule with ScalafmtModule {
   def scalaVersion = "2.13.1"
 
-  def publishVersion = "0.2.1"
+  def publishVersion = "0.2.2"
 
   def pomSettings = PomSettings(
     description = "A command line tool to render geojson file on top of map tiles.",
@@ -83,7 +83,7 @@ object core extends SbtModule with PublishModule with ScalafmtModule {
     Agg(
       ivy"org.scala-lang.modules::scala-xml::1.2.0",
       ivy"org.rogach::scallop:3.3.2",
-      ivy"com.lihaoyi::upickle:0.9.5",
+      ivy"com.lihaoyi::upickle:1.4.3",
       ivy"org.apache.xmlgraphics:batik-transcoder:1.12",
       ivy"org.apache.xmlgraphics:batik-codec:1.12"
     )

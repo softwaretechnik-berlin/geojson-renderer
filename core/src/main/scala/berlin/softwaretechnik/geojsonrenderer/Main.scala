@@ -11,7 +11,6 @@ import org.apache.batik.transcoder.image.PNGTranscoder
 import org.apache.batik.transcoder.{TranscoderInput, TranscoderOutput}
 import org.rogach.scallop.{ScallopConf, ScallopOption}
 
-import scala.collection.compat.immutable
 import scala.io.AnsiColor
 
 object Main {
@@ -32,7 +31,7 @@ object Main {
   def main(args: Array[String]): Unit = {
     val exitCode =
       try {
-        run(new Conf(immutable.ArraySeq.unsafeWrapArray(args)))
+        run(new Conf(args.toList))
         0
       } catch {
         case err: GeoJsonRendererError =>
