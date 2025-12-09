@@ -51,12 +51,4 @@ object TilingScheme {
     )
   }
 
-  def osm() =
-    new TilingScheme(
-      0,
-      19,
-      256,
-      tileId => s"http://a.tile.openstreetmap.org/${tileId.normalizedPath}.png"
-    )
-
 }
