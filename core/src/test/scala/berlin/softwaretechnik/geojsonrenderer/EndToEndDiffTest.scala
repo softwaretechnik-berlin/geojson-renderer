@@ -12,17 +12,12 @@ import scala.jdk.StreamConverters._
 
 class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
 
-  val examplesDirectory: Path = Paths.get("examples")
-
-  val geoJsonFiles: Seq[Path] =
-    Files.list(examplesDirectory)
+  val geoJsonExampleFiles: Seq[Path] =
+    Files.list(Paths.get("examples"))
       .filter(_.getFileName.toString.endsWith(".json"))
       .toScala(Seq)
 
-  var git: Git = _
-
-  override protected def beforeAll(): Unit =
-    git = new Git(
+  var git: Git = new Git(
       new FileRepositoryBuilder()
         .readEnvironment() // scan environment GIT_* variables
         .findGitDir() // scan up the file system tree
@@ -34,10 +29,10 @@ class EndToEndDiffTest extends AnyFunSuite with BeforeAndAfterAll {
     finally git.getRepository.close()
 
   test("Finds GeoJSON examples") {
-    assert(geoJsonFiles.nonEmpty)
+    assert(geoJsonExampleFiles.nonEmpty)
   }
 
-  geoJsonFiles.foreach { geoJsonFile =>
+  geoJsonExampleFiles.foreach { geoJsonFile =>
     def testFormat(format: String, fileExtension: String, embed: Boolean = false): Unit = {
       val outputFile = replaceExtension(geoJsonFile, fileExtension)
       test(s"$outputFile matches expected $format format") {
