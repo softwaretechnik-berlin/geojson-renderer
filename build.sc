@@ -6,7 +6,7 @@ import mill.scalalib.publish._
 import mill.scalalib.scalafmt.ScalafmtModule
 
 object core extends SbtModule with PublishModule with ScalafmtModule {
-  def scalaVersion = "2.13.1"
+  def scalaVersion = "2.13.18"
 
   def publishVersion = "0.2.2"
 
