@@ -143,7 +143,7 @@ object Main {
       "tile-url-template",
       descr =
         "Template for tile URLs, placeholders are {tile} for tile coordinate, {a-c} and {1-4} for load balancing.",
-      default = Some("http://{a-c}.tile.openstreetmap.org/{tile}.png")
+      default = Some("https://{a-c}.tile.openstreetmap.org/{tile}.png")
     )
     val cacheDir: ScallopOption[Path] = opt[String](
       "cache-dir",
